@@ -152,10 +152,6 @@
       right: 50px;
     }
 
-    body {
-      background-color: #ffffff;
-    }
-
     .form-group label {
       font-weight: bold;
     }
@@ -214,6 +210,9 @@
         text-decoration: none !important;
     }
 
+    .custom-active-page {
+        z-index: 0; /* Adjust the z-index value as needed */
+    }
 
     @media only screen and (max-width: 767px) {
 
