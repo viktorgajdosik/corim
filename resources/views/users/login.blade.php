@@ -1,7 +1,7 @@
 <x-layout>
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header" style="background-color: #FFFFFF; text-align: center;">
                     <h3>Sign in to CORIM</h3>
@@ -29,7 +29,7 @@
                         Don't have an account? <a href="/register">Sign up</a>
                     </div>
                     <div class="mb-3">
-                        <a href="forgot_password.php">Forgot Password</a>
+                        <a href="">Forgot Password</a>
                     </div>
                 </div>
             </div>

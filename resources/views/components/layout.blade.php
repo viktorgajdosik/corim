@@ -16,9 +16,9 @@
                 <div class="navbar-brand">
                     <a href="/"><img src="{{asset('images/logo.svg')}}" href="/" alt="CORIM Logo" height="30">  </a></div>
                     <ul class="navbar-spacing"></ul>
-                    <form class="form-inline my-2 my-lg-0" action="/" method="get">
-                        <div class="input-group">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"/>
+                    <form class="form-inline mobile-search-form" action="/" method="get">
+                        <div class="input-group mobile-search-input">
+                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search"/>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
                             </div>
@@ -100,7 +100,7 @@
 <div class="container mt-4">
 {{$slot}}
 </div>
-<footer class="mt-4">
+<footer class="mt-4" style="margin-bottom: 100px;">
     <div class="container text-center">
         <p>&copy; <?php echo date('Y'); ?> CORIM - Collaborative Research Initiative in Medicine</p>
     </div>

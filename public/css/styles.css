@@ -1,5 +1,6 @@
 @media only screen and (min-width: 768px) {
 
+
     .navbar-brand{
 
       display: none;
@@ -49,6 +50,23 @@
       padding: 0px;
     }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: #f8f9fa; /* Set background color */
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background-color: rgb(217, 217, 217); /* Set thumb color */
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background-color: grey; /* Set thumb color on hover */
+          }
+
+          ::-webkit-scrollbar-track {
+            background-color: #f8f9fa; /* Set track color */
+          }
 
     }
 
@@ -75,8 +93,6 @@
     .upload i.fa {
       margin-right: 8px;
     }
-
-
 
     .search.btn{
       background-color: aliceblue;
@@ -129,29 +145,6 @@
       color: #FFFFFF;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      background-color: #f8f9fa; /* Set background color */
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background-color: rgb(217, 217, 217); /* Set thumb color */
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: grey; /* Set thumb color on hover */
-    }
-
-    ::-webkit-scrollbar-track {
-      background-color: #f8f9fa; /* Set track color */
-    }
-
-    .search{
-
-      right: 50px;
-    }
-
     .form-group label {
       font-weight: bold;
     }
@@ -172,11 +165,6 @@
       margin-bottom: 10px;
     }
 
-    .card {
-
-      margin-top: 50px;
-      margin-bottom: 70px;
-    }
 
     .list-group-item{
       border: none;
@@ -214,11 +202,17 @@
         z-index: 0; /* Adjust the z-index value as needed */
     }
 
-    @media only screen and (max-width: 767px) {
+    @media only screen and (max-width: 768px) {
 
       body {
         padding-top: 90px;
       }
+
+      .form-inline.mobile-search-form {
+        width: 55%;
+        padding: 0px;
+
+    }
 
      .sidebar{
       display: none;
@@ -267,5 +261,6 @@
         color: #000000;
 
     }
+
 
     }
