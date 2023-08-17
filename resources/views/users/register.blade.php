@@ -21,6 +21,7 @@
         <label for="department">Department</label>
         <select class="form-control" id="department" name="department">
             <option value="" selected disabled>Select a department</option>
+            <option value="anatomy">Student</option>
             <option value="aro">Anaesthesiology, Resuscitation and Intensive Care Medicine</option>
             <option value="anatomy">Anatomy</option>
             <option value="biochemistry">Clinical Biochemistry</option>
