@@ -1,6 +1,6 @@
 <x-layout>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 mb-5">
         <h2>Personal Information</h2>
         <br>
         <p><strong>Name:</strong> {{ $user->name }} </p>
@@ -18,7 +18,7 @@
         </form>
     </form>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mb-5">
         <h2>Research Work Participation</h2>
     <br>
 
