@@ -1,6 +1,6 @@
 <x-layout>
 
-            <h1>Your Listings</h1>
+            <h2>Your Listings</h2>
 
             @if(session('error'))
 <div class="alert alert-danger">

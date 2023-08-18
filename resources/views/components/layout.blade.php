@@ -19,7 +19,7 @@
                     <div class="navbar-spacing"></div>
                     <form class="form-inline mobile-search-form" action="/" method="get">
                         <div class="input-group">
-                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search"/>
+                            <input class="form-control" type="search" placeholder="Search listings" aria-label="Search" name="search"/>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
                             </div>
@@ -34,13 +34,13 @@
             </a>
 
             <div class="list-group list-group-flush">
-                <a href="/listings/manage" class="list-group-item list-group-item-action">
+                <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
                     <i class="fa fa-list"></i><span>Management</span>
                 </a>
-                <a href="/users/profile" class="list-group-item list-group-item-action">
+                <a href="/users/profile" class="list-group-item list-group-item-action {{ request()->is('users/profile*') ? 'active' : '' }}">
                     <i class="fa fa-user"></i><span>Profile</span>
                 </a>
-                <a href="/listings/create" class="list-group-item list-group-item-action">
+                <a href="/listings/create" class="list-group-item list-group-item-action {{ request()->is('listings/create*') ? 'active' : '' }}">
                     <i class="fa fa-plus-circle"></i><span>Create Listing</span>
                 </a>
                 <a href="" class="list-group-item list-group-item-action">
@@ -54,7 +54,7 @@
                     </button>
                 </form>
                 @else
-                <a href="/login" class="list-group-item list-group-item-action">
+                <a href="/login" class="list-group-item list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}">
                     <i class="fa fa-sign-in"></i><span>Sign in/Sign up</span>
                 </a>
                 @endauth
@@ -67,13 +67,13 @@
             <div class="container">
               <ul class="navbar-nav d-flex justify-content-between w-100">
                 <li class="nav-item">
-                <a class="nav-link" href="/listings/manage"><i class="fa fa-list"></i></a>
+                <a class="nav-link {{ request()->is('listings/manage*') ? 'active' : '' }}" href="/listings/manage"><i class="fa fa-list"></i></a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="/users/profile"><i class="fa fa-user"></i></a>
+                <a class="nav-link {{ request()->is('users/profile*') ? 'active' : '' }}" href="/users/profile"><i class="fa fa-user"></i></a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="/listings/create"><i class="fa fa-plus-circle"></i></a>
+                    <a class="nav-link {{ request()->is('listings/create') ? 'active' : '' }}" href="/listings/create"><i class="fa fa-plus-circle"></i></a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href=""><i class="fa fa-bell"></i></a>
@@ -89,7 +89,7 @@
                    </li>
                     @else
                     <li class="nav-item">
-                        <a class="nav-link" href="/login"><i class="fa fa-sign-in"></i></a>
+                        <a class="nav-link {{ request()->is('login*','register*') ? 'active' : '' }}" href="/login"><i class="fa fa-sign-in"></i></a>
                         </li>
                     @endauth
 

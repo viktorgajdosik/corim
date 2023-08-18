@@ -1,6 +1,6 @@
 <x-layout>
 
-    <h1>Explore Research Offers</h1>
+    <h2>Explore Research Listings</h2>
 
     <br>
     @unless (count($listings) == 0)

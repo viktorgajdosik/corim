@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Rules\OsuEmailDomain;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\User;
 
@@ -13,12 +14,18 @@ class UserController extends Controller
     }
 
         // Create New User
-        public function store(Request $request) {
+        public function store(Request $request)
+        {
             $formFields = $request->validate([
                 'name' => ['required', 'min:3'],
-                'email' => ['required', 'email', Rule::unique('users', 'email')],
+                'email' => [
+                    'required',
+                    'email',
+                    Rule::unique('users', 'email'),
+                    new OsuEmailDomain(), // Use the custom validation rule here
+                ],
                 'department' => ['required'],
-                'password' => 'required|confirmed|min:6'
+                'password' => 'required|confirmed|min:6',
             ]);
 
         // Hash Password

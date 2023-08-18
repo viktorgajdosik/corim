@@ -1,26 +1,31 @@
 <x-layout>
-    <h1>Apply for the research work</h1><br>
 
-        <h3 class="mb-3">{{$listing['title']}}</h3>
+    <h2>Apply for the research work</h2>
+    <br>
+
+    <x-card>
+        <h4 class="mb-3"><strong>{{$listing['title']}}</strong></h4>
         <p>{{$listing['description']}} </p>
         <p class="mb-2"><i class="fa fa-user" data-toggle="tooltip" title="Author"></i> <strong>{{$listing['author']}}</strong></p>
         <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}</p>
+    </x-card>
 
 
-        <br>
-
-        <h4 class="mb-3">Available tasks</h4>
+ <!--   <x-card>
+        <h4 class="mb-3"><strong>Available tasks</strong></h4>
             <p><i class="fa fa-flask"></i> Task 1</p>
             <p><i class="fa fa-flask"></i> Task 2</p>
             <p><i class="fa fa-flask"></i> Task 3</p>
+    </x-card> -->
 
-        <br>
+    <x-card>
         <div class="form-group">
-            <h4 class="mb-3">Message the Author</h4>
+            <h4 class="mb-3"><strong>Message the Author</strong></h4>
             <textarea class="form-control" id="message" name="message" rows="5"></textarea>
         </div>
         <button type="submit" class="btn btn-primary mb-2">Apply</button>
-    <br>
+    </x-card>
+
     <a href="/" class="btn btn-secondary">Back</a>
 
 

@@ -1,5 +1,6 @@
 <x-layout>
 <div class="row">
+
     <div class="col-md-6 mb-5">
         <h2>Personal Information</h2>
         <br>
@@ -7,7 +8,7 @@
         <p><strong>Email:</strong>  {{ $user->email }} </p>
         <p><strong>Department:</strong> {{ $user->department }}  </p>
         <p><strong>Research points:</strong> </p>
-         <a href="/users/edit-profile"><i class="fa fa-edit"></i> Edit profile information</a>
+         <a href="/users/edit-profile"><i class="fa fa-pencil"></i> Edit profile information</a>
         <br><br><br>
         <a href="">Download My Information</a>
         <br>

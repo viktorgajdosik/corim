@@ -259,7 +259,7 @@
       }
 
 
-      .nav-link.active {
+      .nav-link:active {
         color: #000000;
 
     }

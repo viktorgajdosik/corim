@@ -10,7 +10,7 @@
                     <form method="POST" action="/users/authenticate">
                         @csrf
                         <div class="form-group">
-                            <label for="email">University Email address</label>
+                            <label for="email">Organisation email address</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required value="{{old('email')}}">
                             @error('email')
                             <p class="text-danger mt-1">{{$message}}</p>

@@ -20,8 +20,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'department',
         'password',
     ];
+        // Explicitly define column names for attributes
+        protected $attributes = [
+            'department' => '', // Default value
+        ];
 
     /**
      * The attributes that should be hidden for serialization.
