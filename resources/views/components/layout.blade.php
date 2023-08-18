@@ -11,13 +11,14 @@
         <title>CORIM</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white" style="margin-right: 200px;">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white" >
             <div class="container">
                 <div class="navbar-brand">
-                    <a href="/"><img src="{{asset('images/logo.svg')}}" href="/" alt="CORIM Logo" height="30">  </a></div>
-                    <ul class="navbar-spacing"></ul>
+                    <a href="/"><img src="{{asset('images/logo.svg')}}" height="30">
+                    </a></div>
+                    <div class="navbar-spacing"></div>
                     <form class="form-inline mobile-search-form" action="/" method="get">
-                        <div class="input-group mobile-search-input">
+                        <div class="input-group">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search"/>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
@@ -36,7 +37,7 @@
                 <a href="/listings/manage" class="list-group-item list-group-item-action">
                     <i class="fa fa-list"></i><span>Management</span>
                 </a>
-                <a href="" class="list-group-item list-group-item-action">
+                <a href="/users/profile" class="list-group-item list-group-item-action">
                     <i class="fa fa-user"></i><span>Profile</span>
                 </a>
                 <a href="/listings/create" class="list-group-item list-group-item-action">

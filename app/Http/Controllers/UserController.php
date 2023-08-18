@@ -65,4 +65,53 @@ public function authenticate(Request $request) {
 
     return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
 }
+
+ // Show User Profile
+ public function show() {
+    $user = auth()->user(); // Get the authenticated user
+
+    return view('users.profile', compact('user'));
+}
+
+// Show Edit Profile Page
+
+public function editProfile() {
+    $user = auth()->user(); // Get the authenticated user
+
+    return view('users.edit-profile', compact('user'));
+}
+
+// Edit Profile
+public function updateProfile(Request $request) {
+    $user = auth()->user(); // Get the authenticated user
+
+    $formFields = $request->validate([
+        'name' => ['required', 'min:3'],
+        'email' => ['required', 'email'],
+        'department' => ['required'],
+    ]);
+
+    $user->update($formFields); // Update user profile
+
+    return redirect('/users/profile')->with('message', 'Profile updated successfully');
+}
+
+// Delete Profile
+
+public function deleteProfile(Request $request) {
+    $user = auth()->user(); // Get the authenticated user
+
+    // Log out the user
+    auth()->logout();
+
+    // Delete the user
+    $user->delete();
+
+    // Invalidate the session and regenerate token
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/')->with('message', 'Your profile has been deleted');
+}
+
 }

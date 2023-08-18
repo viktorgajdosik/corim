@@ -5,11 +5,10 @@
     <br>
     @unless (count($listings) == 0)
     @foreach($listings as $listing)
-    <a href="/listings/{{$listing->id}}" class="custom-link">
-    @props(['listing'])
-    <x-listing-card :listing="$listing"/>
+    <a href="{{ auth()->id() === $listing->user_id ? url('/listings/show-manage', ['listing' => $listing]) : url('/listings', ['listing' => $listing]) }}" class="custom-link">
+        <x-listing-card :listing="$listing"/>
     </a>
-    @endforeach
+@endforeach
     @else
     <p>No listings found</p>
     @endunless

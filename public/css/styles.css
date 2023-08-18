@@ -1,6 +1,5 @@
 @media only screen and (min-width: 768px) {
 
-
     .navbar-brand{
 
       display: none;
@@ -202,7 +201,12 @@
         z-index: 0; /* Adjust the z-index value as needed */
     }
 
-    @media only screen and (max-width: 768px) {
+    .notes-form {
+        margin-top: 30px;
+        margin-bottom: 50px;
+    }
+
+    @media only screen and (max-width: 767px) {
 
       body {
         padding-top: 90px;
@@ -211,6 +215,7 @@
       .form-inline.mobile-search-form {
         width: 55%;
         padding: 0px;
+        display: block;
 
     }
 
@@ -227,15 +232,12 @@
       z-index: 1;
     }
 
-     .navbar-spacing{
 
-      display: none;
-     }
 
      .navbar-nav {
-      flex-direction: row !important;
-      justify-content: center !important;
-      align-items: center !important;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
 
       .fixed-bottom {
