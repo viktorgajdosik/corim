@@ -4,7 +4,7 @@
 <form action="/users" method="POST">
     @csrf
     <div class="form-group">
-        <label for="name">Forame, Surname, Titles</label>
+        <label for="name">Forname, Surname, Titles</label>
         <input type="text" class="form-control" id="name" name="name" required value="{{old('name')}}">
         @error('name')
         <p class="text-danger mt-1">{{$message}}</p>
