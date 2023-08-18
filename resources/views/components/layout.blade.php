@@ -70,7 +70,7 @@
                 <a class="nav-link" href="/listings/manage"><i class="fa fa-list"></i></a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href=""><i class="fa fa-user"></i></a>
+                <a class="nav-link" href="users/profile"><i class="fa fa-user"></i></a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="/listings/create"><i class="fa fa-plus-circle"></i></a>

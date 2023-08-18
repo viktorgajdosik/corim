@@ -21,7 +21,7 @@ class ListingFactory extends Factory
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph(15),
             'author' => $this->faker->name(),
-            'department' => $this->faker->word(),
+            'department' => $this->faker->text(),
         ];
     }
 }
