@@ -90,24 +90,56 @@ public function editProfile() {
 }
 
 // Edit Profile
-public function updateProfile(Request $request) {
+public function updateProfile(Request $request)
+{
     $user = auth()->user(); // Get the authenticated user
 
+    // Validate the input fields
     $formFields = $request->validate([
-        'name' => ['required', 'min:3'],
-        'email' => ['required', 'email'],
-        'department' => ['required'],
+        'name' => 'nullable|min:3', // Name is optional and should be at least 3 characters
+        'department' => 'nullable', // Department is optional
+        'old_password' => 'nullable|required_with:password|min:6', // Old password is required only if a new password is provided
+        'password' => 'nullable|min:6|confirmed|different:old_password|required_with:old_password', // New password is optional but must be different from the old password
     ]);
 
-    $user->update($formFields); // Update user profile
+    // Check if the old password matches the current password
+    if (isset($formFields['old_password']) && !password_verify($formFields['old_password'], $user->password)) {
+        return back()->withErrors(['old_password' => 'The old password does not match your current password.'])->onlyInput('old_password');
+    }
+
+    // Prepare the data to update
+    $updateData = [
+        'name' => $formFields['name'],
+    ];
+
+    // Check if 'department' exists in $formFields and update it if provided
+    if (array_key_exists('department', $formFields)) {
+        $updateData['department'] = $formFields['department'];
+    }
+
+    // Check if a new password is provided and update it
+    if (isset($formFields['password'])) {
+        $updateData['password'] = bcrypt($formFields['password']);
+    }
+
+    // Update user profile based on provided fields
+    $user->update($updateData);
 
     return redirect('/users/profile')->with('message', 'Profile updated successfully');
 }
 
 // Delete Profile
-
 public function deleteProfile(Request $request) {
     $user = auth()->user(); // Get the authenticated user
+
+    // Delete related applications
+    $user->applications()->delete();
+
+    // Delete related listings and their associated applications
+    $user->listings->each(function ($listing) {
+        $listing->applications()->delete();
+        $listing->delete();
+    });
 
     // Log out the user
     auth()->logout();

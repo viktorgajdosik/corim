@@ -55,7 +55,7 @@ class User extends Authenticatable
     // Relationship To Applications
     public function applications()
 {
-    return $this->hasMany(Application::class);
+    return $this->hasMany(Application::class, 'user_id');
 }
 
 public function acceptedApplications() {

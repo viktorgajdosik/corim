@@ -9,15 +9,8 @@
             @method('PUT')
             <div class="form-group">
                 <label for="name">Name, Surname, Titles</label>
-                <input type="text" class="form-control" id="name" name="name" required value="{{$user->name}}">
+                <input type="text" class="form-control" id="name" name="name" value="{{$user->name}}">
                 @error('name')
-                <p class="text-danger mt-1">{{$message}}</p>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label for="email">University Email address</label>
-                <input type="email" class="form-control" id="email" name="email" required value="{{$user->email}}">
-                @error('email')
                 <p class="text-danger mt-1">{{$message}}</p>
                 @enderror
             </div>
@@ -57,9 +50,25 @@
                 <p class="text-danger mt-1">{{$message}}</p>
                 @enderror
             </div>
+            <div class="form-group">
+                <label for="old_password">Old Password</label>
+                <input type="password" class="form-control" id="old_password" name="old_password">
+                @error('old_password')
+                <p class="text-danger mt-1">{{$message}}</p>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" class="form-control" id="password" name="password">
+                @error('password')
+                <p class="text-danger mt-1">{{$message}}</p>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation">Confirm New Password</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+            </div>
             <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>
-    </div>
-</div>
     </x-card>
 </x-layout>

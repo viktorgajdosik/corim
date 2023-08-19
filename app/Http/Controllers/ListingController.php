@@ -63,7 +63,7 @@ class ListingController extends Controller
             $formFields = $request->validate([
                 'title' => 'required',
                 'description' => 'required',
-                'department' => 'required'
+                'department' => 'nullable'
             ]);
 
 
@@ -72,17 +72,19 @@ class ListingController extends Controller
             return back()->with('message', 'Listing updated successfully');
         }
 
-            // Delete Listing
-    public function destroy(Listing $listing) {
-        // Make sure logged in user is owner
-        if($listing->user_id != auth()->id()) {
-            abort(403, 'Unauthorized Action');
-        }
-
-        $listing->delete();
-        return redirect('/')->with('message', 'Listing deleted successfully');
+// Delete Listing
+public function destroy(Listing $listing) {
+    // Make sure logged-in user is the owner
+    if ($listing->user_id != auth()->id()) {
+        abort(403, 'Unauthorized Action');
     }
 
+    // Delete the listing and its associated applications
+    $listing->applications()->delete();
+    $listing->delete();
+
+    return redirect('/')->with('message', 'Listing deleted successfully');
+}
             // Manage Listings
     public function manage() {
         return view('listings.manage', ['listings' => auth()->user()->listings()->get()]);

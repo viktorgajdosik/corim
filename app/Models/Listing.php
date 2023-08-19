@@ -25,6 +25,6 @@ class Listing extends Model
     // Relationship To Applications
     public function applications()
 {
-    return $this->hasMany(Application::class);
+    return $this->hasMany(Application::class, 'listing_id');
 }
 }
