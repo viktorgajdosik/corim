@@ -21,10 +21,27 @@
     </div>
     <div class="col-md-6 mb-5">
         <h2>Research Work Participation</h2>
-    <br>
+        <br>
 
-     <p>You have not participated in other author's research work yet.</p>
-
+        <div class="scrollable-listings">
+            @if ($user->acceptedApplications->isEmpty())
+                <p>You have not participated in other author's research work yet.</p>
+            @else
+                @foreach ($user->acceptedApplications as $application)
+                    <x-card>
+                        <h4 class="mb-3">{{ $application->listing->title }}</h4>
+                        <p class="mb-2">
+                            <i class="fa fa-user" data-toggle="tooltip" title="Author"></i>
+                            {{ $application->listing->author }}
+                        </p>
+                        <p>
+                            <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i>
+                            {{ $application->listing->department }}
+                        </p>
+                    </x-card>
+                @endforeach
+            @endif
+        </div>
     </div>
 </div>
 </x-layout>

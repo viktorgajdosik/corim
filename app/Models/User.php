@@ -24,9 +24,9 @@ class User extends Authenticatable
         'password',
     ];
         // Explicitly define column names for attributes
-        protected $attributes = [
-            'department' => '', // Default value
-        ];
+    protected $attributes = [
+        'department' => '', // Default value
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -47,8 +47,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // Relationship With Listings
+    // Relationship To Listings
     public function listings() {
         return $this->hasMany(Listing::class, 'user_id');
     }
+
+    // Relationship To Applications
+    public function applications()
+{
+    return $this->hasMany(Application::class);
+}
+
+public function acceptedApplications() {
+    return $this->hasMany(Application::class)->where('accepted', true);
+}
+
 }

@@ -1,5 +1,12 @@
 @media only screen and (min-width: 768px) {
 
+
+    .scrollable-listings {
+        max-height: 400px; /* Adjust the height as needed */
+        overflow-y: auto;
+        padding-right: 50px;
+    }
+
     .navbar-brand{
 
       display: none;

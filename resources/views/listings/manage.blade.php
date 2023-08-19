@@ -19,7 +19,7 @@
 
               @else
 
-              <h4>No Listings Found</h4>
+              <p>You have not created any listing yet.</p>
 
               @endunless
 

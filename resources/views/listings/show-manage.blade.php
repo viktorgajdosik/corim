@@ -18,37 +18,65 @@
             </form>
         </div>
     </x-card>
-    <br>
+    <br><br>
 
     <h2>Participants Applications</h2>
     <br>
+   <!-- Loop through applications -->
 
+
+    @forelse ($listing->applications->where('accepted', false) as $application)
     <x-card>
-    <h4><strong> Jane Doe</strong></h4>
-    <br>
-	<p><i class="fa fa-building"></i> Student</p>
-    <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-	<p><i class="fa fa-edit"></i> Message</p>
-    <br>
-    <div class="btn-group">
-	<button class="btn btn-success"><i class="fa fa-check"></i> Accept</button>
-	<button class="btn btn-danger ml-2"><i class="fa fa-times"></i> Deny</button>
-    </div>
+        <h4><strong>{{ $application->user->name }}</strong></h4>
+        <br>
+        <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
+        <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
+        <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
+        <br>
+        <div class="btn-group">
+            <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
+                @csrf
+                <button class="btn btn-success" onclick="return confirm('Accept this application?')">
+                    <i class="fa fa-check"></i> Accept
+                </button>
+            </form>
+            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
+                @csrf
+                <button class="btn btn-danger ml-2" onclick="return confirm('Deny this application?')">
+                    <i class="fa fa-times"></i> Deny
+                </button>
+            </form>
+        </div>
     </x-card>
-	<br>
+    @empty
+        <p>Currently no applications.</p>
+    @endforelse
+
+
+	<br><br>
 
 	<h2>Current Participants</h2>
     <br>
-    <x-card>
-        <h4><strong> Jane Doe</strong></h4>
-        <br>
-        <p><i class="fa fa-building"></i> Student</p>
-        <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-        <br>
-        <div class="btn-group">
-        <button class="btn btn-danger"><i class="fa fa-trash"></i> Remove</button>
-        </div>
+
+@if ($listing->applications->where('accepted', true)->isEmpty())
+    <p>Currently no participants.</p>
+@else
+    @foreach ($listing->applications->where('accepted', true) as $application)
+        <x-card>
+            <h4><strong>{{ $application->user->name }}</strong></h4>
+            <br>
+            <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
+            <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
+            <br>
+            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
+                @csrf
+                <button class="btn btn-danger" onclick="return confirm('Remove this participant?')">
+                    <i class="fa fa-trash"></i> Remove
+                </button>
+            </form>
         </x-card>
+    @endforeach
+@endif
         <br>
 
        <!-- <h2>Tasks Management</h2>

@@ -79,3 +79,12 @@ Route::put('/users/profile', [UserController::class, 'updateProfile'])->middlewa
 
 // Delete Profile
 Route::delete('/users/profile', [UserController::class, 'deleteProfile'])->middleware('auth');
+
+// Apply to a listing
+Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])->middleware('auth')->name('listings.apply');
+
+// Accept an application
+Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])->middleware('auth')->name('listings.accept');
+
+// Deny an application
+Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth')->name('listings.deny');

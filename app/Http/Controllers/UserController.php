@@ -76,6 +76,7 @@ public function authenticate(Request $request) {
  // Show User Profile
  public function show() {
     $user = auth()->user(); // Get the authenticated user
+    $user = auth()->user()->load('acceptedApplications'); // Load the acceptedApplications relationship
 
     return view('users.profile', compact('user'));
 }
@@ -120,5 +121,7 @@ public function deleteProfile(Request $request) {
 
     return redirect('/')->with('message', 'Your profile has been deleted');
 }
+
+
 
 }
