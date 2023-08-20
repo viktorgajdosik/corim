@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Rules\OsuEmailDomain;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Auth\Events\Registered;
+
 
 class UserController extends Controller
 {
@@ -33,6 +35,9 @@ class UserController extends Controller
 
         // Create User
         $user = User::create($formFields);
+
+        // Dispatch the Registered event
+        event(new Registered($user));
 
         // Login
         auth()->login($user);
