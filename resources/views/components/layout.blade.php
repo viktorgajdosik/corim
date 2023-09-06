@@ -26,9 +26,9 @@
                     <div class="navbar-spacing"></div>
                     <form class="form-inline mobile-search-form" action="/" method="get">
                         <div class="input-group">
-                            <input class="form-control" type="search" placeholder="Search listings" aria-label="Search" name="search"/>
+                            <input class="form-control border-0 bg-light" type="search" placeholder="Search listings" aria-label="Search" name="search"/>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
+                                <button class="btn btn-light" style="color: #007BFF" type="submit"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
                     </form>
