@@ -35,7 +35,7 @@
             </div>
         </nav>
 
-        <div class="sidebar">
+        <div class="sidebar bg-light border-0">
             <a href="/" class="logo">
                 <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="30">
             </a>
