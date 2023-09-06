@@ -2,7 +2,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card shadow-sm border-0">
+                <div class="card border rounded">
                     <div class="card-header border-bottom-0" style="background-color: white; text-align: center;">
                         <div style="background-color: aliceblue; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto;">
                             <i class="fa fa-user fa-3x" style="color: #007BFF; padding: 20px;"></i>
