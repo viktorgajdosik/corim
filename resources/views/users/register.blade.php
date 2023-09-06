@@ -6,14 +6,14 @@
     @csrf
     <div class="form-group">
         <label for="name">Forname, Surname, Titles</label>
-        <input type="text" class="form-control" id="name" name="name" required value="{{old('name')}}">
+        <input type="text" class="form-control" id="name" name="name" placeholder="Forname, Surname, Titles" value="{{old('name')}}">
         @error('name')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
     <div class="form-group">
         <label for="email">Organisation email address</label>
-        <input type="email" class="form-control" id="email" name="email" required value="{{old('email')}}">
+        <input type="email" class="form-control" id="email" name="email" placeholder="Organisation email address" value="{{old('email')}}">
         @error('email')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
@@ -54,14 +54,14 @@
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required value="{{old('password')}}">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="{{old('password')}}">
         @error('password')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
     <div class="form-group">
         <label for="password_confirmation">Confirm Password</label>
-        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required value="{{old('password_confirmation')}}">
+        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" value="{{old('password_confirmation')}}">
         @error('password_confirmation')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror

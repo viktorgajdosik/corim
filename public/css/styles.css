@@ -174,28 +174,28 @@
 
     .list-group-item{
       border: none;
-      background-color: rgb(255, 255, 255);
       }
 
       .list-group-item:hover{
         border: none;
-        background-color: #007BFF;
-        color:#FFFFFF;
+        background-color: aliceblue;
+        color:#007BFF;
         }
 
-        .list-group-item:visited:active{
+        .list-group-item.active{
           border: none;
           background-color: #007BFF;
-          color:#FFFFFF;
+          color:white;
           }
 
-      .list-group-item-action i {
+      .list-group-item i {
         padding-left: 20px;
         padding-right: 20px;
         width:50px;
+
       }
       .custom-link {
-        color: #333; /* Change link color */
+        color: #333;
         text-decoration: none !important;
     }
 
