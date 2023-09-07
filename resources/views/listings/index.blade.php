@@ -1,8 +1,18 @@
 <x-layout>
 
-    <h2>Explore Research Listings</h2>
+   @guest
 
-    <br>
+    <div class="jumbotron">
+        <h1>Hello, research community!</h1>
+        <p>CORI.M, the Collaborative Research Initiative in Medicine, fosters collaboration among researchers and students from all medical fields. Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute. CORI.M aims to accelerate the advancement of medical research by connecting proactive individuals and facilitating collaborative breakthroughs.</p>
+        <hr class="my-4">
+        <p>
+            Become a part of a vibrant community driving innovation and progress in medical science.</p>
+        <a class="btn btn-primary btn-lg" href="/register" role="button">Join CORI.M</a>
+      </div>
+
+      <br>
+      @endguest
     @unless (count($listings) == 0)
     @foreach($listings as $listing)
     <a href="{{ auth()->id() === $listing->user_id ? url('/listings/show-manage', ['listing' => $listing]) : url('/listings', ['listing' => $listing]) }}" class="custom-link">

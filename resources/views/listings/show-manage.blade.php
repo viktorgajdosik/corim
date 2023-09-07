@@ -1,6 +1,12 @@
 <x-layout>
 
-    <h2>Listing Management</h2>
+    <h2>Listing Management<i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="right"
+        data-content="This section displays your research listing and enables you to edit or delete it."
+        ></i></h2>
     <br>
 
     <x-card>
@@ -20,7 +26,13 @@
     </x-card>
     <br><br>
 
-    <h2>Participants Applications</h2>
+    <h2>Participants Applications<i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="bottom"
+        data-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
+        ></i></h2>
     <br>
    <!-- Loop through applications -->
 
@@ -55,7 +67,13 @@
 
 	<br><br>
 
-	<h2>Current Participants</h2>
+	<h2>Current Participants<i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="bottom"
+        data-content="This section displays users with accepted application. You can remove users from this research work here."
+        ></i></h2>
     <br>
 
 @if ($listing->applications->where('accepted', true)->isEmpty())

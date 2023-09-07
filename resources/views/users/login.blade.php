@@ -40,7 +40,7 @@
                                 @enderror
                             </div>
                             <div class="mt-3">
-                                <button type="submit" class="btn btn-primary btn-block"> Login</button>
+                                <button type="submit" class="btn btn-primary btn-block"> Sign in</button>
                             </div>
                             <div class="mt-2">
                                 <a href="" class="ml-auto">Forgot Password</a>

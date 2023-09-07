@@ -1,6 +1,12 @@
 <x-layout>
 
-    <h2>Apply for the research work</h2>
+    <h2>Apply for the research work<i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="right"
+        data-content="You can apply for this research work by sending an application message to the author of this research listing."
+        ></i></h2>
     <br>
     <x-card>
         <h4 class="mb-3"><strong>{{ $listing['title'] }}</strong></h4>
@@ -27,7 +33,5 @@
             </form>
         </x-card>
     @endif
-
-    <a href="/" class="btn btn-secondary">Back</a>
 
 </x-layout>

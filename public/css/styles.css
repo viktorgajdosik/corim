@@ -77,6 +77,11 @@
     }
 
 
+    .info-icon {
+        color: lightgrey;
+        cursor: pointer;
+    }
+
     .upload input[type="file"] {
       display: none;
     }

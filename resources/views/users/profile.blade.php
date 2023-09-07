@@ -23,9 +23,15 @@
 
     </div>
     <div class="col-md-6 mb-5">
-        <h2>Research Work Participation</h2>
-        <br>
+        <h2>Research Work Participation<i
+            class="fa fa-info-circle ml-2 info-icon"
+            data-toggle="popover"
+            data-trigger="hover"
+            data-placement="bottom"
+            data-content="This section displays your participation in the research work created by other authors. You can see your own research listings by clicking 'Management' in the menu."
+            ></i></h2>
 
+        <br>
         <div class="scrollable-listings">
             @if ($user->acceptedApplications->isEmpty())
                 <p>You have not participated in other author's research work yet.</p>
@@ -48,3 +54,4 @@
     </div>
 </div>
 </x-layout>
+
