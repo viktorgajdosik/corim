@@ -23,7 +23,7 @@
 
     </div>
     <div class="col-md-6 mb-5">
-        <h2>Research Work Participation<i
+        <h2>Research Participation<i
             class="fa fa-info-circle ml-2 info-icon"
             data-toggle="popover"
             data-trigger="hover"

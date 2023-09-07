@@ -26,7 +26,7 @@
     </x-card>
     <br><br>
 
-    <h2>Participants Applications<i
+    <h2>Applications<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
