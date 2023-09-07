@@ -174,17 +174,15 @@
 
     .list-group-item{
       border: none;
-      background-color: rgb(248,249,250);
+      color: lightgray;
       }
 
       .list-group-item:hover{
         border: none;
-        background-color: lightgray;
         }
 
         .list-group-item.active{
           border: none;
-          background-color: rgb(248,249,250);
           color:#007BFF;
           }
 

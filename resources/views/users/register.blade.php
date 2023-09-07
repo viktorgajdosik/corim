@@ -6,21 +6,21 @@
     @csrf
     <div class="form-group">
         <label for="name">Forname, Surname, Titles</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Forname, Surname, Titles" value="{{old('name')}}">
+        <input type="text" class="form-control border-0 bg-light" id="name" name="name" placeholder="Forname, Surname, Titles" value="{{old('name')}}">
         @error('name')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
     <div class="form-group">
         <label for="email">Organisation email address</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Organisation email address" value="{{old('email')}}">
+        <input type="email" class="form-control border-0 bg-light" id="email" name="email" placeholder="Organisation email address" value="{{old('email')}}">
         @error('email')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
     <div class="form-group">
         <label for="department">Department</label>
-        <select class="form-control" id="department" name="department">
+        <select class="form-control border-0 bg-light" id="department" name="department">
             <option value="" selected disabled>Select a department</option>
             <option value="Student">Student</option>
             <option value="Anaesthesiology, Resuscitation and Intensive Care Medicine">Anaesthesiology, Resuscitation and Intensive Care Medicine</option>
@@ -54,14 +54,14 @@
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="{{old('password')}}">
+        <input type="password" class="form-control border-0 bg-light" id="password" name="password" placeholder="Password" value="{{old('password')}}">
         @error('password')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
     <div class="form-group">
         <label for="password_confirmation">Confirm Password</label>
-        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" value="{{old('password_confirmation')}}">
+        <input type="password" class="form-control border-0 bg-light" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" value="{{old('password_confirmation')}}">
         @error('password_confirmation')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror

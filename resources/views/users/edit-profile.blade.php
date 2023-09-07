@@ -9,14 +9,14 @@
             @method('PUT')
             <div class="form-group">
                 <label for="name">Name, Surname, Titles</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{$user->name}}">
+                <input type="text" class="form-control border-0 bg-light" id="name" name="name" value="{{$user->name}}">
                 @error('name')
                 <p class="text-danger mt-1">{{$message}}</p>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="department">Department</label>
-                <select class="form-control" id="department" name="department">
+                <select class="form-control border-0 bg-light" id="department" name="department">
                     <option selected="selected" selected disabled>
                         {{$user->department}}
                         </option>
@@ -52,21 +52,21 @@
             </div>
             <div class="form-group">
                 <label for="old_password">Old Password</label>
-                <input type="password" class="form-control" id="old_password" name="old_password">
+                <input type="password" class="form-control border-0 bg-light" id="old_password" name="old_password" placeholder="Old Password">
                 @error('old_password')
                 <p class="text-danger mt-1">{{$message}}</p>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="password">New Password</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input type="password" class="form-control border-0 bg-light" id="password" name="password" placeholder="New Password">
                 @error('password')
                 <p class="text-danger mt-1">{{$message}}</p>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="password_confirmation">Confirm New Password</label>
-                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+                <input type="password" class="form-control border-0 bg-light" id="password_confirmation" name="password_confirmation" placeholder="Confirm New Password">
             </div>
             <button type="submit" class="btn btn-primary">Update Profile</button>
         </form>

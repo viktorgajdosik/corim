@@ -17,7 +17,7 @@
 
         <title>CORIM</title>
     </head>
-    <body>
+    <body class="bg-light">
         <nav class="navbar navbar-expand-sm navbar-light bg-white" >
             <div class="container">
                 <div class="navbar-brand">
@@ -35,33 +35,33 @@
             </div>
         </nav>
 
-        <div class="sidebar bg-light border-0">
+        <div class="sidebar bg-dark bordered">
             <a href="/" class="logo">
                 <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="30">
             </a>
 
             <div class="list-group list-group-flush">
-                <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
+                <a href="/listings/manage" class="list-group-item bg-dark list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
                     <i class="fa fa-list"></i><span>Management</span>
                 </a>
-                <a href="/users/profile" class="list-group-item list-group-item-action {{ request()->is('users/profile*') ? 'active' : '' }}">
+                <a href="/users/profile" class="list-group-item bg-dark list-group-item-action {{ request()->is('users/profile*') ? 'active' : '' }}">
                     <i class="fa fa-user"></i><span>Profile</span>
                 </a>
-                <a href="/listings/create" class="list-group-item list-group-item-action {{ request()->is('listings/create*') ? 'active' : '' }}">
+                <a href="/listings/create" class="list-group-item bg-dark list-group-item-action {{ request()->is('listings/create*') ? 'active' : '' }}">
                     <i class="fa fa-plus-circle"></i><span>Create Listing</span>
                 </a>
-                <a href="" class="list-group-item list-group-item-action">
+                <a href="" class="list-group-item bg-dark list-group-item-action">
                     <i class="fa fa-bell"></i><span>Notifications</span>
                 </a>
                 @auth
                 <form method="POST" action="/logout">
                     @csrf
-                    <button type="submit" class="list-group-item list-group-item-action">
+                    <button type="submit" class="list-group-item bg-dark list-group-item-action">
                         <i class="fa fa-sign-out"></i><span>Log out</span>
                     </button>
                 </form>
                 @else
-                <a href="/login" class="list-group-item list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}">
+                <a href="/login" class="list-group-item bg-dark list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}">
                     <i class="fa fa-sign-in"></i><span>Sign in/Sign up</span>
                 </a>
                 @endauth
