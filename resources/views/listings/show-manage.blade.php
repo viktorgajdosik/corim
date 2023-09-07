@@ -72,7 +72,7 @@
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
-        data-content="This section displays users with accepted application. Here you can remove users from this research work."
+        data-content="This section displays users with accepted applications. Here you can remove users from this research work."
         ></i></h2>
     <br>
 
@@ -97,7 +97,13 @@
 @endif
         <br>
 
-       <!-- <h2>Tasks Management</h2>
+   <h2>Tasks Management<i
+    class="fa fa-info-circle ml-2 info-icon"
+    data-toggle="popover"
+    data-trigger="hover"
+    data-placement="bottom"
+    data-content="Here you can create tasks for this research listing and assign them to chosen participants."
+    ></i></h2>
         <br>
     <x-card>
 		<h4><strong>Create Task</strong></h4>
@@ -105,11 +111,11 @@
         <form>
 	    <div class="form-group">
 		<label for="task-name">Task Name</label>
-		<input type="text" class="form-control" id="task-name">
+		<input type="text" class="form-control bg-light border-0" id="task-name">
 	    </div>
 	    <div class="form-group">
 		<label for="task-details">Task Details</label>
-		<textarea class="form-control" id="task-details" rows="5"></textarea>
+		<textarea class="form-control bg-light border-0" id="task-details" rows="5"></textarea>
 	    </div>
 	    <div class="form-group upload">
         <label for="task-file">
@@ -118,7 +124,7 @@
         <input type="file" class="form-control-file" id="task-file" name="task-file">
         </div>
 	    <div class="form-group">
-        <label for="students">Select Students</label>
+        <label for="students">Assign task</label>
         <div class="form-check">
         <input class="form-check-input" type="checkbox" value="john" id="john">
         <label class="form-check-label" for="john">
@@ -140,7 +146,13 @@
     <br>
 
 
-<h2>Assigned Tasks</h2>
+<h2>Assigned Tasks<i
+    class="fa fa-info-circle ml-2 info-icon"
+    data-toggle="popover"
+    data-trigger="hover"
+    data-placement="bottom"
+    data-content="This section displays assigned tasks that have not been submitted for your revision yet."
+    ></i></h2>
 <br>
 
 <x-card>
@@ -152,11 +164,17 @@
     <p><i class="fa fa-gears"></i> Status</p>
     <p><i class="fa fa-file"></i> File</p>
     <br>
-    <div class="btn-group">
-	<button class="btn btn-secondary">Show / Edit</button>
-    </div>
     </x-card>
 	<br>
+
+<h2>Submitted Tasks<i
+    class="fa fa-info-circle ml-2 info-icon"
+    data-toggle="popover"
+    data-trigger="hover"
+    data-placement="bottom"
+    data-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
+    ></i></h2>
+<br>
 
     <x-card>
         <h4><strong> Research relevant papers</strong></h4>
@@ -172,6 +190,26 @@
         <button class="btn btn-secondary ml-2">Request Modification</button>
         </div>
         </x-card>
-        <br> -->
+        <br>
+
+    <h2>Finished Tasks <i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="bottom"
+        data-content="This section displays the finished tasks with the work you have approved."
+        ></i></h2>
+<br>
+
+    <x-card>
+        <h4><strong> Research relevant papers</strong></h4>
+        <br>
+        <p><i class="fa fa-user"></i> John Doe</p>
+        <p><i class="fa fa-building"></i> Student</p>
+        <p><i class="fa fa-envelope"></i> student@osu.cz</p>
+        <p><i class="fa fa-gears"></i> Status</p>
+        <p><i class="fa fa-file"></i> File</p>
+        <br>
+        </x-card>
 
 </x-layout>
