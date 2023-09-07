@@ -2,7 +2,7 @@
 
    @guest
 
-    <div class="jumbotron">
+    <div class="jumbotron fade-in">
         <h1 class="mb-3">Hello, research community!</h1>
         <p>CORI.M, the Collaborative Research Initiative in Medicine, fosters collaboration among researchers and students from all medical fields.
         Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute.

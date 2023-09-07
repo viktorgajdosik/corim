@@ -77,6 +77,12 @@
     }
 
 
+    .card {
+        animation-name: fadeIn;
+        animation-duration: 0.3s;
+        animation-timing-function: ease-in-out;
+    }
+
     .info-icon {
         color: lightgrey;
         cursor: pointer;
@@ -232,6 +238,20 @@
     .spinner-border {
         width: 3rem;
         height: 3rem;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fade-in {
+        animation-name: fadeIn;
+        animation-duration: 0.3s;
+        animation-timing-function: ease-in-out;
     }
 
     @media only screen and (max-width: 767px) {

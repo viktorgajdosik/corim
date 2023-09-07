@@ -27,7 +27,7 @@
                 @csrf
                 <div class="form-group">
                     <h4 class="mb-3"><strong>Message the Author</strong></h4>
-                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    <textarea class="form-control bg-light border-0" id="message" name="message" rows="5" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary mb-2">Apply</button>
             </form>
