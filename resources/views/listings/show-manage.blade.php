@@ -72,7 +72,7 @@
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
-        data-content="This section displays users with accepted application. You can remove users from this research work here."
+        data-content="This section displays users with accepted application. Here you can remove users from this research work."
         ></i></h2>
     <br>
 
