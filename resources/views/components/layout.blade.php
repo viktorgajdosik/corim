@@ -21,6 +21,12 @@
         <title>CORIM</title>
     </head>
     <body class="bg-light">
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
         <nav class="navbar navbar-expand-sm navbar-light bg-white" >
 
             <div class="container">
@@ -126,6 +132,16 @@
     $(function () {
   $('[data-toggle="popover"]').popover()
 })
+</script>
+
+<script>
+    // Hide the loading spinner when the page is fully loaded
+    window.addEventListener('load', function () {
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+    });
 </script>
 
 </body>
