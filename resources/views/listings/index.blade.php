@@ -10,7 +10,7 @@
         <hr class="my-4">
         <p>
             Become a part of a vibrant community driving innovation and progress in medical science.</p>
-        <a class="btn btn-primary btn-lg" href="/register" role="button"><i class="fa detone fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
+        <a class="btn btn-dark btn-lg" href="/register" role="button"><i class="fa detone fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
       </div>
 
       <br>
