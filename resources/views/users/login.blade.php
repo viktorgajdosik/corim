@@ -1,7 +1,7 @@
 <x-layout>
 
         <div class="row justify-content-center">
-            <div class="col-md-6">
+
                 <div class="card border rounded">
                     <div class="card-header border-bottom-0" style="background-color: white; text-align: center;">
                         <div style="background-color: aliceblue; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto;">
@@ -13,7 +13,6 @@
                         <form method="POST" action="/users/authenticate">
                             @csrf
                             <div class="form-group">
-                                <label for="email" class="sr-only">Organisation email address</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend" style="width: 40px;">
                                         <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center"><i class="fa fa-envelope"></i></span>
@@ -25,7 +24,6 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="password" class="sr-only">Password</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend" style="width: 40px;">
                                         <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center"><i class="fa fa-lock"></i></span>
@@ -54,7 +52,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+
 
 
         <script>
