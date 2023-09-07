@@ -3,14 +3,11 @@
    @guest
 
     <div class="jumbotron fade-in">
-        <h1 class="mb-3">Hello, research community!</h1>
-        <p>CORI.M, the Collaborative Research Initiative in Medicine, fosters collaboration among researchers and students from all medical fields.
-        Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute.
-        CORI.M aims to accelerate the advancement of medical research by connecting proactive individuals and facilitating collaborative breakthroughs.</p>
-        <hr class="my-4">
-        <p>
-            Become a part of a vibrant community driving innovation and progress in medical science.</p>
-        <a class="btn btn-dark btn-lg" href="/register" role="button"><i class="fa detone fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
+        <h1 class="mb-3">Collaborative Research</h1>
+        <p class="lead"><strong>Collaborative Research Initiative in Medicine (CORI.M)</strong> fosters collaboration among researchers and students from all medical fields.</p><hr>
+        <p class="lead">Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute.</p><hr>
+        <p class="lead">The aim is to accelerate the advancement of medical science by connecting proactive individuals and facilitating collaborative breakthroughs.</p>
+        <a class="btn btn-dark btn-lg mt-2" href="/register" role="button"><i class="fa fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
       </div>
 
       <br>
