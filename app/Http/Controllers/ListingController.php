@@ -33,8 +33,8 @@ class ListingController extends Controller
         //Store listing
         public function store(Request $request) {
             $formFields = $request->validate([
-                'title' => ['required', 'min:10'],
-                'description' => ['required', 'min:50'],
+                'title' => ['required', 'min:10', 'max:150'],
+                'description' => ['required', 'min:50', 'max:500'],
                 'department' => 'required'
 
             ]);
@@ -61,8 +61,8 @@ class ListingController extends Controller
             }
 
             $formFields = $request->validate([
-                'title' => ['required', 'min:10'],
-                'description' => ['required', 'min:50'],
+                'title' => ['required', 'min:10', 'max:150'],
+                'description' => ['required', 'min:50', 'max:500'],
                 'department' => 'nullable'
             ]);
 

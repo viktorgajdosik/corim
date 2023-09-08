@@ -19,7 +19,7 @@ class UserController extends Controller
         public function store(Request $request)
         {
             $formFields = $request->validate([
-                'name' => ['required', 'min:6'],
+                'name' => ['required', 'min:4', 'max:50'],
                 'email' => [
                     'required',
                     'email',
@@ -101,7 +101,7 @@ public function updateProfile(Request $request)
 
     // Validate the input fields
     $formFields = $request->validate([
-        'name' => 'nullable|min:6', // Name is optional and should be at least 3 characters
+        'name' => 'nullable|min:4|max:50', // Name is optional and should be at least 3 characters
         'department' => 'nullable', // Department is optional
         'old_password' => 'nullable|required_with:password|min:8', // Old password is required only if a new password is provided
         'password' => 'nullable|min:8|confirmed|different:old_password|required_with:old_password', // New password is optional but must be different from the old password
