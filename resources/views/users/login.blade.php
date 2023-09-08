@@ -4,8 +4,8 @@
 
                 <div class="card border rounded">
                     <div class="card-header border-bottom-0" style="background-color: white; text-align: center;">
-                        <div style="background-color: aliceblue; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto;">
-                            <i class="fa fa-user fa-3x" style="color: #007BFF; padding: 20px;"></i>
+                        <div style="background-color: aliceblue; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto; ">
+                            <i class="fa fa-user fa-3x" style="color: #007BFF; padding: 16px;"></i>
                         </div>
                         <h3 style="color: #007BFF;">Sign in</h3>
                     </div>
