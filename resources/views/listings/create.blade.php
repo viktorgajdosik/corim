@@ -6,14 +6,14 @@
         @csrf
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" class="form-control border-0 bg-light" id="title" name="title" placeholder="Enter title" required value="{{old('title')}}" >
+            <input type="text" class="form-control border-0 bg-light" id="title" name="title" placeholder="Enter title. Min. 10 characters." required value="{{old('title')}}" >
             @error('title')
             <p class="text-danger mt-1">{{$message}}</p>
             @enderror
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" placeholder="Enter description. Note that you can always edit the whole listing after creating it." >{{old('description')}}</textarea>
+            <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" placeholder="Enter description. Min. 50 characters." >{{old('description')}}</textarea>
             @error('description')
             <p class="text-danger mt-1">{{$message}}</p>
             @enderror

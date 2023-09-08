@@ -19,7 +19,7 @@ class UserController extends Controller
         public function store(Request $request)
         {
             $formFields = $request->validate([
-                'name' => ['required', 'min:3'],
+                'name' => ['required', 'min:6'],
                 'email' => [
                     'required',
                     'email',
@@ -27,7 +27,7 @@ class UserController extends Controller
                     new OsuEmailDomain(), // Use the custom validation rule here
                 ],
                 'department' => ['required'],
-                'password' => 'required|confirmed|min:6',
+                'password' => 'required|confirmed|min:8',
             ]);
 
         // Hash Password
@@ -101,10 +101,10 @@ public function updateProfile(Request $request)
 
     // Validate the input fields
     $formFields = $request->validate([
-        'name' => 'nullable|min:3', // Name is optional and should be at least 3 characters
+        'name' => 'nullable|min:6', // Name is optional and should be at least 3 characters
         'department' => 'nullable', // Department is optional
-        'old_password' => 'nullable|required_with:password|min:6', // Old password is required only if a new password is provided
-        'password' => 'nullable|min:6|confirmed|different:old_password|required_with:old_password', // New password is optional but must be different from the old password
+        'old_password' => 'nullable|required_with:password|min:8', // Old password is required only if a new password is provided
+        'password' => 'nullable|min:8|confirmed|different:old_password|required_with:old_password', // New password is optional but must be different from the old password
     ]);
 
     // Check if the old password matches the current password

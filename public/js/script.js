@@ -37,7 +37,7 @@
 
     function validateInputs() {
         // Check if the email is valid and password is not empty
-        if (emailInput.value && isValidEmail(emailInput.value) && passwordInput.value.length >= 6) {
+        if (emailInput.value && isValidEmail(emailInput.value) && passwordInput.value.length >= 8) {
             loginButton.disabled = false;
         } else {
             loginButton.disabled = true;
@@ -67,10 +67,10 @@
         let signupButton = document.getElementById("signupButton");
 
         function validateInputs() {
-            if (nameInput.value.trim() !== "" &&
+            if (nameInput.value.length >= 6 &&
                 emailInput.value.trim() !== "" &&
                 departmentInput.value !== "" &&
-                passwordInput.value.length >= 6 &&
+                passwordInput.value.length >= 8 &&
                 passwordInput.value === confirmPasswordInput.value) {
                 signupButton.disabled = false;
             } else {
@@ -93,8 +93,8 @@
         let createOfferButton = document.getElementById("createOfferButton");
 
         function validateInputs() {
-            if (titleInput.value.trim() !== "" &&
-                descriptionInput.value.trim() !== "" &&
+            if (titleInput.value.length >= 10 &&
+                descriptionInput.value.length >= 50 &&
                 departmentInput.value !== "") {
                 createOfferButton.disabled = false;
             } else {

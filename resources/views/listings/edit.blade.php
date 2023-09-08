@@ -54,7 +54,7 @@
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
-    <button type="submit" class="btn btn-primary">Edit Offer</button>
+    <button type="submit" class="btn btn-primary" id="createOfferButton" disabled>Edit Offer</button>
 </form>
 </x-card>
 
