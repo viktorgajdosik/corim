@@ -82,6 +82,11 @@
         cursor: pointer;
     }
 
+    .info-icon:hover {
+        color: gray;
+
+    }
+
     .upload input[type="file"] {
       display: none;
     }

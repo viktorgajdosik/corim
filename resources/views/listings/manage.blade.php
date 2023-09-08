@@ -4,8 +4,8 @@
                 class="fa fa-info-circle ml-2 info-icon"
                 data-toggle="popover"
                 data-trigger="hover"
-                data-placement="bottom"
-                data-content="This section displays the listings you have created. You can see the research work you participate in on right side of your Profile page. You can get to your profile page by clicking 'Profile' in the menu."
+                data-placement="right"
+                data-content="This section displays the listings you have created."
                 ></i></h2>
 
             @if(session('error'))
