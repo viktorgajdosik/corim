@@ -30,7 +30,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="bottom"
+        data-placement="right"
         data-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
         ></i></h2>
     <br>
@@ -71,7 +71,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="bottom"
+        data-placement="right"
         data-content="This section displays users with accepted applications. Here you can remove users from this research work."
         ></i></h2>
     <br>
@@ -101,7 +101,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="bottom"
+    data-placement="right"
     data-content="Here you can create tasks for this research listing and assign them to chosen participants."
     ></i></h2>
         <br>
@@ -150,7 +150,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="bottom"
+    data-placement="right"
     data-content="This section displays assigned tasks that have not been submitted for your revision yet."
     ></i></h2>
 <br>
@@ -171,7 +171,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="bottom"
+    data-placement="right"
     data-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
     ></i></h2>
 <br>
@@ -192,11 +192,11 @@
         </x-card>
         <br>
 
-    <h2>Finished Tasks <i
+    <h2>Finished Tasks<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="bottom"
+        data-placement="right"
         data-content="This section displays the finished tasks with the work you have approved."
         ></i></h2>
 <br>

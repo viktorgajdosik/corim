@@ -40,7 +40,7 @@
                                 @enderror
                             </div>
                             <div class="mt-3">
-                                <button type="submit" class="btn btn-primary btn-block"> Sign in</button>
+                                <button type="submit" class="btn btn-primary btn-block" id="loginButton" disabled> Sign in</button>
                             </div>
                             <div class="mt-2">
                                 <a href="" class="ml-auto">Forgot Password</a>
@@ -54,21 +54,4 @@
             </div>
 
 
-
-        <script>
-            function togglePasswordVisibility() {
-                var passwordInput = document.getElementById('password');
-                var passwordIcon = document.querySelector('.input-group-append .fa-eye, .input-group-append .fa-eye-slash');
-
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    passwordIcon.classList.remove('fa-eye');
-                    passwordIcon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    passwordIcon.classList.remove('fa-eye-slash');
-                    passwordIcon.classList.add('fa-eye');
-                }
-            }
-        </script>
 </x-layout>

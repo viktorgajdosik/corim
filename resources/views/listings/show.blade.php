@@ -21,7 +21,8 @@
                 @csrf
                 <div class="form-group">
                     <h4 class="mb-3"><strong>Message the Author</strong></h4>
-                    <textarea class="form-control bg-light border-0" id="message" name="message" rows="5" required></textarea>
+                    <p>Tell the author something about yourself.</p>
+                    <textarea class="form-control bg-light border-0" id="message" name="message" rows="5" placeholder="Enter message" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary mb-2">Apply</button>
             </form>

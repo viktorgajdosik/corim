@@ -79,7 +79,9 @@
 
     .info-icon {
         color: lightgrey;
+        font-size: 18px;
         cursor: pointer;
+        vertical-align: top;
     }
 
     .info-icon:hover {

@@ -17,6 +17,7 @@
         <meta name="msapplication-TileColor" content="#2d89ef">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <script src="{{asset('js/script.js') }}"></script>
 
         <title>CORIM</title>
     </head>
@@ -129,19 +130,8 @@
 <x-flash-message />
 
 <script>
-    $(function () {
-  $('[data-toggle="popover"]').popover()
-})
-</script>
 
-<script>
-    // Hide the loading spinner when the page is fully loaded
-    window.addEventListener('load', function () {
-        var loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-        }
-    });
+
 </script>
 
 

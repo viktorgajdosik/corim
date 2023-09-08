@@ -66,7 +66,7 @@
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
     </div>
-    <button type="submit" class="btn btn-primary">Sign up</button>
+    <button type="submit" class="btn btn-primary" id="signupButton" disabled>Sign up</button>
 </form>
 <div class="mt-3">
     Already have an account? <a href="/login">Sign in</a>
