@@ -1,5 +1,40 @@
 @media only screen and (min-width: 768px) {
 
+  .list-group-item{
+    color: black;
+    border: 0;
+    background-color: white;
+    box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+    border-radius: 10px !important;
+    }
+
+    .list-group-item:hover{
+      background-color: white;
+      box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+      }
+
+      .card-general {
+        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
+        border-radius: 35px;
+    }
+
+    .listing-card {
+        background-color: white;
+        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
+        border-radius: 35px;
+      }
+
+    .listing-card:hover {
+        box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+    }
+
+    .login-card {
+        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
+        border: 0;
+        top: 150px;
+        border-radius: 35px;
+    }
 
     .scrollable-listings {
         max-height: 400px; /* Adjust the height as needed */
@@ -224,21 +259,6 @@
       margin-bottom: 10px;
     }
 
-
-    .list-group-item{
-      color: black;
-      border: 0;
-      background-color: white;
-      box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
-      border-radius: 10px !important;
-      }
-
-      .list-group-item:hover{
-        background-color: white;
-        box-shadow: 0px 0px 18px -4px rgba(0,0,0,0.1);
-        }
-
         .list-group-item.active{
           background-color: whitesmoke;
           color: black;
@@ -262,28 +282,6 @@
 
     .custom-active-page {
         z-index: 0; /* Adjust the z-index value as needed */
-    }
-
-    .card-general {
-        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
-        border-radius: 35px;
-    }
-
-    .listing-card {
-        background-color: white;
-        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
-        border-radius: 35px;
-      }
-
-    .listing-card:hover {
-        box-shadow: 0px 0px 18px -4px rgba(0,0,0,0.1);
-    }
-
-    .login-card {
-        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
-        border: 0;
-        top: 150px;
-        border-radius: 35px;
     }
 
     .notes-form {
@@ -332,6 +330,34 @@
 
     @media only screen and (max-width: 767px) {
 
+      .list-group-item{
+        box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
+
+        }
+
+        .list-group-item:hover{
+          box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+          }
+
+          .card-general {
+            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .listing-card {
+            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
+          }
+
+        .listing-card:hover {
+            box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+        }
+
+        .login-card {
+            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
+            border: 0;
+            top: 150px;
+            border-radius: 35px;
+        }
+
       .logo_wrapper, .logo, .sidebar {
         display: none;
       }
@@ -354,11 +380,11 @@
       }
 
       .container-custom-top{
-       max-width: 85%;
+       max-width: 90%;
     }
 
     .container-custom-main{
-       max-width: 85%;
+       max-width: 90%;
        padding-top:105px;
     }
 
