@@ -85,7 +85,7 @@
                 <li class="nav-item">
                     <form method="POST" action="/logout">
                         @csrf
-                        <button type="submit" class="nav-link" style="border: none; background: none;">
+                        <button type="submit" class="nav-link nav-link-out" style="border: none; background: none;">
                             <i class="fa fa-sign-out"></i>
                         </button>
                     </form>
