@@ -21,38 +21,20 @@
 
         <title>CORIM</title>
     </head>
-    <body class="bg-light">
+    <body>
     <div id="loadingSpinner" class="loading-spinner">
         <div class="spinner-border text-primary" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
 
-        <nav class="navbar navbar-expand-sm navbar-light bg-white" >
+    <div class="logo_wrapper">
+    <a href="/" class="logo">
+        <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="40">
+    </a>
+</div>
 
-            <div class="container">
-                <div class="navbar-brand">
-                    <a href="/"><img src="{{asset('images/logo.svg')}}" height="30">
-                    </a></div>
-                    <div class="navbar-spacing"></div>
-                    <form class="form-inline mobile-search-form" action="/" method="get">
-                        <div class="input-group">
-                            <input class="form-control border-0 bg-light" type="search" placeholder="Search listings" aria-label="Search" name="search"/>
-                            <div class="input-group-append">
-                                <button class="btn btn-light" style="color: #007BFF" type="submit"><i class="fa fa-search"></i></button>
-                            </div>
-                        </div>
-                    </form>
-
-
-            </div>
-
-        </nav>
-
-        <div class="sidebar border-0">
-            <a href="/" class="logo">
-                <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="30">
-            </a>
+        <div class="sidebar">
 
             <div class="list-group list-group-flush">
                 <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
@@ -119,20 +101,17 @@
             </div>
           </nav>
         </div>
-<div class="container mt-4">
+
+<div class="container container-custom-main">
 {{$slot}}
-</div>
 <footer class="mt-4" style="margin-bottom: 100px;">
     <div class="container text-center">
         <p>&copy; <?php echo date('Y'); ?> CORIM - Collaborative Research Initiative in Medicine</p>
     </div>
 </footer>
+</div>
+
 <x-flash-message />
-
-<script>
-
-
-</script>
 
 
 </body>

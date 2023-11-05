@@ -1,3 +1,4 @@
+<x-search></x-search>
 <x-layout>
 
     <h2>Edit Profile</h2>

@@ -7,53 +7,50 @@
         padding-right: 50px;
     }
 
-    .navbar-brand{
-
-      display: none;
-    }
-    .fixed-bottom{
-
+    .navbar-mobile, .fixed-bottom, .logo_wrapper_m, .logo_m {
       display: none;
     }
 
-    .navbar {
-      position: fixed;
-      width: 100%;
-      top: 0;
-      border-bottom: 1px solid lightgrey;
-      height: 50px;
-      z-index: 1;
+    .container-custom-top{
+        max-width: 85%;
+        padding-left: 220px;
     }
 
-    body {
-      padding-top: 70px;
-    }
-
-    .container{
-
-      padding-left:200px;
-      padding-right:0;
-      margin-top: 0px;
+    .container-custom-main{
+        max-width: 85%;
+        padding-top:105px;
+        padding-left: 220px;
     }
 
     .sidebar {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 105px;
+      left: 20px;
       bottom: 0;
-      width: 200px;
-      top: 0;
-      background-color: rgb(33,37,41);
+      width: auto;
+      height: auto;
+      background-color: transparent;
+      z-index: 1;
+    }
+
+    .logo_wrapper {
+      position: fixed;
+      width: 186.13px;
+      height: 60px;
+      top: 15px;
+      left: 20px;
       z-index: 1;
     }
 
     .logo {
-      display: block;
-      text-align: center;
-      margin: 10px;
-      height: 30px;
-      padding: 0px;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
     }
+
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -75,6 +72,33 @@
 
     }
 
+    body {
+        background-color: white;
+
+    }
+
+     input[type="text"], input[type="password"], input[type="email"], .form-control {
+      border-radius: 35px;
+     }
+
+     #description {
+      border-radius: 25px;
+     }
+
+     .current {
+      border-radius: 35px;
+    }
+
+    .navbar {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        height: 90px;
+        padding-left: 0;
+        padding-right: 0;
+        z-index: 1;
+        background-color: white;
+      }
 
     .info-icon {
         color: lightgrey;
@@ -111,8 +135,22 @@
       margin-right: 8px;
     }
 
-    .search.btn{
-      background-color: aliceblue;
+    .search-form {
+        width: 100%;
+        padding: 0px;
+        display: block;
+    }
+
+    .search-input {
+      height: 60px;
+      top: 7px;
+      font-size: large;
+      border-radius: 35px;
+    }
+
+    .search-btn{
+      top: 7px;
+      border-radius: 35px;
 
     }
 
@@ -121,6 +159,7 @@
       background-color: aliceblue;
       color:#007BFF;
       border: none;
+      border-radius: 35px;
     }
 
     .btn-outline-secondary:hover, .btn-primary:hover{
@@ -133,6 +172,7 @@
       background-color: rgb(217, 217, 217);
       color: grey;
       border: none;
+      border-radius: 35px;
     }
 
     .btn-secondary:hover {
@@ -144,6 +184,7 @@
       background-color:rgb(189, 245, 196);
       color: rgb(0, 178, 0);
       border: none;
+      border-radius: 35px;
     }
 
     .btn-success:hover {
@@ -155,6 +196,7 @@
       background-color:rgb(255, 192, 192);
       color: red;
       border: none;
+      border-radius: 35px;
     }
 
     .btn-danger:hover {
@@ -184,40 +226,64 @@
 
 
     .list-group-item{
-      border: none;
-      color: lightgray;
-      background-color: rgb(33,37,41);
+      color: black;
+      border: 0;
+      background-color: white;
+      box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      border-radius: 10px !important;
       }
 
       .list-group-item:hover{
-        background-color: rgb(46, 49, 52);
-        color: lightgray;
+        background-color: white;
+        box-shadow: 0px 0px 18px -4px rgba(0,0,0,0.1);
         }
 
         .list-group-item.active{
-          border: none;
-          color:#007BFF;
-          background-color: rgb(33,37,41);
+          background-color: whitesmoke;
+          color: black;
           }
 
       .list-group-item i {
         padding-left: 20px;
         padding-right: 20px;
         width:50px;
-
       }
+
       .custom-link {
-        color: #333;
+        color: black;
         text-decoration: none !important;
     }
 
     .custom-link:hover {
-        color: #007BFF;
+        color: black;
         text-decoration: none !important;
     }
 
     .custom-active-page {
         z-index: 0; /* Adjust the z-index value as needed */
+    }
+
+    .card-general {
+        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
+        border-radius: 35px;
+    }
+
+    .listing-card {
+        background-color: white;
+        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
+        border-radius: 35px;
+      }
+
+    .listing-card:hover {
+        box-shadow: 0px 0px 18px -4px rgba(0,0,0,0.1);
+    }
+
+    .login-card {
+        box-shadow: 0px 0px 14px -6px rgba(0,0,0,0.1);
+        border: 0;
+        top: 150px;
+        border-radius: 35px;
     }
 
     .notes-form {
@@ -257,51 +323,55 @@
         animation-timing-function: ease-in-out;
     }
 
-    .jumbotron-button{
-        border: none;
-        color: lightgray;
-        background-color: rgb(33,37,41);
-        }
-
-    .jumbotron-button:hover{
-        background-color: rgb(46, 49, 52);
-        color: lightgray;
-        }
-
     .jumbotron{
-        background-color: aliceblue;
-        border-color:#007BFF;
-        border-width: 1px;
-        border-style: solid;
+        background-color: white;
+        border: 1px solid #007BFF;
+        border-radius: 35px;
+
         }
 
     @media only screen and (max-width: 767px) {
 
-      body {
-        padding-top: 90px;
+      .logo_wrapper, .logo, .sidebar {
+        display: none;
       }
 
-      .form-inline.mobile-search-form {
-        width: 55%;
+      .search-form {
+        width: 85%;
         padding: 0px;
-        display: block;
+        right: 0;
+    }
+      .logo_wrapper_m {
+        width: 37.5px;
+        height: 60px;
+        top: 15px;
+        z-index: 1;
+      }
 
+      .logo_m {
+        height: 40px;
+        margin-top: 10px;
+      }
+
+      .container-custom-top{
+       max-width: 85%;
     }
 
-     .sidebar{
-      display: none;
-     }
-
-     .navbar {
-      position: fixed;
-      width: 100%;
-      top: 0;
-      border-bottom: 1px solid lightgrey;
-      height: 80px;
-      z-index: 1;
+    .container-custom-main{
+       max-width: 85%;
+       padding-top:105px;
     }
 
-
+      .navbar>.container, .navbar>.container-fluid {
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+          -ms-flex-align: center;
+          align-items: center;
+          -ms-flex-pack: justify;
+          justify-content: space-between;
+      }
 
      .navbar-nav {
       flex-direction: row;

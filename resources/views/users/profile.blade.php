@@ -1,3 +1,4 @@
+<x-search></x-search>
 <x-layout>
 <div class="row">
 
@@ -10,16 +11,15 @@
         <p><strong>Email:</strong>  {{ $user->email }} </p>
         <p><strong>Department:</strong> {{ $user->department }}  </p>
         <p><strong>Research points:</strong> </p>
-         <a href="/users/edit-profile" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit profile</a>
-        </x-card>
-        <a href="" class="btn btn-secondary mb-3">Download Information</a>
-        <br>
+         <a href="/users/edit-profile" class="btn btn-primary mb-2"><i class="fa fa-pencil"></i> Edit profile</a><br>
+         <a href="" class="btn btn-secondary mb-2">Download Information</a>
         <form method="POST" action="/users/profile">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your profile?')">Delete Profile</button>
         </form>
-    </form>
+
+        </x-card>
 
     </div>
     <div class="col-md-6 mb-5">

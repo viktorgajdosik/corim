@@ -1,3 +1,4 @@
+<x-search></x-search>
 <x-layout>
     <h2>Create Research Listing</h2>
     <br>
