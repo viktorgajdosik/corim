@@ -5,7 +5,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="right"
+        data-placement="bottom"
         data-content="This section displays your research listing and enables you to edit or delete it."
         ></i></h2>
     <br>
@@ -33,7 +33,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="right"
+        data-placement="bottom"
         data-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
         ></i></h2>
     <br>
@@ -51,7 +51,7 @@
 
         <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-success mb-1" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-success" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
@@ -74,7 +74,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="right"
+        data-placement="bottom"
         data-content="This section displays users with accepted applications. Here you can remove users from this research work."
         ></i></h2>
     <br>
@@ -104,7 +104,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="right"
+    data-placement="bottom"
     data-content="Here you can create tasks for this research listing and assign them to chosen participants."
     ></i></h2>
         <br>
@@ -151,7 +151,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="right"
+    data-placement="bottom"
     data-content="This section displays assigned tasks that have not been submitted for your revision yet."
     ></i></h2>
 <br>
@@ -172,7 +172,7 @@
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
-    data-placement="right"
+    data-placement="bottom"
     data-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
     ></i></h2>
 <br>
@@ -196,7 +196,7 @@
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
-        data-placement="right"
+        data-placement="bottom"
         data-content="This section displays the finished tasks with the work you have approved."
         ></i></h2>
 <br>

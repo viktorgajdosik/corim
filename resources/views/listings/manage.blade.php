@@ -5,7 +5,7 @@
                 class="fa fa-info-circle ml-2 info-icon"
                 data-toggle="popover"
                 data-trigger="hover"
-                data-placement="right"
+                data-placement="bottom"
                 data-content="This section displays the listings you have created."
                 ></i></h2>
 

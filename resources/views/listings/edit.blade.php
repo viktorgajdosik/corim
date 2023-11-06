@@ -8,17 +8,19 @@
     @method('PUT')
     <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" class="form-control border-0 bg-light" id="title" name="title" placeholder="Enter title" required value="{{$listing->title}}" >
+        <input type="text" class="form-control border-0 bg-light" id="title" name="title"  required value="{{$listing->title}}" >
         @error('title')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
+        <p class="ml-2 font-weight-light">(min. 10 characters)</p>
     </div>
     <div class="form-group">
         <label for="description">Description</label>
-        <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" placeholder="Enter description. Note that you can always edit the whole listing after creating it." >{{$listing->description}}</textarea>
+        <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" >{{$listing->description}}</textarea>
         @error('description')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror
+        <p class="ml-2 font-weight-light">(min. 50 characters)</p>
     </div>
     <div class="form-group">
         <label for="department">Department</label>
