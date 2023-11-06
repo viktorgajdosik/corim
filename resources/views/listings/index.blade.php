@@ -26,7 +26,7 @@
         <ul class="pagination justify-content-center">
             @if ($listings->onFirstPage())
                 <li class="page-item disabled">
-                    <span class="page-link previous border-0 mr-2">&laquo;</span>
+                    <span class="page-link previous border-0 mr-3">&laquo;</span>
                 </li>
             @else
                 <li class="page-item">
@@ -46,7 +46,7 @@
                 </li>
             @else
                 <li class="page-item disabled">
-                    <span class="page-link next border-0 ml-2">&raquo;</span>
+                    <span class="page-link next border-0 ml-3">&raquo;</span>
                 </li>
             @endif
         </ul>

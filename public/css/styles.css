@@ -1,41 +1,5 @@
 @media only screen and (min-width: 768px) {
 
-  .list-group-item{
-    color: black;
-    border: 0;
-    background-color: white;
-    box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
-    margin-bottom: 10px;
-    border-radius: 10px !important;
-    }
-
-    .list-group-item:hover{
-      background-color: white;
-      box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-      }
-
-      .card-general {
-        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
-        border-radius: 35px;
-    }
-
-    .listing-card {
-        background-color: white;
-        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
-        border-radius: 35px;
-      }
-
-    .listing-card:hover {
-        box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-    }
-
-    .login-card {
-        box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.1);
-        border: 0;
-        top: 150px;
-        border-radius: 35px;
-    }
-
     .scrollable-listings {
         max-height: 400px; /* Adjust the height as needed */
         overflow-y: auto;
@@ -108,9 +72,45 @@
     }
 
     body {
-        background-color: white;
+        background-color: aliceblue;
 
     }
+
+    .list-group-item{
+      color: black;
+      border: 0;
+      background-color: white;
+      box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      border-radius: 10px !important;
+      }
+
+      .list-group-item:hover{
+        background-color: white;
+        box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+        }
+
+        .card-general {
+          box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+          border-radius: 35px;
+      }
+
+      .listing-card {
+          background-color: white;
+          box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+          border-radius: 35px;
+        }
+
+      .listing-card:hover {
+          box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+      }
+
+      .login-card {
+          box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+          border: 0;
+          top: 150px;
+          border-radius: 35px;
+      }
 
      input[type="text"], input[type="password"], input[type="email"], .form-control {
       border-radius: 35px;
@@ -120,9 +120,12 @@
       border-radius: 25px;
      }
 
-     .current {
-      border-radius: 35px;
+     .page-link {
+      border-radius: 50%;
+      box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+      cursor: pointer;
     }
+
 
     .navbar {
         position: fixed;
@@ -132,7 +135,7 @@
         padding-left: 0;
         padding-right: 0;
         z-index: 1;
-        background-color: white;
+        background-color: aliceblue;
       }
 
     .info-icon {
@@ -181,11 +184,13 @@
       top: 7px;
       font-size: large;
       border-radius: 35px;
+      background-color: white;
     }
 
     .search-btn{
       top: 7px;
       border-radius: 35px;
+      background-color: #FFFFFF;
 
     }
 
@@ -329,39 +334,6 @@
         }
 
     @media only screen and (max-width: 767px) {
-
-      .list-group-item{
-        box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
-        border-radius: 35px;
-
-        }
-
-        .list-group-item:hover{
-          box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-          border-radius: 35px;
-          }
-
-          .card-general {
-            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
-            border-radius: 35px;
-        }
-
-        .listing-card {
-            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
-            border-radius: 35px;
-          }
-
-        .listing-card:hover {
-            box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-            border-radius: 35px;
-        }
-
-        .login-card {
-            box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
-            border-radius: 35px;
-            border: 0;
-            top: 150px;
-        }
 
       .logo_wrapper, .logo, .sidebar {
         display: none;

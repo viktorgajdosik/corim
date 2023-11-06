@@ -16,14 +16,12 @@
 	    <p>{{$listing['description']}}</p>
         <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{$listing['department']}}</p>
         <br>
-        <div class="btn-group">
-            <a href="/listings/{{$listing->id}}/edit" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+            <button class="btn btn-primary mb-2"><a href="/listings/{{$listing->id}}/edit"><i class="fa fa-pencil"></i>Edit</a></button>
             <form method="POST" action="/listings/{{$listing->id}}">
             @csrf
             @method('DELETE')
-            <button class="btn btn-danger ml-2" onclick="return confirm('Are you sure you want to delete this offer?')"><i class="fa fa-trash"></i> Delete</button>
+            <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer?')"><i class="fa fa-trash"></i> Delete</button>
             </form>
-        </div>
     </x-card>
     <br><br>
 
@@ -46,7 +44,6 @@
         <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
         <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
         <br>
-        <div class="btn-group">
             <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
                 <button class="btn btn-success" onclick="return confirm('Accept this application?')">
@@ -55,11 +52,10 @@
             </form>
             <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-danger ml-2" onclick="return confirm('Deny this application?')">
+                <button class="btn btn-danger" onclick="return confirm('Deny this application?')">
                     <i class="fa fa-times"></i> Deny
                 </button>
             </form>
-        </div>
     </x-card>
     @empty
         <p>Currently no applications.</p>
@@ -186,10 +182,10 @@
         <p><i class="fa fa-gears"></i> Status</p>
         <p><i class="fa fa-file"></i> File</p>
         <br>
-        <div class="btn-group">
-        <button class="btn btn-success">Approve</button>
-        <button class="btn btn-secondary ml-2">Request Modification</button>
-        </div>
+
+        <button class="btn btn-success mb-1">Approve</button><br>
+        <button class="btn btn-secondary">Request Modification</button>
+
         </x-card>
         <br>
 
