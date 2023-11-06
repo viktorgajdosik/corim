@@ -66,7 +66,7 @@
         </div>
 
         <div class="fixed-bottom">
-          <nav class=" navbar-light bg-white">
+          <nav class="navbar-light">
             <div class="container">
               <ul class="navbar-nav d-flex justify-content-between w-100">
                 <li class="nav-item">

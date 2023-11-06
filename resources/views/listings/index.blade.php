@@ -8,7 +8,7 @@
         <p class="lead"><strong>Collaborative Research Initiative in Medicine (CORI.M)</strong> fosters cooperation among researchers and students from all medical fields.</p><hr>
         <p class="lead">Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute.</p><hr>
         <p class="lead">The aim is to accelerate the advancement of medical science by connecting proactive individuals and facilitating collaborative breakthroughs.</p>
-        <a class="btn btn-lg mt-2 btn-primary jumbotron-button" href="/register" role="button"><i class="fa fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
+        <a class="btn btn-lg btn-primary mt-2 jumbotron-button" href="/register" role="button"><i class="fa fa-handshake-o fa-bounce mr-2"></i>Join CORI.M</a>
       </div>
 
       <br>

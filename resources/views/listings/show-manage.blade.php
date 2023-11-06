@@ -11,17 +11,21 @@
     <br>
 
     <x-card>
-		<h4><strong>{{$listing['title']}}</strong></h4>
+		<h4>{{$listing['title']}}</h4>
         <br>
 	    <p>{{$listing['description']}}</p>
         <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{$listing['department']}}</p>
         <br>
-            <button class="btn btn-primary mb-2"><a href="/listings/{{$listing->id}}/edit"><i class="fa fa-pencil"></i>Edit</a></button>
+
+        <button type="button" class="btn btn-primary mb-1" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
+            <i class="fa fa-pencil"></i> Edit
+        </button>
             <form method="POST" action="/listings/{{$listing->id}}">
             @csrf
             @method('DELETE')
             <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer?')"><i class="fa fa-trash"></i> Delete</button>
             </form>
+
     </x-card>
     <br><br>
 
@@ -38,15 +42,16 @@
 
     @forelse ($listing->applications->where('accepted', false) as $application)
     <x-card>
-        <h4><strong>{{ $application->user->name }}</strong></h4>
+        <h4>{{ $application->user->name }}</h4>
         <br>
         <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
         <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
         <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
         <br>
-            <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
+
+        <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-success" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-success mb-1" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
@@ -56,6 +61,7 @@
                     <i class="fa fa-times"></i> Deny
                 </button>
             </form>
+
     </x-card>
     @empty
         <p>Currently no applications.</p>
@@ -78,7 +84,7 @@
 @else
     @foreach ($listing->applications->where('accepted', true) as $application)
         <x-card>
-            <h4><strong>{{ $application->user->name }}</strong></h4>
+            <h4>{{ $application->user->name }}</h4>
             <br>
             <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
             <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
@@ -103,7 +109,7 @@
     ></i></h2>
         <br>
     <x-card>
-		<h4><strong>Create Task</strong></h4>
+		<h4>Create Task</h4>
         <br>
         <form>
 	    <div class="form-group">
@@ -135,9 +141,7 @@
         </label>
         </div>
         </div>
-        <div class="btn-group">
             <button type="submit" class="btn btn-primary"> Create Task</button>
-            </div>
         </form>
     </x-card>
     <br>
@@ -153,7 +157,7 @@
 <br>
 
 <x-card>
-    <h4><strong> Research relevant papers</strong></h4>
+    <h4>Research relevant papers</h4>
     <br>
     <p><i class="fa fa-user"></i> John Doe</p>
 	<p><i class="fa fa-building"></i> Student</p>
@@ -174,7 +178,7 @@
 <br>
 
     <x-card>
-        <h4><strong> Research relevant papers</strong></h4>
+        <h4>Research relevant papers</h4>
         <br>
         <p><i class="fa fa-user"></i> John Doe</p>
         <p><i class="fa fa-building"></i> Student</p>
@@ -182,7 +186,6 @@
         <p><i class="fa fa-gears"></i> Status</p>
         <p><i class="fa fa-file"></i> File</p>
         <br>
-
         <button class="btn btn-success mb-1">Approve</button><br>
         <button class="btn btn-secondary">Request Modification</button>
 
@@ -199,7 +202,7 @@
 <br>
 
     <x-card>
-        <h4><strong> Research relevant papers</strong></h4>
+        <h4>Research relevant papers</h4>
         <br>
         <p><i class="fa fa-user"></i> John Doe</p>
         <p><i class="fa fa-building"></i> Student</p>
