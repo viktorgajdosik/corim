@@ -4,7 +4,7 @@
     <h2>Apply for the research work</h2>
     <br>
     <x-card>
-        <h4 class="mb-3"><strong>{{ $listing['title'] }}</strong></h4>
+        <h4 class="mb-3">{{ $listing['title'] }}</h4>
         <p>{{ $listing['description'] }} </p>
         <p class="mb-2"><i class="fa fa-user" data-toggle="tooltip" title="Author"></i> <strong>{{ $listing['author'] }}</strong></p>
         <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}</p>
@@ -13,7 +13,7 @@
     <!-- Check if the user has an unprocessed application -->
     @if ($userHasUnprocessedApplication)
         <x-card>
-            <h4><strong>Awaiting Application Results</strong></h4>
+            <h4>Awaiting Application Results</h4>
             <p>You have already applied for this research work. Please wait for the author's response.</p>
         </x-card>
     @else
