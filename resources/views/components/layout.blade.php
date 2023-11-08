@@ -3,7 +3,7 @@
 
             <div class="logo_wrapper">
                 <a href="/" class="logo">
-                    <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="25">
+                    <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="20">
                 </a>
             </div>
 
