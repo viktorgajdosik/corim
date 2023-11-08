@@ -17,7 +17,7 @@
         <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{$listing['department']}}</p>
         <br>
 
-        <button type="button" class="btn btn-primary mb-1" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
+        <button type="button" class="btn btn-primary mb-2" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
             <i class="fa fa-pencil"></i> Edit
         </button>
             <form method="POST" action="/listings/{{$listing->id}}">
@@ -49,13 +49,13 @@
         <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
         <br>
 
-        <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
+        <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}" class="m-0">
                 @csrf
-                <button class="btn btn-success" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-success mb-2" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
-            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
+            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}" class="m-0">
                 @csrf
                 <button class="btn btn-danger" onclick="return confirm('Deny this application?')">
                     <i class="fa fa-times"></i> Deny
@@ -186,7 +186,7 @@
         <p><i class="fa fa-gears"></i> Status</p>
         <p><i class="fa fa-file"></i> File</p>
         <br>
-        <button class="btn btn-success mb-1">Approve</button><br>
+        <button class="btn btn-success mb-2">Approve</button><br>
         <button class="btn btn-secondary">Request Modification</button>
 
         </x-card>

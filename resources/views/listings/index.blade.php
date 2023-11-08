@@ -26,7 +26,7 @@
         <ul class="pagination justify-content-center">
             @if ($listings->onFirstPage())
                 <li class="page-item disabled">
-                    <span class="page-link previous border-0 mr-3">&laquo;</span>
+                    <span class="page-link border-0 mr-3 bg-transparent">&laquo;</span>
                 </li>
             @else
                 <li class="page-item">
@@ -36,7 +36,7 @@
 
             @for ($page = max(1, $listings->currentPage() - 2); $page <= min($listings->lastPage(), $listings->currentPage() + 2); $page++)
                 <li class="page-item {{ $page == $listings->currentPage() ? 'active custom-active-page' : '' }}">
-                    <a class="page-link current border-0" href="{{ $listings->url($page) }}">{{ $page }}</a>
+                    <a class="page-link border-0 rounded-circle" href="{{ $listings->url($page) }}">{{ $page }}</a>
                 </li>
             @endfor
 
@@ -46,7 +46,7 @@
                 </li>
             @else
                 <li class="page-item disabled">
-                    <span class="page-link next border-0 ml-3">&raquo;</span>
+                    <span class="page-link border-0 ml-3 bg-transparent">&raquo;</span>
                 </li>
             @endif
         </ul>

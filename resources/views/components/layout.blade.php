@@ -28,13 +28,13 @@
         </div>
     </div>
 
-    <div class="logo_wrapper">
-    <a href="/" class="logo">
-        <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="40">
-    </a>
-</div>
-
         <div class="sidebar">
+
+            <div class="logo_wrapper">
+                <a href="/" class="logo">
+                    <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="25">
+                </a>
+            </div>
 
             <div class="list-group list-group-flush">
                 <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
@@ -83,7 +83,7 @@
                 </li>
                 @auth
                 <li class="nav-item">
-                    <form method="POST" action="/logout">
+                    <form method="POST" class="m-0" action="/logout">
                         @csrf
                         <button type="submit" class="nav-link nav-link-out" style="border: none; background: none;">
                             <i class="fa fa-sign-out"></i>
