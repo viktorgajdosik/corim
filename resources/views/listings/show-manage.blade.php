@@ -25,10 +25,9 @@
             @method('DELETE')
             <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer?')"><i class="fa fa-trash"></i> Delete</button>
             </form>
-
     </x-card>
-    <br><br>
 
+    <br>
     <h2>Applications<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
