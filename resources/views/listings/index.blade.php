@@ -3,7 +3,7 @@
 
    @guest
 
-    <div class="jumbotron fade-in">
+    <div class="jumbotron m-0 fade-in">
         <h1 class="mb-3">Collaborative Research</h1>
         <p class="lead"><strong>Collaborative Research Initiative in Medicine (CORI.M)</strong> fosters cooperation among researchers and students from all medical fields.</p><hr>
         <p class="lead">Researchers can create and showcase listings of their ongoing research projects, providing a platform for others to engage and contribute.</p><hr>
@@ -22,7 +22,7 @@
     @else
     <p>No listings found</p>
     @endunless
-    <div class="mt-6 p-4">
+    <div class="pt-4 pb-4">
         <ul class="pagination justify-content-center">
             @if ($listings->onFirstPage())
                 <li class="page-item disabled">

@@ -66,9 +66,8 @@
         </div>
 
         <div class="fixed-bottom">
-          <nav class="navbar-light">
-            <div class="container">
-              <ul class="navbar-nav d-flex justify-content-between w-100">
+
+              <ul class="navbar-nav navbar-bottom-ul d-flex justify-content-between w-100">
                 <li class="nav-item">
                 <a class="nav-link {{ request()->is('listings/manage*') ? 'active' : '' }}" href="/listings/manage"><i class="fa fa-list"></i></a>
                 </li>
@@ -98,8 +97,7 @@
 
               </ul>
 
-            </div>
-          </nav>
+
         </div>
 
 <div class="container container-custom-main">
