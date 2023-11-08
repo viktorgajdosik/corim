@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-prepend" style="width: 40px;">
-                                    <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center; border-radius:35px 0px 0px 35px;"><i class="fa fa-envelope"></i></span>
+                                    <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center; border-radius:7px 0px 0px 7px;"><i class="fa fa-envelope"></i></span>
                                 </div>
                                 <input type="email" class="form-control bg-light border-0" id="email" name="email" placeholder="Enter email" required value="{{ old('email') }}">
                             </div>
@@ -49,11 +49,11 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-prepend" style="width: 40px;">
-                                    <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center; border-radius:35px 0px 0px 35px;;"><i class="fa fa-lock"></i></span>
+                                    <span class="input-group-text bg-light border-0" style="width: 80px; justify-content: center; border-radius:7px 0px 0px 7px;"><i class="fa fa-lock"></i></span>
                                 </div>
                                 <input type="password" class="form-control bg-light border-0" id="password" name="password" placeholder="Password" required>
                                 <div class="input-group-append">
-                                    <span class="input-group-text bg-light border-0" style="cursor: pointer; background-color: white; border-radius:0px 35px 35px 0px;;" onclick="togglePasswordVisibility()">
+                                    <span class="input-group-text bg-light border-0" style="cursor: pointer; background-color: white; border-radius:0px 7px 7px 0px;" onclick="togglePasswordVisibility()">
                                         <i class="fa fa-eye"></i>
                                     </span>
                                 </div>
