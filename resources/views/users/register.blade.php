@@ -75,6 +75,4 @@
 </x-card>
 </div>
 
-
-<x-flash-message />
 </x-head>

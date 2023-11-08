@@ -91,7 +91,7 @@
       border-radius: 7px !important;
       }
 
-      .list-group-item:hover{
+      .list-group-item:hover {
         background-color: whitesmoke;
         }
 
@@ -275,9 +275,9 @@
           }
 
       .list-group-item i {
-        padding-left: 20px;
         padding-right: 20px;
-        width:50px;
+        padding-left: 0px;
+        width: 30px;
       }
 
       .custom-link {

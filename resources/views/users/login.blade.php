@@ -54,6 +54,4 @@
         </div>
         </div>
 
-
-        <x-flash-message />
     </x-head>

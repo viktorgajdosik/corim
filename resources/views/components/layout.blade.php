@@ -9,27 +9,27 @@
 
             <div class="list-group list-group-flush">
                 <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
-                    <i class="fa fa-list"></i><span>Management</span>
+                    <i class="fa fa-list sidebar-icon"></i><span>Management</span>
                 </a>
                 <a href="/users/profile" class="list-group-item list-group-item-action {{ request()->is('users/profile*') ? 'active' : '' }}">
-                    <i class="fa fa-user"></i><span>Profile</span>
+                    <i class="fa fa-user sidebar-icon"></i><span>Profile</span>
                 </a>
                 <a href="/listings/create" class="list-group-item list-group-item-action {{ request()->is('listings/create*') ? 'active' : '' }}">
-                    <i class="fa fa-plus-circle"></i><span>Create Listing</span>
+                    <i class="fa fa-plus-circle sidebar-icon"></i><span>Create Listing</span>
                 </a>
                 <a href="" class="list-group-item list-group-item-action">
-                    <i class="fa fa-bell"></i><span>Notifications</span>
+                    <i class="fa fa-bell sidebar-icon"></i><span>Notifications</span>
                 </a>
                 @auth
                 <form method="POST" action="/logout">
                     @csrf
                     <button type="submit" class="list-group-item list-group-item-action">
-                        <i class="fa fa-sign-out"></i><span>Log out</span>
+                        <i class="fa fa-sign-out sidebar-icon"></i><span>Log out</span>
                     </button>
                 </form>
                 @else
                 <a href="/login" class="list-group-item list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}">
-                    <i class="fa fa-sign-in"></i><span>Sign in/Sign up</span>
+                    <i class="fa fa-sign-in sidebar-icon"></i><span>Sign in/Sign up</span>
                 </a>
                 @endauth
             </div>
@@ -79,8 +79,6 @@
     </div>
 </footer>
 </div>
-
-<x-flash-message />
 
 </x-head>
 

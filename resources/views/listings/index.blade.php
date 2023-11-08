@@ -36,7 +36,7 @@
 
             @for ($page = max(1, $listings->currentPage() - 2); $page <= min($listings->lastPage(), $listings->currentPage() + 2); $page++)
                 <li class="page-item {{ $page == $listings->currentPage() ? 'active custom-active-page' : '' }}">
-                    <a class="page-link border-0 rounded-circle" href="{{ $listings->url($page) }}">{{ $page }}</a>
+                    <a class="page-link jajco border-0 rounded" href="{{ $listings->url($page) }}">{{ $page }}</a>
                 </li>
             @endfor
 
