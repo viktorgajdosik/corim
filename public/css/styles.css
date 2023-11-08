@@ -12,13 +12,13 @@
 
     .container-custom-top{
         max-width: 85%;
-        padding-left: 210px;
+        padding-left: 220px;
     }
 
     .container-custom-main{
         max-width: 85%;
         padding-top: 80px;
-        padding-left: 210px;
+        padding-left: 220px;
     }
 
     .sidebar {
@@ -26,7 +26,7 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 190px;
+      width: auto;
       height: 100%;
       padding-left: 10px;
       padding-right: 10px;
