@@ -1,12 +1,6 @@
 <x-head>
         <div class="sidebar">
 
-            <div class="logo_wrapper">
-                <a href="/" class="logo">
-                    <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="20">
-                </a>
-            </div>
-
             <div class="list-group list-group-flush">
                 <a href="/listings/manage" class="list-group-item list-group-item-action {{ request()->is('listings/manage*') ? 'active' : '' }}">
                     <i class="fa fa-list sidebar-icon"></i><span>Management</span>
@@ -28,7 +22,7 @@
                     </button>
                 </form>
                 @else
-                <a href="/login" class="list-group-item list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}">
+                <a href="/login" class="list-group-item list-group-item-action {{ request()->is('login*','register*') ? 'active' : '' }}" style="margin-bottom: 10px">
                     <i class="fa fa-sign-in sidebar-icon"></i><span>Sign in/Sign up</span>
                 </a>
                 @endauth

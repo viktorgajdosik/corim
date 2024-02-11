@@ -1,5 +1,9 @@
 <nav class="navbar" >
-
+    <div class="logo_wrapper">
+        <a href="/" class="logo">
+            <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="20">
+        </a>
+    </div>
     <div class="container container-custom-top">
         <div class="logo_wrapper_m">
             <a href="/">

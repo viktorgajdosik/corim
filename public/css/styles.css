@@ -13,6 +13,7 @@
     .container-custom-top{
         max-width: 85%;
         padding-left: 220px;
+
     }
 
     .container-custom-main{
@@ -23,24 +24,25 @@
 
     .sidebar {
       position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
       width: auto;
-      height: 100%;
+      height: auto;
       padding-left: 10px;
       padding-right: 10px;
       padding-bottom: 10px;
+      margin-left: 15px;
+      margin-bottom: 15px;
+      margin-top: 80px;
       background-color: white;
       box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
+      border-radius: 15px;
       z-index: 1;
     }
 
     .logo_wrapper {
-      position: relative;
-      display: block;
-      width: 100%;
+      position: absolute;
+      width: 186.13px;
       height: 70px;
+      left: 15px;
       z-index: 1;
     }
 
@@ -74,7 +76,9 @@
     }
 
     body {
-        background-color: aliceblue;
+      background-color: aliceblue;
+
+
 
     }
 
@@ -135,6 +139,7 @@
         padding: 0;
         z-index: 1;
         background-color: aliceblue;
+
       }
 
     .info-icon {

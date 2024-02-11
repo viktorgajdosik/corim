@@ -125,20 +125,20 @@
         </label>
         <input type="file" class="form-control-file" id="task-file" name="task-file">
         </div>
-	    <div class="form-group">
-        <label for="students">Assign task</label>
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="john" id="john">
-        <label class="form-check-label" for="john">
-        John Doe
-        </label>
-        </div>
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="jane" id="jane">
-        <label class="form-check-label" for="jane">
-        Jane Doe
-        </label>
-        </div>
+        <div class="form-group">
+            <label for="students">Assign task</label>
+            @if ($listing->applications()->where('accepted', true)->exists())
+                @foreach ($listing->applications()->where('accepted', true)->with('user')->get() as $applicant)
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="assigned_users[]" value="{{ $applicant->user->id }}" id="{{ $applicant->user->id }}">
+                        <label class="form-check-label" for="{{ $applicant->user->id }}">
+                            {{ $applicant->user->name }}
+                        </label>
+                    </div>
+                @endforeach
+            @else
+                <p>No users have accepted applications for this listing yet.</p>
+            @endif
         </div>
             <button type="submit" class="btn btn-primary"> Create Task</button>
         </form>
