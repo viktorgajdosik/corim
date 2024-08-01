@@ -1,21 +1,30 @@
 <x-search></x-search>
 <x-layout>
 
-    <h2>Listing Management<i
+    <h3 class="font-weight-bold">Listing Management<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
         data-content="This section displays your research listing and enables you to edit or delete it."
-        ></i></h2>
+        ></i></h3>
     <br>
 
     <x-card>
-		<h4>{{$listing['title']}}</h4>
-        <br>
-	    <p>{{$listing['description']}}</p>
-        <p><i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{$listing['department']}}</p>
-        <br>
+        <div class="date-container">
+            <p class="date-created">
+                <i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}
+            </p>
+        </div>
+        <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
+            <span>
+                <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
+            </span>
+            <span> | </span>
+            <span>
+                <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
+            </span>
+        <p class="text-secondary description mt-3 mb-3">{{ Str::limit($listing->description, 200) }}</p>
 
         <button type="button" class="btn btn-primary mb-2" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
             <i class="fa fa-pencil"></i> Edit
@@ -28,13 +37,13 @@
     </x-card>
 
     <br>
-    <h2>Applications<i
+    <h3 class="font-weight-bold">Applications<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
         data-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
-        ></i></h2>
+        ></i></h3>
     <br>
    <!-- Loop through applications -->
 
@@ -69,13 +78,13 @@
 
 	<br><br>
 
-	<h2>Current Participants<i
+	<h3 class="font-weight-bold">Current Participants<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
         data-content="This section displays users with accepted applications. Here you can remove users from this research work."
-        ></i></h2>
+        ></i></h3>
     <br>
 
 @if ($listing->applications->where('accepted', true)->isEmpty())
@@ -99,13 +108,13 @@
 @endif
         <br>
 
-   <h2>Tasks Management<i
+   <h3 class="font-weight-bold">Tasks Management<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
     data-placement="bottom"
     data-content="Here you can create tasks for this research listing and assign them to chosen participants."
-    ></i></h2>
+    ></i></h3>
         <br>
     <x-card>
 		<h4>Create Task</h4>
@@ -146,13 +155,13 @@
     <br>
 
 
-<h2>Assigned Tasks<i
+<h3 class="font-weight-bold">Assigned Tasks<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
     data-placement="bottom"
     data-content="This section displays assigned tasks that have not been submitted for your revision yet."
-    ></i></h2>
+    ></i></h3>
 <br>
 
 <x-card>
@@ -167,13 +176,13 @@
     </x-card>
 	<br>
 
-<h2>Submitted Tasks<i
+<h3 class="font-weight-bold">Submitted Tasks<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
     data-placement="bottom"
     data-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
-    ></i></h2>
+    ></i></h3>
 <br>
 
     <x-card>
@@ -191,13 +200,13 @@
         </x-card>
         <br>
 
-    <h2>Finished Tasks<i
+    <h3 class="font-weight-bold">Finished Tasks<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
         data-placement="bottom"
         data-content="This section displays the finished tasks with the work you have approved."
-        ></i></h2>
+        ></i></h3>
 <br>
 
     <x-card>

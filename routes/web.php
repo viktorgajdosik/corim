@@ -89,3 +89,4 @@ Route::post('/listings/applications/{application}/accept', [ListingController::c
 
 // Deny an application
 Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth')->name('listings.deny');
+

@@ -106,3 +106,22 @@
         descriptionInput.addEventListener("input", validateInputs);
         departmentInput.addEventListener("input", validateInputs);
     });
+
+//Listing Preview modal
+$(document).ready(function(){
+    // Attach hover event to the expand span
+    $('.expand-listing').hover(function(){
+        var title = $(this).data('title');
+        var description = $(this).data('description');
+
+        $('#descriptionModalLabel').text(title);
+        $('#descriptionModal .modal-body').text(description);
+        $('#descriptionModal').modal('show');
+    });
+
+    // Hide the modal when mouse leaves the modal content area
+    $('#descriptionModal .modal-content').mouseleave(function(){
+        $('#descriptionModal').modal('hide');
+    });
+});
+

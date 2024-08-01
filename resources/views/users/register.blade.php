@@ -1,6 +1,6 @@
 <x-head>
         <div class="container mt-5">
-<h2>Sign up</h2>
+<h2 class="font-weight-bold">Sign up</h2>
 <br>
 <x-card>
 <form action="/users" method="POST">

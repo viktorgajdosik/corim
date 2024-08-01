@@ -7,7 +7,7 @@
     <div class="container container-custom-top">
         <div class="logo_wrapper_m">
             <a href="/">
-                <img src="{{asset('images/logo_icon.svg')}}"  alt="CORIM Logo" class="logo_m" loading="lazy">
+                <img src="{{asset('images/logo_icon.svg')}}"  alt="CORIM Logo" class="logo_m">
             </a>
         </div>
             <form class="form-inline search-form" action="/" method="get">

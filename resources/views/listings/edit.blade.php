@@ -1,6 +1,6 @@
 <x-search></x-search>
 <x-layout>
-<h2>Edit Listing</h2>
+<h3 class="font-weight-bold">Edit Listing</h3>
 <br>
 <x-card>
 <form method="POST" action="/listings/{{$listing->id}}">

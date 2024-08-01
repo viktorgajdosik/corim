@@ -1,6 +1,12 @@
 <x-search></x-search>
 <x-layout>
-    <h2>Create Research Listing</h2>
+    <h3 class="font-weight-bold">Create Research Listing<i
+        class="fa fa-info-circle ml-2 info-icon"
+        data-toggle="popover"
+        data-trigger="hover"
+        data-placement="bottom"
+        data-content="This section enables you to list you research and include all the necessary information for potential participants. Note that you can always edit the listing later after created."
+        ></i></h3>
     <br>
     <x-card>
     <form method="POST" action="/listings">

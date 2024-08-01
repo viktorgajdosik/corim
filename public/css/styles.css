@@ -6,7 +6,7 @@
         padding-right: 50px;
     }
 
-    .navbar-mobile, .fixed-bottom, .logo_wrapper_m, .logo_m {
+    .logo_wrapper_m, .logo_m, .navbar-mobile, .fixed-bottom  {
       display: none;
     }
 
@@ -33,10 +33,10 @@
       margin-bottom: 15px;
       margin-top: 80px;
       background-color: white;
-      box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
       border-radius: 15px;
       z-index: 1;
     }
+
 
     .logo_wrapper {
       position: absolute;
@@ -78,8 +78,6 @@
     body {
       background-color: aliceblue;
 
-
-
     }
 
     .list-group{
@@ -100,23 +98,47 @@
         }
 
         .card-general {
-          box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
           border-radius: 15px;
+          position: relative;
       }
 
       .listing-card {
-          background-color: white;
-          box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
-          border-radius: 15px;
-          margin-bottom: 10px;
-        }
+        background-color: white;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        position: relative;
+    }
 
-      .listing-card:hover {
-          box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-      }
+    .listing-card:hover {
+        box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
+    }
 
-      .login-card {
-          box-shadow: 0px 0px 18px -6px rgba(0,0,0,0.1);
+    .date-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 5px;
+    }
+
+    .date-created {
+        margin: 0;
+    }
+
+    .listing-title {
+        margin-right: 100px;
+    }
+
+    .expand-listing {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .login-card {
           border: 0;
           top: 150px;
           border-radius: 15px;
@@ -125,6 +147,13 @@
      input[type="text"], input[type="password"], input[type="email"], .form-control {
       border-radius: 7px;
      }
+
+     .login-subtitle {
+        margin-bottom: 0;
+    }
+    .card-header h3 {
+        margin-bottom: 0;
+    }
 
      #description {
       border-radius: 7px;
@@ -143,14 +172,14 @@
       }
 
     .info-icon {
-        color: lightgrey;
-        font-size: 18px;
+        color: lightgray;
+        font-size: 14px;
         cursor: pointer;
         vertical-align: top;
     }
 
     .info-icon:hover {
-        color: gray;
+        color: #007BFF;
 
     }
 
@@ -209,7 +238,7 @@
       background-color: aliceblue;
       color:#007BFF;
       border: none;
-      border-radius: 6px;
+      border-radius: 25px;
     }
 
     .btn-outline-secondary:hover, .btn-primary:hover{
@@ -222,7 +251,7 @@
       background-color: rgb(217, 217, 217);
       color: grey;
       border: none;
-      border-radius: 6px;
+      border-radius: 25px;
     }
 
     .btn-secondary:hover {
@@ -234,7 +263,7 @@
       background-color:rgb(189, 245, 196);
       color: rgb(0, 178, 0);
       border: none;
-      border-radius: 6px;
+      border-radius: 25px;
     }
 
     .btn-success:hover {
@@ -246,7 +275,7 @@
       background-color:rgb(255, 192, 192);
       color: red;
       border: none;
-      border-radius: 6px;
+      border-radius: 25px;
     }
 
     .btn-danger:hover {
@@ -274,16 +303,16 @@
       margin-bottom: 10px;
     }
 
-        .list-group-item.active{
+    .list-group-item.active{
           background-color: aliceblue;
           color: black;
-          }
+    }
 
-      .list-group-item i {
+    .list-group-item i {
         padding-right: 20px;
         padding-left: 0px;
         width: 30px;
-      }
+    }
 
       .custom-link {
         color: black;
@@ -336,6 +365,33 @@
         animation-timing-function: ease-in-out;
     }
 
+.progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    background-color: #007bff;
+    animation: progressAnimation 2s linear forwards;
+}
+
+@keyframes progressAnimation {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
     .jumbotron{
         background-color: transparent;
         border: 1px solid #007BFF;
@@ -344,15 +400,13 @@
         }
 
     .jumbotron-button{
-      background-color: white;
-      box-shadow: 0px 0px 10px -6px rgba(0,0,0,0.1);
-      color: #007BFF;
+      background-color: #007BFF;
+      color: white ;
     }
 
     .jumbotron-button:hover{
-      background-color: #007BFF;
-      box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.1);
-      color: white;
+      background-color: white;
+      color: #007BFF;
     }
 
     @media only screen and (max-width: 767px) {

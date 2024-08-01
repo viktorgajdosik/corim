@@ -4,7 +4,7 @@
 
     <div class="col-md-6 mb-5">
 
-        <h2>Personal Information</h2>
+        <h3 class="font-weight-bold">Personal Information</h3>
         <br>
         <x-card>
         <p><strong>Name:</strong> {{ $user->name }} </p>
@@ -23,13 +23,13 @@
 
     </div>
     <div class="col-md-6 mb-5">
-        <h2>Research Participation<i
+        <h3 class="font-weight-bold">Research Participation<i
             class="fa fa-info-circle ml-2 info-icon"
             data-toggle="popover"
             data-trigger="hover"
             data-placement="bottom"
             data-content="This section displays your participation in the research work created by other authors. You can see your own research listings by clicking 'Management' in the menu."
-            ></i></h2>
+            ></i></h3>
 
         <br>
         <div class="scrollable-listings">

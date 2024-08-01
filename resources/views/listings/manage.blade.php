@@ -1,13 +1,13 @@
 <x-search></x-search>
 <x-layout>
 
-            <h2>Your Listings<i
+            <h3 class="font-weight-bold">Your Listings<i
                 class="fa fa-info-circle ml-2 info-icon"
                 data-toggle="popover"
                 data-trigger="hover"
                 data-placement="bottom"
                 data-content="This section displays the listings you have created."
-                ></i></h2>
+                ></i></h3>
 
             @if(session('error'))
 <div class="alert alert-danger">
