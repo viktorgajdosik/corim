@@ -1,7 +1,7 @@
 <x-search></x-search>
 <x-layout>
 
-    <h3 class="font-weight-bold">Edit Profile</h3>
+    <h3>Edit Profile</h3>
     <br>
 
     <x-card>

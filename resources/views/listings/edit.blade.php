@@ -1,6 +1,6 @@
 <x-search></x-search>
 <x-layout>
-<h3 class="font-weight-bold">Edit Listing</h3>
+<h3>Edit Listing</h3>
 <br>
 <x-card>
 <form method="POST" action="/listings/{{$listing->id}}">
@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
         <label for="description">Description</label>
-        <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" >{{$listing->description}}</textarea>
+        <textarea class="form-control border-0 bg-light" id="description" name="description" rows="10">{{$listing->description}}</textarea>
         @error('description')
         <p class="text-danger mt-1">{{$message}}</p>
         @enderror

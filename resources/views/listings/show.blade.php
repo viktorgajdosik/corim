@@ -1,23 +1,20 @@
 <x-search></x-search>
 <x-layout>
 
-    <h3 class="font-weight-bold">Apply for the research work</h3>
+    <h3>Apply for the research work</h3>
     <br>
     <x-card>
-        <div class="date-container">
-            <p class="date-created">
-                <i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}
-            </p>
-        </div>
-        <h4 class="listing-title mb-2">{{ $listing->title }}</h4>
-            <span>
-                <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
-            </span>
-            <span> | </span>
-            <span>
-                <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
-            </span>
-        <p class="description mt-2 mb-0">{{ $listing->description }}</p>
+        <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
+        <span>
+            <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
+        </span>
+        <span> | </span>
+        <span>
+            <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
+        </span>
+        <span> | </span>
+        <span><i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</span>
+        <p class="description text-justify mt-4 mb-2">{!! nl2br(e($listing->description)) !!}</p>
     </x-card>
 
     <!-- Check if the user has an unprocessed application -->

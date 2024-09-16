@@ -6,7 +6,7 @@
                     <div class="mb-2 mt-2" style="background-color: #007BFF; width: 50px; height: 50px; border-radius: 50%; margin: 0 auto;">
                         <i class="fa fa-user fa-2x" style="color: white; padding: 8px;"></i>
                     </div>
-                    <h3 class="font-weight-bold" style="color: black;">Welcome</h3>
+                    <h3 style="color: black;">Welcome</h3>
                     <p class="login-subtitle">Sign in to access your account.</p>
                 </div>
                 <div class="card-body">

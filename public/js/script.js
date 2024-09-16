@@ -108,19 +108,22 @@
     });
 
 //Listing Preview modal
-$(document).ready(function(){
+$(document).ready(function() {
     // Attach hover event to the expand span
-    $('.expand-listing').hover(function(){
+    $('.expand-listing').hover(function() {
         var title = $(this).data('title');
         var description = $(this).data('description');
 
+        // Escape the description and replace newlines with <br> tags
+        var formattedDescription = description.replace(/\n/g, '<br>');
+
         $('#descriptionModalLabel').text(title);
-        $('#descriptionModal .modal-body').text(description);
+        $('#descriptionModal .modal-body').html(formattedDescription); // Use .html() instead of .text()
         $('#descriptionModal').modal('show');
     });
 
     // Hide the modal when mouse leaves the modal content area
-    $('#descriptionModal .modal-content').mouseleave(function(){
+    $('#descriptionModal .modal-content').mouseleave(function() {
         $('#descriptionModal').modal('hide');
     });
 });

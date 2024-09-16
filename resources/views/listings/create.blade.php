@@ -1,6 +1,6 @@
 <x-search></x-search>
 <x-layout>
-    <h3 class="font-weight-bold">Create Research Listing<i
+    <h3>Create Research Listing<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control border-0 bg-light" id="description" name="description" rows="5" placeholder="Enter description. Min. 50 characters." >{{old('description')}}</textarea>
+            <textarea class="form-control border-0 bg-light" id="description" name="description" rows="10" placeholder="Enter description. Min. 50 characters." >{{old('description')}}</textarea>
             @error('description')
             <p class="text-danger mt-1">{{$message}}</p>
             @enderror

@@ -1,7 +1,7 @@
 <x-search></x-search>
 <x-layout>
 
-            <h3 class="font-weight-bold">Your Listings<i
+            <h3>Your Listings<i
                 class="fa fa-info-circle ml-2 info-icon"
                 data-toggle="popover"
                 data-trigger="hover"

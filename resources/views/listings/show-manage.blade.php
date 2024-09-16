@@ -1,7 +1,7 @@
 <x-search></x-search>
 <x-layout>
 
-    <h3 class="font-weight-bold">Listing Management<i
+    <h3>Listing Management<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
@@ -11,11 +11,6 @@
     <br>
 
     <x-card>
-        <div class="date-container">
-            <p class="date-created">
-                <i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}
-            </p>
-        </div>
         <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
             <span>
                 <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
@@ -24,20 +19,25 @@
             <span>
                 <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
             </span>
-        <p class="text-secondary description mt-3 mb-3">{{ Str::limit($listing->description, 200) }}</p>
+            <span> | </span>
+            <span><i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</span>
 
-        <button type="button" class="btn btn-primary mb-2" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
+        <p class="text-secondary description text-justify mt-4 mb-3">{!! nl2br(e($listing->description)) !!}</p>
+
+        <button type="button" class="btn btn-primary d-inline" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
             <i class="fa fa-pencil"></i> Edit
         </button>
-            <form method="POST" action="/listings/{{$listing->id}}">
+        <form method="POST" action="/listings/{{$listing->id}}" class="d-inline">
             @csrf
             @method('DELETE')
-            <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer?')"><i class="fa fa-trash"></i> Delete</button>
-            </form>
+            <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer?')">
+                <i class="fa fa-trash"></i> Delete
+            </button>
+        </form>
     </x-card>
 
     <br>
-    <h3 class="font-weight-bold">Applications<i
+    <h3>Applications<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
@@ -57,18 +57,20 @@
         <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
         <br>
 
-        <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}" class="m-0">
+        <div class="d-flex">
+            <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-success mb-2" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-success mr-1" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
-            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}" class="m-0">
+            <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
                 @csrf
                 <button class="btn btn-danger" onclick="return confirm('Deny this application?')">
                     <i class="fa fa-times"></i> Deny
                 </button>
             </form>
+        </div>
 
     </x-card>
     @empty
@@ -78,7 +80,7 @@
 
 	<br><br>
 
-	<h3 class="font-weight-bold">Current Participants<i
+	<h3>Current Participants<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
@@ -108,7 +110,7 @@
 @endif
         <br>
 
-   <h3 class="font-weight-bold">Tasks Management<i
+   <h3>Tasks Management<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
@@ -155,7 +157,7 @@
     <br>
 
 
-<h3 class="font-weight-bold">Assigned Tasks<i
+<h3>Assigned Tasks<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
@@ -176,7 +178,7 @@
     </x-card>
 	<br>
 
-<h3 class="font-weight-bold">Submitted Tasks<i
+<h3>Submitted Tasks<i
     class="fa fa-info-circle ml-2 info-icon"
     data-toggle="popover"
     data-trigger="hover"
@@ -194,13 +196,13 @@
         <p><i class="fa fa-gears"></i> Status</p>
         <p><i class="fa fa-file"></i> File</p>
         <br>
-        <button class="btn btn-success mb-2">Approve</button><br>
+        <button class="btn btn-success d-inline">Approve</button>
         <button class="btn btn-secondary">Request Modification</button>
 
         </x-card>
         <br>
 
-    <h3 class="font-weight-bold">Finished Tasks<i
+    <h3>Finished Tasks<i
         class="fa fa-info-circle ml-2 info-icon"
         data-toggle="popover"
         data-trigger="hover"
