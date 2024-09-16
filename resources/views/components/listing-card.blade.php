@@ -16,7 +16,7 @@
         <span class="d-inline d-md-none"><small>
             <i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
         </span>
-    <p class="text-secondary description mt-2 mb-0 -mb-2text-justify">{{ Str::limit($listing->description, 200) }} <span class="expand-listing text-info d-none d-md-inline end-0" data-toggle="modal" data-target="#descriptionModal" data-title="{{ $listing->title }}" data-description="{{ $listing->description }}"> Preview</span></p>
+    <p class="text-secondary description mt-2 mb-0 text-justify">{{ Str::limit($listing->description, 200) }} <span class="expand-listing text-info d-none d-md-inline end-0" data-toggle="modal" data-target="#descriptionModal" data-title="{{ $listing->title }}" data-description="{{ $listing->description }}"> Preview</span></p>
 
     <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
