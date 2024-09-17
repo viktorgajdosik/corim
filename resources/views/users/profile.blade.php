@@ -3,7 +3,7 @@
     <div class="row align-items-stretch">
 
         <!-- Personal Information Section -->
-        <div class="col-md-4 mb-5"> <!-- Set to 4 for 1/3 width -->
+        <div class="col-xl-4 mb-5"> <!-- Set to 4 for 1/3 width -->
             <h3>Personal Information</h3>
             <br>
             <x-card class="personal-info">
@@ -16,7 +16,7 @@
                             data-toggle="popover"
                             data-trigger="hover"
                             data-placement="bottom"
-                            data-content="You receive research points from the authors after successfully completing individual research tasks."></i> 35</p>
+                            data-content="You receive research points after successfully completing individual research tasks."></i> 35</p>
                     </div>
                     <a href="/users/edit-profile" class="btn btn-secondary btn-circle">
                         <i class="fa fa-pencil"></i>
@@ -28,13 +28,13 @@
                     <form method="POST" action="/users/profile">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your profile?')">Delete Profile</button>
+                        <button type="submit" class="btn btn-danger d-inline" onclick="return confirm('Are you sure you want to delete your profile?')">Delete Profile</button>
                     </form>
                 </div>
         </div>
 
         <!-- Research Participation Section -->
-        <div class="col-md-8 mb-5"> <!-- Set to 8 for 2/3 width -->
+        <div class="col-xl-8 mb-5"> <!-- Set to 8 for 2/3 width -->
             <h3>Research Participation
                 <i class="fa fa-info-circle ml-2 info-icon"
                    data-toggle="popover"
