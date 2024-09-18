@@ -48,6 +48,17 @@
       transform: translate(-50%, -50%);
     }
 
+    /* Hide the preview link by default */
+.preview-link {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show the preview link when the listing card is hovered */
+.listing-card:hover .preview-link {
+    opacity: 1;
+}
+
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -164,7 +175,6 @@
 
     .login-card {
           border: 0;
-          top: 150px;
           border-radius: 15px;
       }
 
@@ -175,7 +185,31 @@
      .login-subtitle {
         margin-bottom: 0;
     }
-    .card-header h3 {
+
+.form-control.custom-input {
+    border-radius: 7px;
+}
+
+.form-control.custom-input-1 {
+    border-right: 0;
+    border-radius: 7px;
+}
+
+
+.icon-box-1 {
+    background-color: white;
+    border-radius: 0 7px 7px 0;
+    border: 1px solid #ced4da;
+    border-left: 0;
+}
+
+/* Style for icons */
+.icon {
+    color: #6c757d;
+}
+
+
+ .card-header h3 {
         margin-bottom: 0;
     }
 
