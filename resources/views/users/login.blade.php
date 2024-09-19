@@ -4,9 +4,9 @@
             <!-- Left Column - Full Blue with Centered Logo, Header, and Text -->
             <div class="col-xl-5 d-none d-xl-flex flex-column align-items-center justify-content-center bg-primary text-white">
                 <div class="text-wrapper" style="max-width: 400px; text-align: left;">
-                    <h2 class="font-weight-bold">Collaborative research</h2>
+                    <h2 class="font-weight-bold">Let's continue...</h2>
                     <p>
-                        Join the effort to advance medical research through collaboration. Together, we can drive innovation and improve healthcare outcomes globally.
+                        Log in to access your personalized dashboard and stay up-to-date with important updates. Your account connects you to a community dedicated to advancing medical research and innovation.
                     </p>
                 </div>
                 </p>
@@ -37,7 +37,7 @@
     <div class="input-group input-group-lg">
         <input type="password" class="form-control custom-input-1" id="password" name="password" placeholder="Password" required>
         <div class="input-group-append">
-            <span class="input-group-text icon-box-1" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+            <span class="input-group-text icon-box-1" style="cursor: pointer;" onclick="togglePasswordVisibility('password')">
                 <i class="fa fa-eye icon"></i>
             </span>
         </div>

@@ -14,9 +14,9 @@
 
 
             // password visibility
-            function togglePasswordVisibility() {
-                var passwordInput = document.getElementById('password');
-                var passwordIcon = document.querySelector('.input-group-append .fa-eye, .input-group-append .fa-eye-slash');
+            function togglePasswordVisibility(inputId) {
+                var passwordInput = document.getElementById(inputId);
+                var passwordIcon = document.querySelector(`#${inputId} + .input-group-append .fa-eye, #${inputId} + .input-group-append .fa-eye-slash`);
 
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -58,33 +58,37 @@
 });
 
   //Disabled sign up button for login until inputs are filled properly
-    document.addEventListener("DOMContentLoaded", function() {
-        let nameInput = document.getElementById("name");
-        let emailInput = document.getElementById("email");
-        let departmentInput = document.getElementById("department");
-        let passwordInput = document.getElementById("password");
-        let confirmPasswordInput = document.getElementById("password_confirmation");
-        let signupButton = document.getElementById("signupButton");
+  document.addEventListener("DOMContentLoaded", function() {
+    let nameInput = document.getElementById("name");
+    let emailInput = document.getElementById("email");
+    let departmentInput = document.getElementById("department");
+    let passwordInput = document.getElementById("password");
+    let confirmPasswordInput = document.getElementById("password_confirmation");
+    let signupButton = document.getElementById("signupButton");
 
-        function validateInputs() {
-            if (nameInput.value.length >= 6 &&
-                emailInput.value.trim() !== "" &&
-                departmentInput.value !== "" &&
-                passwordInput.value.length >= 8 &&
-                passwordInput.value === confirmPasswordInput.value) {
-                signupButton.disabled = false;
-            } else {
-                signupButton.disabled = true;
-            }
+    function validateInputs() {
+        const nameValid = nameInput.value.length >= 6;
+        const emailValid = emailInput.value.trim() !== "";
+        const departmentValid = departmentInput.value !== "";
+        const passwordValid = passwordInput.value.length >= 8;
+        const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
+
+        if (nameValid && emailValid && departmentValid && passwordValid && passwordsMatch) {
+            signupButton.disabled = false;
+        } else {
+            signupButton.disabled = true;
         }
+    }
 
-        nameInput.addEventListener("input", validateInputs);
-        emailInput.addEventListener("input", validateInputs);
-        departmentInput.addEventListener("input", validateInputs);
-        passwordInput.addEventListener("input", validateInputs);
-        confirmPasswordInput.addEventListener("input", validateInputs);
-    });
+    // Call validateInputs on page load to set the initial state of the button
+    validateInputs();
 
+    nameInput.addEventListener("input", validateInputs);
+    emailInput.addEventListener("input", validateInputs);
+    departmentInput.addEventListener("input", validateInputs);
+    passwordInput.addEventListener("input", validateInputs);
+    confirmPasswordInput.addEventListener("input", validateInputs);
+});
     //Disabled submit button when creating listing unitl all inputs are filled properly
     document.addEventListener("DOMContentLoaded", function() {
         let titleInput = document.getElementById("title");
