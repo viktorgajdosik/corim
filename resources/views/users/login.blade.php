@@ -1,59 +1,75 @@
 <x-head>
     <div class="container-fluid vh-100">
         <div class="row h-100">
-            <!-- Left Column - Full Blue with Centered Logo, Header, and Text -->
-            <div class="col-xl-5 d-none d-xl-flex flex-column align-items-center justify-content-center bg-primary text-white">
-                <div class="text-wrapper" style="max-width: 400px; text-align: left;">
-                    <h2 class="font-weight-bold">Let's continue...</h2>
-                    <p>
-                        Log in to access your personalized dashboard and stay up-to-date with important updates. Your account connects you to a community dedicated to advancing medical research and innovation.
+            <!-- Left Column (Logo and Info) -->
+            <div class="col-xl-5 d-none d-xl-flex flex-column justify-content-center bg-primary text-white" style="padding-left: 3rem; position: relative;">
+                <a href="/">
+                    <img src="{{ asset('images/logo_w.svg') }}" alt="Logo" style="position: absolute; top: 2rem; width: 75px; height: auto;">
+                </a>
+                <div class="text-wrapper" style="max-width: 450px; text-align: left;">
+                    <h2 class="fw-bold">Log in</h2>
+                    <p style="font-size: 1.1rem;">
+                        To access your personalized dashboard and stay up-to-date with important updates. Your account connects you to a community dedicated to advancing medical research and innovation.
                     </p>
                 </div>
-                </p>
             </div>
 
-            <!-- Right Column - Transparent Login Card -->
+            <!-- Right Column (Login Form) -->
             <div class="col-xl-7 d-flex align-items-center justify-content-center">
-                <div class="card login-card" style="background-color: transparent; border: none;">
-                    <div class="card-header border-bottom-0 text-center" style="background-color: transparent;">
-                        <h2 class="font-weight-bold" style="color: #000000;">Welcome</h2>
+                <div class="card login-card" style="background-color: transparent; border: none;" x-data="{ showPassword: false }">
+                    <div class="card-header border-0 text-center" style="background-color: transparent;">
+                        <h2 class="fw-bold" style="color: #000000;">Welcome</h2>
                         <p class="login-subtitle">Sign in to access your account.</p>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="/users/authenticate">
+                        <form method="POST" action="/users/authenticate" novalidate>
                             @csrf
-                            <!-- Email Input -->
-                            <div class="form-group">
-                                <div class="input-group-lg">
-                                    <input type="email" class="form-control custom-input" id="email" name="email" placeholder="Enter email" required value="{{ old('email') }}">
-                                </div>
-                                @error('email')
-                                <p class="text-danger mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                           <!-- Password Input -->
-<div class="form-group">
-    <div class="input-group input-group-lg">
-        <input type="password" class="form-control custom-input-1" id="password" name="password" placeholder="Password" required>
-        <div class="input-group-append">
-            <span class="input-group-text icon-box-1" style="cursor: pointer;" onclick="togglePasswordVisibility('password')">
-                <i class="fa fa-eye icon"></i>
-            </span>
-        </div>
-    </div>
-    @error('password')
-    <p class="text-danger mt-1">{{ $message }}</p>
+                          <!-- Email Input with Floating Label -->
+<div class="form-floating mb-3">
+    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" placeholder="Enter email" required name="email" value="{{ old('email') }}"> <!-- Adjusted padding to maintain input size -->
+    <label for="email">Email address</label>
+    @error('email')
+    <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>
 
+<!-- Password Input with Floating Label and Eye Addon -->
+<div class="mb-3 position-relative" x-data="{ showPassword: false, hasError: {{ $errors->has('password') ? 'true' : 'false' }} }">
+    <div class="form-floating">
+        <input
+            :type="showPassword ? 'text' : 'password'"
+            class="form-control form-control-lg @error('password') is-invalid @enderror"
+            id="password"
+            placeholder="Password"
+            required
+            name="password"
+            value="{{ old('password') }}"
+            style="padding-inline-end: 2.5rem"
+            @input="hasError = false">
+        <label for="password">Password</label>
+
+        <!-- Eye button positioned inside the input -->
+        <button
+            type="button"
+            class="btn bg-white text-secondary position-absolute"
+            @click="showPassword = !showPassword"
+            style="right: 1px; top: 50%; transform: translateY(-50%); border: none;"
+            x-show="!hasError">
+            <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+    </div>
+
+    @error('password')
+    <div class="invalid-feedback d-block" x-init="hasError = true">{{ $message }}</div>
+    @enderror
+</div>
 
                             <!-- Sign In Button -->
-                            <div class="mt-3">
-                                <button type="submit" class="btn-lg btn-primary btn-block" id="loginButton">Sign in</button>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-sign btn-lg w-100">Sign in</button>
                             </div>
                             <div class="mt-2 text-center">
-                                <a href="#">Forgot Password</a>
+                                <a href="#">Forgot Password?</a>
                             </div>
                         </form>
                     </div>

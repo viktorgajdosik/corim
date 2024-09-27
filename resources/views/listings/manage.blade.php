@@ -1,12 +1,12 @@
-<x-search></x-search>
+<x-search/>
 <x-layout>
 
             <h3>Your Listings<i
                 class="fa fa-info-circle ml-2 info-icon"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="bottom"
-                data-content="This section displays the listings you have created."
+                data-bs-toggle="popover"
+                data-bs-trigger="hover"
+                data-bs-placement="bottom"
+                data-bs-content="This section displays the listings you have created."
                 ></i></h3>
 
             @if(session('error'))

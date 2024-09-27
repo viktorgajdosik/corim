@@ -1,4 +1,4 @@
-<x-search></x-search>
+<x-search/>
 <x-layout>
 
     <h3>Apply for the research work</h3>

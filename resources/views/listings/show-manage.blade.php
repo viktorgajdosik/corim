@@ -1,26 +1,26 @@
-<x-search></x-search>
+<x-search/>
 <x-layout>
 
     <h3>Listing Management<i
-        class="fa fa-info-circle ml-2 info-icon"
-        data-toggle="popover"
-        data-trigger="hover"
-        data-placement="bottom"
-        data-content="This section displays your research listing and enables you to edit or delete it."
+        class="fa fa-info-circle ms-1 info-icon"
+        data-bs-toggle="popover"
+        data-bs-trigger="hover"
+        data-bs-placement="bottom"
+        data-bs-content="This section displays your research listing and enables you to edit or delete it."
         ></i></h3>
     <br>
 
     <x-card>
         <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
             <span>
-                <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
+                <i class="fa fa-user text-secondary" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
             </span>
             <span> | </span>
             <span>
-                <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
+                <i class="fa solid fa-building text-secondary" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
             </span>
             <span> | </span>
-            <span><i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</span>
+            <span><i class="fa fa-calendar text-secondary" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</span>
 
         <p class="text-secondary description text-justify mt-4 mb-3">{!! nl2br(e($listing->description)) !!}</p>
 
@@ -38,11 +38,11 @@
 
     <br>
     <h3>Applications<i
-        class="fa fa-info-circle ml-2 info-icon"
-        data-toggle="popover"
-        data-trigger="hover"
-        data-placement="bottom"
-        data-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
+        class="fa fa-info-circle ms-1 info-icon"
+        data-bs-toggle="popover"
+        data-bs-trigger="hover"
+        data-bs-placement="bottom"
+        data-bs-content="This section displays applications from users who would like to participate in this research work. You can accept or deny them."
         ></i></h3>
     <br>
    <!-- Loop through applications -->
@@ -52,9 +52,9 @@
     <x-card>
         <h4>{{ $application->user->name }}</h4>
         <br>
-        <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
-        <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
-        <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
+        <p><i class="fa fa-building text-secondary"></i> {{ $application->user->department }}</p>
+        <p><i class="fa fa-envelope text-secondary"></i> {{ $application->user->email }}</p>
+        <p><i class="fa fa-edit text-secondary"></i> {{ $application->message }}</p>
         <br>
 
         <div class="d-flex">
@@ -81,11 +81,11 @@
 	<br><br>
 
 	<h3>Current Participants<i
-        class="fa fa-info-circle ml-2 info-icon"
-        data-toggle="popover"
-        data-trigger="hover"
-        data-placement="bottom"
-        data-content="This section displays users with accepted applications. Here you can remove users from this research work."
+        class="fa fa-info-circle ms-1 info-icon"
+        data-bs-toggle="popover"
+        data-bs-trigger="hover"
+        data-bs-placement="bottom"
+        data-bs-content="This section displays users with accepted applications. Here you can remove users from this research work."
         ></i></h3>
     <br>
 
@@ -96,8 +96,8 @@
         <x-card>
             <h4>{{ $application->user->name }}</h4>
             <br>
-            <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
-            <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
+            <p><i class="fa fa-building text-secondary"></i> {{ $application->user->department }}</p>
+            <p><i class="fa fa-envelope text-secondary"></i> {{ $application->user->email }}</p>
             <br>
             <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
                 @csrf
@@ -111,11 +111,11 @@
         <br>
 
    <h3>Tasks Management<i
-    class="fa fa-info-circle ml-2 info-icon"
-    data-toggle="popover"
-    data-trigger="hover"
-    data-placement="bottom"
-    data-content="Here you can create tasks for this research listing and assign them to chosen participants."
+    class="fa fa-info-circle ms-1 info-icon"
+    data-bs-toggle="popover"
+    data-bs-trigger="hover"
+    data-bs-placement="bottom"
+    data-bs-content="Here you can create tasks for this research listing and assign them to chosen participants."
     ></i></h3>
         <br>
     <x-card>
@@ -158,43 +158,43 @@
 
 
 <h3>Assigned Tasks<i
-    class="fa fa-info-circle ml-2 info-icon"
-    data-toggle="popover"
-    data-trigger="hover"
-    data-placement="bottom"
-    data-content="This section displays assigned tasks that have not been submitted for your revision yet."
+    class="fa fa-info-circle ms-1 info-icon"
+    data-bs-toggle="popover"
+    data-bs-trigger="hover"
+    data-bs-placement="bottom"
+    data-bs-content="This section displays assigned tasks that have not been submitted for your revision yet."
     ></i></h3>
 <br>
 
 <x-card>
     <h4>Research relevant papers</h4>
     <br>
-    <p><i class="fa fa-user"></i> John Doe</p>
-	<p><i class="fa fa-building"></i> Student</p>
-    <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-    <p><i class="fa fa-gears"></i> Status</p>
-    <p><i class="fa fa-file"></i> File</p>
+    <p><i class="fa fa-user text-secondary"></i> John Doe</p>
+	<p><i class="fa fa-building text-secondary"></i> Student</p>
+    <p><i class="fa fa-envelope text-secondary"></i> student@osu.cz</p>
+    <p><i class="fa fa-gears text-secondary"></i> Status</p>
+    <p><i class="fa fa-file text-secondary"></i> File</p>
     <br>
     </x-card>
 	<br>
 
 <h3>Submitted Tasks<i
-    class="fa fa-info-circle ml-2 info-icon"
-    data-toggle="popover"
-    data-trigger="hover"
-    data-placement="bottom"
-    data-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
+    class="fa fa-info-circle ms-1 info-icon"
+    data-bs-toggle="popover"
+    data-bs-trigger="hover"
+    data-bs-placement="bottom"
+    data-bs-content="This section displays the task that have been submitted to you by the participant. Review the work and approve it or request modification."
     ></i></h3>
 <br>
 
     <x-card>
         <h4>Research relevant papers</h4>
         <br>
-        <p><i class="fa fa-user"></i> John Doe</p>
-        <p><i class="fa fa-building"></i> Student</p>
-        <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-        <p><i class="fa fa-gears"></i> Status</p>
-        <p><i class="fa fa-file"></i> File</p>
+        <p><i class="fa fa-user text-secondary"></i> John Doe</p>
+        <p><i class="fa fa-building text-secondary"></i> Student</p>
+        <p><i class="fa fa-envelope text-secondary"></i> student@osu.cz</p>
+        <p><i class="fa fa-gears text-secondary"></i> Status</p>
+        <p><i class="fa fa-file text-secondary"></i> File</p>
         <br>
         <button class="btn btn-success d-inline">Approve</button>
         <button class="btn btn-secondary">Request Modification</button>
@@ -203,22 +203,22 @@
         <br>
 
     <h3>Finished Tasks<i
-        class="fa fa-info-circle ml-2 info-icon"
-        data-toggle="popover"
-        data-trigger="hover"
-        data-placement="bottom"
-        data-content="This section displays the finished tasks with the work you have approved."
+        class="fa fa-info-circle ms-1 info-icon"
+        data-bs-toggle="popover"
+        data-bs-trigger="hover"
+        data-bs-placement="bottom"
+        data-bs-content="This section displays the finished tasks with the work you have approved."
         ></i></h3>
 <br>
 
     <x-card>
         <h4>Research relevant papers</h4>
         <br>
-        <p><i class="fa fa-user"></i> John Doe</p>
-        <p><i class="fa fa-building"></i> Student</p>
-        <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-        <p><i class="fa fa-gears"></i> Status</p>
-        <p><i class="fa fa-file"></i> File</p>
+        <p><i class="fa fa-user text-secondary"></i> John Doe</p>
+        <p><i class="fa fa-building text-secondary"></i> Student</p>
+        <p><i class="fa fa-envelope text-secondary"></i> student@osu.cz</p>
+        <p><i class="fa fa-gears text-secondary"></i> Status</p>
+        <p><i class="fa fa-file text-secondary"></i> File</p>
         <br>
         </x-card>
 

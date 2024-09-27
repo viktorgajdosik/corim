@@ -1,25 +1,29 @@
-<nav class="navbar" >
+<!-- Search Bar -->
+<nav class="navbar" x-show="!isLoading" style="display: none;">
     <div class="logo_wrapper">
         <a href="/" class="logo">
-            <img src="{{asset('images/logo.svg')}}" alt="CORIM Logo" height="20">
+            <img src="{{ asset('images/logo.svg') }}" alt="CORIM Logo" height="20">
         </a>
     </div>
+
     <div class="container container-custom-top">
-        <div class="logo_wrapper_m">
-            <a href="/">
-                <img src="{{asset('images/logo_icon.svg')}}"  alt="CORIM Logo" class="logo_m">
-            </a>
-        </div>
-            <form class="form-inline search-form" action="/" method="get">
-                <div class="input-group">
-                    <input class=" search-input form-control border-0" type="search" placeholder="Search listings" aria-label="Search" name="search"/>
-                    <div class="input-group-append">
-                        <button class="btn search-btn border-0" type="submit"><i class="fa fa-search"></i></button>
-                    </div>
-                </div>
-            </form>
 
+        <form class="form-inline w-100 p-0 m-0" action="/" method="get">
+            <div class="input-group">
+                <!-- Input takes full width but leaves space for the button -->
+                <input
+                    class="form-control-lg border-0 flex-grow-1"
+                    type="search"
+                    placeholder="Search listings"
+                    aria-label="Search"
+                    name="search"
+                />
 
+                <!-- Search button aligned to the right -->
+                <button class="btn btn-lg search-btn border-0 input-group-text" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
     </div>
-
 </nav>
