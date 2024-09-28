@@ -13,37 +13,37 @@
 
     <!-- Carousel Items -->
     <a href="{{ route('register') }}">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
-                <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
-                    <h1 class="display-6 text-uppercase text-start"><span style="color: white;">CORI.M</span><span class="text-body-secondary"> Collaborative Research Initiative in Medicine.</span></h1>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="d-flex w-100 bg-primary carousel-height" style="border-radius: 15px;">
+                    <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
+                        <h1 class="display-6 text-uppercase text-start"><span style="color: white;">CORI.M</span><span class="text-body-secondary"> Collaborative Research Initiative in Medicine.</span></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="d-flex w-100 bg-primary carousel-height" style="border-radius: 15px;">
+                    <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
+                        <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Proactive individuals facilitating</span><span style="color: white;"> collaborative progress</span><span class="text-body-secondary"> in medical research.</span></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="d-flex w-100 bg-primary carousel-height" style="border-radius: 15px;">
+                    <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
+                        <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Researchers can</span> <span style="color: white;">create and showcase listings</span><span class="text-body-secondary"> of their ongoing research projects.</span></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="d-flex w-100 bg-primary carousel-height" style="border-radius: 15px;">
+                    <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-top: 1rem; padding-bottom: 0;">
+                        <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary"> Students participate by </span><span style="color: white;">completing research tasks</span> <span class="text-body-secondary">set by the author of the project.</span></h1>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="carousel-item">
-            <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
-                <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
-                    <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Proactive individuals facilitating</span><span style="color: white;"> collaborative progress</span><span class="text-body-secondary"> in medical research.</span></h1>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
-                <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
-                    <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Researchers can</span> <span style="color: white;">create and showcase listings</span><span class="text-body-secondary"> of their ongoing research projects.</span></h1>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
-                <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-top: 1rem; padding-bottom: 0;">
-                    <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary"> Students participate by </span><span style="color: white;">completing research tasks</span> <span class="text-body-secondary">set by the author of the project.</span></h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</a>
+    </a>
 
     <!-- Previous and Next Buttons (Hidden but Functional) -->
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselAutoplaying" data-bs-slide="prev" style="opacity: 0; pointer-events: auto;">

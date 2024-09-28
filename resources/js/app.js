@@ -13,46 +13,30 @@ $(document).ready(function () {
     });
 });
 
-    //Disabled submit button when creating listing unitl all inputs are filled properly
-    document.addEventListener("DOMContentLoaded", function() {
-        let titleInput = document.getElementById("title");
-        let descriptionInput = document.getElementById("description");
-        let departmentInput = document.getElementById("department");
-        let createOfferButton = document.getElementById("createOfferButton");
-
-        function validateInputs() {
-            if (titleInput.value.length >= 10 &&
-                descriptionInput.value.length >= 50 &&
-                departmentInput.value !== "") {
-                createOfferButton.disabled = false;
-            } else {
-                createOfferButton.disabled = true;
-            }
-        }
-
-        titleInput.addEventListener("input", validateInputs);
-        descriptionInput.addEventListener("input", validateInputs);
-        departmentInput.addEventListener("input", validateInputs);
-    });
-
-//Listing Preview modal
+// Listing Preview modal
 $(document).ready(function() {
+    let hoverTimer;
+
     // Attach hover event to the expand span
-    $('.expand-listing').hover(function() {
-        var title = $(this).data('title');
-        var description = $(this).data('description');
+    $('.expand-listing').hover(
+        function() {
+            const title = $(this).data('title');
+            const description = $(this).data('description');
+            const formattedDescription = description.replace(/\n/g, '<br>');
 
-        // Escape the description and replace newlines with <br> tags
-        var formattedDescription = description.replace(/\n/g, '<br>');
-
-        $('#descriptionModalLabel').text(title);
-        $('#descriptionModal .modal-body').html(formattedDescription); // Use .html() instead of .text()
-        $('#descriptionModal').modal('show');
-    });
+            hoverTimer = setTimeout(function() {
+                $('#descriptionModalLabel').text(title);
+                $('#descriptionModal .modal-body').html(formattedDescription);
+                $('#descriptionModal').modal('show');
+            }, 150); // Wait 0.1 seconds before showing the modal
+        },
+        function() {
+            clearTimeout(hoverTimer); // Clear the timer if the mouse leaves before 0.5 seconds
+        }
+    );
 
     // Hide the modal when mouse leaves the modal content area
     $('#descriptionModal .modal-content').mouseleave(function() {
         $('#descriptionModal').modal('hide');
     });
 });
-
