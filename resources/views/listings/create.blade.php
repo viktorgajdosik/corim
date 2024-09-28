@@ -15,7 +15,7 @@
 
             <!-- Title Input with Floating Label -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-lg border-0 bg-light @error('title') is-invalid @enderror" id="title" name="title" placeholder="Enter title" value="{{ old('title') }}">
+                <input type="text" class="form-control form-control-md border-0 bg-light @error('title') is-invalid @enderror" id="title" name="title" placeholder="Enter title" value="{{ old('title') }}">
                 <label for="title">Title</label>
                 @error('title')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -25,7 +25,7 @@
 
             <!-- Description Input with Floating Label -->
             <div class="form-floating mb-3">
-                <textarea class="form-control form-control-lg border-0 bg-light @error('description') is-invalid @enderror" id="description" name="description" placeholder="Enter description" style="height: 200px">{{ old('description') }}</textarea>
+                <textarea class="form-control form-control-md border-0 bg-light @error('description') is-invalid @enderror" id="description" name="description" placeholder="Enter description" style="height: 200px">{{ old('description') }}</textarea>
                 <label for="description">Description</label>
                 @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -35,7 +35,7 @@
 
             <!-- Department Select with Floating Label -->
             <div class="form-floating mb-3">
-                <select class="form-select form-control-lg border-0 bg-light @error('department') is-invalid @enderror" id="department" name="department">
+                <select class="form-select form-control-md border-0 bg-light @error('department') is-invalid @enderror" id="department" name="department">
                     <option value="" selected disabled>Select a department</option>
                     <option value="Anaesthesiology, Resuscitation and Intensive Care Medicine">Anaesthesiology, Resuscitation and Intensive Care Medicine</option>
                     <option value="Anatomy">Anatomy</option>

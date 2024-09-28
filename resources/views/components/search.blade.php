@@ -17,7 +17,7 @@
 
                 <!-- Large input for larger screens -->
                 <input
-                    class="form-control form-control-lg bg-white border-0 flex-grow-1 d-none d-md-block"
+                    class="form-control form-control-lg bg-white border-0 flex-grow-1"
                     type="search"
                     placeholder="Search listings"
                     aria-label="Search"
@@ -27,7 +27,7 @@
 
                 <!-- Small input for smaller screens -->
                 <input
-                    class="form-control form-control-sm bg-white border-0 flex-grow-1 d-block d-md-none"
+                    class="form-control form-control-lg bg-white border-0 flex-grow-1 d-block d-md-none"
                     type="search"
                     placeholder="Search listings"
                     aria-label="Search"
@@ -35,7 +35,6 @@
                     style="border-radius: 7px; margin-left: 25px;"
                 />
 
-                <!-- Search button aligned to the right -->
                 <button class="btn btn-lg search-btn border-0 input-group-text" type="submit">
                     <i class="fa fa-search"></i>
                 </button>

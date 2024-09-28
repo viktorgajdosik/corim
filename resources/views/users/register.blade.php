@@ -27,7 +27,7 @@
                                 @csrf
                                 <!-- Name Input with Floating Label -->
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name" placeholder="Forname, Surname, Titles" value="{{ old('name') }}" required>
+                                    <input type="text" class="form-control form-control-md @error('name') is-invalid @enderror" id="name" name="name" placeholder="Forname, Surname, Titles" value="{{ old('name') }}" required>
                                     <label for="name">Forname, Surname, Titles</label>
                                     @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -36,7 +36,7 @@
 
                                 <!-- Email Input with Floating Label -->
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" placeholder="Organisation email address" value="{{ old('email') }}" required>
+                                    <input type="email" class="form-control form-control-md @error('email') is-invalid @enderror" id="email" name="email" placeholder="Organisation email address" value="{{ old('email') }}" required>
                                     <label for="email">Organisation email address</label>
                                     @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -48,7 +48,7 @@
                                     <div class="form-floating">
                                         <input
                                             :type="showPassword ? 'text' : 'password'"
-                                            class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                            class="form-control form-control-md @error('password') is-invalid @enderror"
                                             id="password"
                                             name="password"
                                             placeholder="Password"
@@ -78,7 +78,7 @@
                                     <div class="form-floating">
                                         <input
                                             :type="showConfirmPassword ? 'text' : 'password'"
-                                            class="form-control form-control-lg"
+                                            class="form-control form-control-md"
                                             id="password_confirmation"
                                             name="password_confirmation"
                                             placeholder="Confirm Password"

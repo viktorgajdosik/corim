@@ -26,7 +26,7 @@
                             @csrf
                           <!-- Email Input with Floating Label -->
 <div class="form-floating mb-3">
-    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" placeholder="Enter email" required name="email" value="{{ old('email') }}"> <!-- Adjusted padding to maintain input size -->
+    <input type="email" class="form-control form-control-md @error('email') is-invalid @enderror" id="email" placeholder="Enter email" required name="email" value="{{ old('email') }}"> <!-- Adjusted padding to maintain input size -->
     <label for="email">Email address</label>
     @error('email')
     <div class="invalid-feedback">{{ $message }}</div>
@@ -38,7 +38,7 @@
     <div class="form-floating">
         <input
             :type="showPassword ? 'text' : 'password'"
-            class="form-control form-control-lg @error('password') is-invalid @enderror"
+            class="form-control form-control-md @error('password') is-invalid @enderror"
             id="password"
             placeholder="Password"
             required
