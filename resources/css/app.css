@@ -35,7 +35,7 @@
 
     .logo_wrapper {
       position: absolute;
-      width: 186.13px;
+      width: 200px;
       height: 70px;
       left: 15px;
       z-index: 1;
@@ -487,7 +487,6 @@
         height: 70px;
         z-index: 1;
         background-color: aliceblue;
-        border-top: 0.3px solid lightgrey;
       }
 
       .nav-link {
