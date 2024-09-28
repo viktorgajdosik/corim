@@ -245,11 +245,6 @@
       margin-right: 8px;
     }
 
-    .search-input {
-      font-size: large;
-      border-radius: 7px;
-      background-color: white;
-    }
 
     .search-btn{
       border-radius: 7px;
@@ -463,6 +458,7 @@
 
       .container-custom-top{
        max-width: 100%;
+
     }
 
     .container-custom-main{
