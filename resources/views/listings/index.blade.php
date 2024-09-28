@@ -24,7 +24,7 @@
         <div class="carousel-item">
             <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
                 <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
-                    <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Proactive individuals facilitating</span><span style="color: white;"> collaborative progress</span><span class="text-body-secondary"> in medical research.</span></h1>
+                    <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Proactive individuals facilitating</span><span style="color: white;"> collaborative progress</span><span class="text-body-primary"> in medical research.</span></h1>
                 </div>
             </div>
         </div>
