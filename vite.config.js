@@ -9,7 +9,8 @@ export default defineConfig({
         }),
     ],
     build: {
-        manifest: true,          // Generates the manifest.json
-        outDir: 'public/build',  // Output directory for production files
+        outDir: 'public/build', // This ensures files go into the public/build directory
+        assetsDir: 'assets',    // Place assets into a subdirectory called 'assets'
+        manifest: true,         // Ensure the manifest is created
     },
 });

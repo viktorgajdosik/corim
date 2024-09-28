@@ -14,7 +14,7 @@
     <link rel="mask-icon" href="{{asset('favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    @vite(['resources/js/app.js', 'resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>CORIM</title>
 </head>
 <body x-data="{ isLoading: true }" x-init="setTimeout(() => isLoading = false, 500)">
