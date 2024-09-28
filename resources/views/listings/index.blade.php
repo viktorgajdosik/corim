@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="carousel-item">
-            <div class="d-flex w-100 bg-primary" style="height: 300px; border-radius: 15px;">
+            <div class="d-flex w-100 bg-secondary" style="height: 300px; border-radius: 15px;">
                 <div class="carousel-caption d-flex justify-content-center" style="height: 100%; display: flex; flex-direction: column; bottom: 0; padding-bottom: 0; padding-top: 1rem;">
                     <h1 class="display-6 text-uppercase text-start"><span class="text-body-secondary">Researchers can</span> <span style="color: white;">create and showcase listings</span><span class="text-body-secondary"> of their ongoing research projects.</span></h1>
                 </div>
