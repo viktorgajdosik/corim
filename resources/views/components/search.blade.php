@@ -17,7 +17,7 @@
 
                 <!-- Large input for larger screens -->
                 <input
-                    class="form-control form-control-lg bg-white border-0 flex-grow-1"
+                    class="form-control form-control-lg bg-white d-none d-md-block border-0 flex-grow-1"
                     type="search"
                     placeholder="Search listings"
                     aria-label="Search"
