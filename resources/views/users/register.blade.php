@@ -16,6 +16,12 @@
 
                 <!-- Right Column (Registration Form) -->
                 <div class="col-xl-6 d-flex align-items-center justify-content-center">
+                     <!-- Logo mobile -->
+                <div class="sign-logo ">
+                    <a href="/">
+                        <img src="{{ asset('images/logo_w.svg') }}" alt="Logo">
+                    </a>
+                </div>
                     <div class="card login-card" style="background-color: transparent; border: none;">
                         <div class="card-header border-0 text-center" style="background-color: transparent;">
                             <h2 class="fw-bold" style="color: #fff;">Sign Up</h2>

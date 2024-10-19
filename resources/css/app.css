@@ -50,6 +50,10 @@
         width: 25vw;
     }
 
+    .sign-logo {
+        display: none;
+    }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -498,6 +502,21 @@
       .listing-title {
         margin-right: 0;
     }
+
+    .login-card {
+        top: -10vh;
+        width: 90vw;
+    }
+
+    .sign-logo {
+        display: block;
+        position: absolute;
+        width: 25vw;
+        top: 20px;
+        left: 20px;
+        height: auto;
+    }
+
 
     }
 
