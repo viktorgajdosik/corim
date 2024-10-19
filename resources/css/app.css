@@ -504,14 +504,14 @@
     }
 
     .login-card {
-        top: -10vh;
+        top: -8vh;
         width: 90vw;
     }
 
     .sign-logo {
         display: block;
         position: absolute;
-        width: 25vw;
+        width: 20vw;
         top: 20px;
         left: 20px;
         height: auto;
