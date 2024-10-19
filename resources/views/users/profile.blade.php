@@ -1,4 +1,4 @@
-<x-search/>
+
 <x-layout>
     <div class="row align-items-stretch">
         <!-- Personal Information Section -->
@@ -8,10 +8,10 @@
             <x-card class="personal-info">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <h5 class="mb-3">{{ $user->name }} </h5>
-                        <p><i class="me-1 text-secondary fa fa-envelope"></i> {{ $user->email }} </p>
-                        <p><i class="me-1 text-secondary fa fa-building"></i> {{ $user->department }} </p>
-                        <p><i class="me-1 text-secondary fa fa-star"
+                        <h5 class="mb-3 text-white">{{ $user->name }} </h5>
+                        <p class="text-white"><i class="me-1 text-white fa fa-envelope"></i> {{ $user->email }} </p>
+                        <p class="text-white"><i class="me-1 text-white fa fa-building"></i> {{ $user->department }} </p>
+                        <p class="text-white"><i class="me-1 text-white fa fa-star"
                             data-bs-toggle="popover"
                             data-bs-trigger="hover"
                             data-bs-placement="bottom"
@@ -23,7 +23,7 @@
                 </div>
             </x-card>
             <div class="mt-3">
-                <a href="" class="btn btn-secondary mb-2">Download Information</a>
+                <a href="" class="btn btn-primary mb-2">Download Information</a>
                 <form method="POST" action="/users/profile">
                     @csrf
                     @method('DELETE')
@@ -43,9 +43,9 @@
                 </i>
             </h3>
             <br>
-            <div class="scrollable-listings h-75">
+            <div class="scrollable-listings h-75 p-3">
                 @if ($user->acceptedApplications->isEmpty())
-                    <p>You have not participated in other author's research work yet.</p>
+                    <p class="text-white">You have not participated in other author's research work yet.</p>
                 @else
                     @foreach ($user->acceptedApplications as $application)
                         <x-listing-card :listing="$application->listing" />

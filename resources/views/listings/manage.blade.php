@@ -1,8 +1,8 @@
-<x-search/>
+
 <x-layout>
 
             <h3>Your Listings<i
-                class="fa fa-info-circle ml-2 info-icon"
+                class="fa fa-info-circle ms-1 info-icon"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover"
                 data-bs-placement="bottom"

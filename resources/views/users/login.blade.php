@@ -2,24 +2,23 @@
     <div class="container-fluid vh-100">
         <div class="row h-100">
             <!-- Left Column (Logo and Info) -->
-            <div class="col-xl-5 d-none d-xl-flex flex-column justify-content-center bg-primary text-white" style="padding-left: 3rem; position: relative;">
+            <div class="col-xl-6 d-none d-xl-flex flex-column justify-content-center text-body" style="background-color:#000; padding-left: 4rem; position: relative;">
                 <a href="/">
                     <img src="{{ asset('images/logo_w.svg') }}" alt="Logo" style="position: absolute; top: 2rem; width: 75px; height: auto;">
                 </a>
-                <div class="text-wrapper" style="max-width: 450px; text-align: left;">
-                    <h2 class="fw-bold">Log in</h2>
-                    <p style="font-size: 1.1rem;">
-                        To access your personalized dashboard and stay up-to-date with important updates. Your account connects you to a community dedicated to advancing medical research and innovation.
+                <div class="text-wrapper" style="max-width: 700px; text-align: left;">
+                    <p class="text-uppercase text-white" style="font-weight: 900; font-size: 4rem;">
+                        Dedicated to advancing medical research
                     </p>
                 </div>
             </div>
 
             <!-- Right Column (Login Form) -->
-            <div class="col-xl-7 d-flex align-items-center justify-content-center">
-                <div class="card login-card" style="background-color: transparent; border: none;" x-data="{ showPassword: false }">
+            <div class="col-xl-6 d-flex align-items-center justify-content-center">
+                <div class="card login-card p-3 border-0" style="background-image: url('{{ asset('images/car-bg-1.jpg') }}'); background-size: cover; background-position: center;" x-data="{ showPassword: false }">
                     <div class="card-header border-0 text-center" style="background-color: transparent;">
-                        <h2 class="fw-bold" style="color: #000000;">Welcome</h2>
-                        <p class="login-subtitle">Sign in to access your account.</p>
+                        <h2 class="fw-bold text-white">Welcome</h2>
+                        <p class="login-subtitle text-white">Sign in to access your account.</p>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="/users/authenticate" novalidate>
@@ -69,14 +68,14 @@
                                 <button type="submit" class="btn btn-sign btn-lg w-100">Sign in</button>
                             </div>
                             <div class="mt-2 text-center">
-                                <a href="#">Forgot Password?</a>
+                                <a class="text-white" href="#">Forgot Password?</a>
                             </div>
                         </form>
                     </div>
 
                     <!-- Sign Up Link -->
-                    <div class="card-footer text-center" style="background-color: transparent;">
-                        Don't have an account? <a href="/register">Sign up</a>
+                    <div class="card-footer text-center text-white" style="background-color: transparent;">
+                        Don't have an account? <a class="text-white" href="/register">Sign up</a>
                     </div>
                 </div>
             </div>

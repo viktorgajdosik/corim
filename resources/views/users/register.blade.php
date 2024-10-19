@@ -3,24 +3,23 @@
         <div class="container-fluid vh-100">
             <div class="row h-100">
                 <!-- Left Column (Logo and Info) -->
-                <div class="col-xl-5 d-none d-xl-flex flex-column justify-content-center bg-primary text-white" style="padding-left: 3rem; position: relative;">
+                <div class="col-xl-6 d-none d-xl-flex flex-column justify-content-center text-body" style="background-color:#000; padding-left: 4rem; position: relative;">
                     <a href="/">
                         <img src="{{ asset('images/logo_w.svg') }}" alt="Logo" style="position: absolute; top: 2rem; width: 75px; height: auto;">
                     </a>
-                    <div class="text-wrapper" style="max-width: 450px; text-align: left;">
-                        <h2 class="fw-bold">Create your account</h2>
-                        <p style="font-size: 1.1rem;">
-                            to join a dynamic community focused on advancing medical research. Connect with researchers, showcase your projects, and contribute to meaningful progress in healthcare.
+                    <div class="text-wrapper" style="max-width: 700px; text-align: left;">
+                        <p class="text-uppercase text-white" style="font-weight: 900; font-size: 4rem;">
+                         Connect with peers to contribute
                         </p>
                     </div>
                 </div>
 
                 <!-- Right Column (Registration Form) -->
-                <div class="col-xl-7 d-flex align-items-center justify-content-center">
+                <div class="col-xl-6 d-flex align-items-center justify-content-center">
                     <div class="card login-card" style="background-color: transparent; border: none;">
                         <div class="card-header border-0 text-center" style="background-color: transparent;">
-                            <h2 class="fw-bold" style="color: #000000;">Sign Up</h2>
-                            <p class="login-subtitle">Create your account.</p>
+                            <h2 class="fw-bold" style="color: #fff;">Sign Up</h2>
+                            <p class="login-subtitle text-white">Create your account.</p>
                         </div>
                         <div class="card-body">
                             <form action="/users" method="POST" novalidate>
@@ -101,7 +100,7 @@
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-sign btn-lg w-100">Sign up</button>
                                 </div>
-                                <div class="mt-2 text-center">
+                                <div class="mt-2 text-center text-white">
                                     Already have an account? <a href="/login">Sign in</a>
                                 </div>
                             </form>

@@ -31,7 +31,7 @@ $(document).ready(function() {
             }, 150); // Wait 0.1 seconds before showing the modal
         },
         function() {
-            clearTimeout(hoverTimer); // Clear the timer if the mouse leaves before 0.5 seconds
+            clearTimeout(hoverTimer); // Clear the timer if the mouse leaves before 0.1 seconds
         }
     );
 

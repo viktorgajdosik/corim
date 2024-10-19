@@ -1,3 +1,3 @@
-<div class="card-general p-3 mb-3 bg-white">
+<div class="card-general mb-3 bg-black">
     {{$slot}}
 </div>
