@@ -14,7 +14,7 @@
             </div>
 
             <!-- Right Column (Login Form) -->
-            <div class="col-xl-6 d-flex align-items-center justify-content-center flex-column">
+            <div class="container col-xl-6 d-flex align-items-center justify-content-center flex-column">
 
                 <!-- Logo mobile -->
                 <div class="sign-logo ">

@@ -505,7 +505,7 @@
 
     .login-card {
         top: -8vh;
-        width: 90vw;
+        width: 100%;
     }
 
     .sign-logo {
@@ -513,16 +513,12 @@
         position: absolute;
         width: 20vw;
         top: 20px;
-        left: 20px;
+        left: 12px;
         height: auto;
     }
 
 
     }
-
-    .carousel-height {
-        height: 300px;
-      }
 
   @media (max-width: 1200px) {
     .carousel-height {
