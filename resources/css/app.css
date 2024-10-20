@@ -451,10 +451,20 @@
         .carousel-height {
           height: 400px;
         }
+
         .login-card {
             width: 50%;
         }
 
+
+    .sign-logo {
+        display: block;
+        position: absolute;
+        width: 90px;
+        top: 12px;
+        left: 12px;
+        height: auto;
+    }
 
 
       }
@@ -506,15 +516,6 @@
     .login-card {
         top: -8vh;
         width: 100%;
-    }
-
-    .sign-logo {
-        display: block;
-        position: absolute;
-        width: 20vw;
-        top: 20px;
-        left: 12px;
-        height: auto;
     }
 
 
