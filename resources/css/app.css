@@ -96,10 +96,6 @@
         font-weight: 500;
       }
 
-    .fa {
-        opacity: 0.7;
-    }
-
     .display-6{
         font-weight: 800;
         color: #fff;
@@ -280,7 +276,7 @@
   .nav-link i {
       margin: 20px;
   }
-    .btn-outline-secondary, .btn-primary{
+    .btn-primary{
 
       background-color: #fff;
       color:#000;
@@ -289,7 +285,7 @@
       transition: all 0.1s ease;
     }
 
-    .btn-outline-secondary:hover, .btn-primary:hover{
+    .btn-primary:hover{
       background-color: #000;
       border: 1px solid #fff;
       border-radius: 7rem;
@@ -319,6 +315,18 @@
         background-color: #fff;
         border: 1px solid #fff;
         color:#000;
+    }
+
+    .btn-tertiary {
+        background-color: transparent;
+        border: none;
+        color:#fff;
+    }
+
+    .btn-tertiary:hover {
+        background-color: transparent;
+        border: none;
+        color: gray;
     }
 
     .btn-danger {

@@ -2,7 +2,7 @@
 <x-layout>
     <div class="row align-items-stretch">
         <!-- Personal Information Section -->
-        <div class="col-xl-4 mb-5">
+        <div class="col-xl-3 mb-5">
             <h3>Personal Information</h3>
             <br>
             <x-card class="personal-info">
@@ -17,7 +17,7 @@
                             data-bs-placement="bottom"
                             data-bs-content="You receive research points after successfully completing individual research tasks."></i> 35</p>
                     </div>
-                    <a href="/users/edit-profile" class="btn btn-secondary btn-circle">
+                    <a href="/users/edit-profile" class="btn btn-tertiary p-0">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </div>
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Research Participation Section -->
-        <div class="col-xl-8 mb-5">
+        <div class="col-xl-9 mb-5">
             <h3>Research Participation
                 <i class="fa fa-info-circle ml-2 info-icon"
                    data-bs-toggle="popover"
@@ -43,7 +43,7 @@
                 </i>
             </h3>
             <br>
-            <div class="scrollable-listings h-75 p-3">
+            <div class="scrollable-listings h-75">
                 @if ($user->acceptedApplications->isEmpty())
                     <p class="text-white">You have not participated in other author's research work yet.</p>
                 @else
