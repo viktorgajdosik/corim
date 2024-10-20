@@ -60,7 +60,7 @@
         <div class="d-flex">
             <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-success mr-1" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-secondary me-1" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
@@ -143,7 +143,7 @@
                 </div>
 
                 <!-- Upload File (unchanged) -->
-                <div class="form-group upload mb-3">
+                <div class="form-group upload mb-3 rounded-pill">
                     <label for="task-file">
                         <i class="fa fa-file"></i> Upload File
                     </label>
@@ -168,7 +168,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-secondary btn-lg mt-3">Create Task</button>
+                <button type="submit" class="btn btn-secondary mt-3">Submit</button>
             </form>
         </x-card-form>
 

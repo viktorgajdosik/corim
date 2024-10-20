@@ -210,17 +210,18 @@
     .upload label {
       display: inline-block;
       padding: 6px 10px;
-      border-radius: 4px;
       font-size: 16px;
       font-weight: normal;
-      color: #fff;
-      background-color: #000;
+      color: #000;
+      border: 1px solid #000;
+      background-color: transparent;
       border-radius: 7px;
       cursor: pointer;
     }
 
     .upload label:hover {
       background-color: #fff;
+      border: 1px solid #fff;
       color: #000;
     }
 
@@ -318,19 +319,6 @@
         background-color: #fff;
         border: 1px solid #fff;
         color:#000;
-    }
-
-    .btn-success {
-      background-color: transparent;
-      border: 1px solid #00ff6a;
-      color:#00ff6a;
-      border-radius: 7rem;
-    }
-
-    .btn-success:hover {
-      background-color: #00ff6a;
-      border: 1px solid #00ff6a;
-      color: #fff;
     }
 
     .btn-danger {
@@ -459,6 +447,19 @@
         }
     }
 
+    @media (max-width: 1200px) {
+        .carousel-height {
+          height: 400px;
+        }
+        .login-card {
+            top: -8vh;
+            width: 50%;
+        }
+
+
+
+      }
+
 
     @media only screen and (max-width: 767px) {
 
@@ -520,8 +521,3 @@
 
     }
 
-  @media (max-width: 1200px) {
-    .carousel-height {
-      height: 400px;
-    }
-  }
