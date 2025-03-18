@@ -25,7 +25,7 @@
                 @foreach([
                     'Select Your Department','Student', 'Anaesthesiology, Resuscitation and Intensive Care Medicine',
                     'Anatomy', 'Clinical Biochemistry', 'Clinical Neurosciences',
-                    'Craniofacial Surgery', 'Dentistry', 'Emergency Medicine',
+                    'Craniofacial Surgery', 'Dentistry', 'Dermatovenerology', 'Emergency Medicine',
                     'Epidemiology and Public Health', 'Forensic Medicine',
                     'Gynecology and Obstetrics', 'Hematooncology', 'Histology and Embryology',
                     'Hyperbaric Medicine', 'Imaging Methods', 'Internal Medicine',

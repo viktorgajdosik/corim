@@ -471,6 +471,11 @@
     }
 
     @media (max-width: 1200px) {
+
+        *:hover {
+            all: unset !important;
+        }
+
         .carousel-height {
           height: 400px;
         }
