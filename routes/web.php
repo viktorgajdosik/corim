@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 Livewire::component('search-dropdown', SearchDropdown::class);
 
 // **HOME PAGE ROUTE (SHOW DEFAULT LISTINGS VIA CONTROLLER)**
-Route::get('/', [ListingController::class, 'index']); // ✅ Use controller
+Route::get('/', [ListingController::class, 'index']); // Use controller
 // **LISTINGS ROUTES**
 Route::get('/listings/create', [ListingController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/listings', [ListingController::class, 'store'])->middleware('auth', 'verified');
@@ -23,9 +23,11 @@ Route::get('/listings/show-manage/{listing}', [ListingController::class, 'showMa
     ->middleware(['auth', 'verified'])
     ->name('listings.show-manage');
 
-Route::get('/listings/{listing}', [ListingController::class, 'show'])->middleware('auth', 'verified');
+    Route::get('/listings/{listing}', [ListingController::class, 'show'])
+    ->middleware('auth', 'verified')
+    ->name('listings.show');
 
-// **AUTHENTICATED USER ROUTES**
+// **PROFILE USER ROUTES**
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/profile', [UserController::class, 'show'])->name('users.profile');
     Route::get('/users/edit-profile', [UserController::class, 'editProfile'])->name('users.edit-profile');
