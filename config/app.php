@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'CORIM'),
 
     /*
     |--------------------------------------------------------------------------
@@ -50,8 +50,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This URL is used by the console to properly generate URLs when using
-    | the Artisan command line tool. You should set this to the root of
-    | your application so that it is used when running Artisan tasks.
+    | the Artisan command line tool. Set this to the root of your application.
     |
     */
 
@@ -64,22 +63,18 @@ return [
     | Application Timezone
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. We have gone
-    | ahead and set this to a sensible default for you out of the box.
+    | This is the default timezone for your application.
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Prague',
 
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |
-    | The application locale determines the default locale that will be used
-    | by the translation service provider. You are free to set this value
-    | to any of the locales which will be supported by the application.
+    | This determines the default locale for translations.
     |
     */
 
@@ -90,9 +85,7 @@ return [
     | Application Fallback Locale
     |--------------------------------------------------------------------------
     |
-    | The fallback locale determines the locale to use when the current one
-    | is not available. You may change the value to correspond to any of
-    | the language folders that are provided through your application.
+    | The fallback locale when the current one is not available.
     |
     */
 
@@ -103,9 +96,7 @@ return [
     | Faker Locale
     |--------------------------------------------------------------------------
     |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
+    | This locale will be used by Faker when generating fake data.
     |
     */
 
@@ -116,9 +107,7 @@ return [
     | Encryption Key
     |--------------------------------------------------------------------------
     |
-    | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
-    | will not be safe. Please do this before deploying an application!
+    | This key is used by Laravel for encryption.
     |
     */
 
@@ -131,9 +120,7 @@ return [
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |
-    | These configuration options determine the driver used to determine and
-    | manage Laravel's "maintenance mode" status. The "cache" driver will
-    | allow maintenance mode to be controlled across multiple machines.
+    | Determines how Laravel handles maintenance mode.
     |
     | Supported drivers: "file", "cache"
     |
@@ -149,9 +136,7 @@ return [
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
+    | These service providers will be automatically loaded on each request.
     |
     */
 
@@ -159,6 +144,9 @@ return [
         /*
          * Package Service Providers...
          */
+        Livewire\LivewireServiceProvider::class,
+        Laravel\Fortify\FortifyServiceProvider::class, // ✅ Added Fortify Provider
+        Laravel\Sanctum\SanctumServiceProvider::class, // ✅ Added Sanctum (if using API tokens)
 
         /*
          * Application Service Providers...
@@ -168,6 +156,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
+
     ])->toArray(),
 
     /*
@@ -175,9 +165,7 @@ return [
     | Class Aliases
     |--------------------------------------------------------------------------
     |
-    | This array of class aliases will be registered when this application
-    | is started. However, feel free to register as many as you wish as
-    | the aliases are "lazy" loaded so they don't hinder performance.
+    | Aliases registered for easier access.
     |
     */
 

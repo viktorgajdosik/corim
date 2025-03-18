@@ -102,10 +102,10 @@ return [
     |
     */
 
-    'limiters' => [
-        'login' => 'login',
-        'two-factor' => 'two-factor',
-    ],
+'limiters' => [
+    'login' => null, // Disables login rate limiting
+    'two-factor' => null, // Disables two-factor rate limiting
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -131,17 +131,16 @@ return [
     |
     */
 
-    'features' => [
-        Features::registration(),
-        Features::resetPasswords(),
-        // Features::emailVerification(),
-        Features::updateProfileInformation(),
-        Features::updatePasswords(),
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-            // 'window' => 0,
-        ]),
-    ],
+'features' => [
+    Features::registration(),
+    Features::resetPasswords(),
+    // Features::emailVerification(),  <-- TEMPORARILY DISABLE THIS
+    Features::updateProfileInformation(),
+    Features::updatePasswords(),
+    Features::twoFactorAuthentication([
+        'confirm' => true,
+        'confirmPassword' => true,
+    ]),
+],
 
 ];

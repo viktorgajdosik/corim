@@ -2,91 +2,70 @@
 
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use App\Livewire\SearchDropdown;
 use Illuminate\Support\Facades\Route;
-use App\Models\Listing;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+// **Register Livewire Component for Search**
+Livewire::component('search-dropdown', SearchDropdown::class);
 
-// Common Resource Routes:
-// index - Show all listings
-// show - Show single listing
-// create - Show form to create new listing
-// store - Store new listing
-// edit - Show form to edit listing
-// update - Update listing
-// destroy - Delete listing
+// **HOME PAGE ROUTE (SHOW DEFAULT LISTINGS VIA CONTROLLER)**
+Route::get('/', [ListingController::class, 'index']); // ✅ Use controller
+// **LISTINGS ROUTES**
+Route::get('/listings/create', [ListingController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/listings', [ListingController::class, 'store'])->middleware('auth', 'verified');
+Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->middleware('auth', 'verified');
+Route::put('/listings/{listing}', [ListingController::class, 'update'])->middleware('auth', 'verified');
+Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->middleware('auth', 'verified');
+Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware(['auth', 'verified']);
+Route::get('/listings/show-manage/{listing}', [ListingController::class, 'showManage'])
+    ->middleware(['auth', 'verified'])
+    ->name('listings.show-manage');
 
+Route::get('/listings/{listing}', [ListingController::class, 'show'])->middleware('auth', 'verified');
 
-// All Listings
-Route::get('/', [ListingController::class, 'index']);
+// **AUTHENTICATED USER ROUTES**
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/users/profile', [UserController::class, 'show'])->name('users.profile');
+    Route::get('/users/edit-profile', [UserController::class, 'editProfile'])->name('users.edit-profile');
 
-// Show Create Form
-Route::get('/listings/create', [ListingController::class, 'create'])->middleware('auth');
+    // **Delete User Profile**
+    Route::delete('/users/profile', [UserController::class, 'deleteProfile'])->name('users.delete-profile');
 
-// Store Listing Data
-Route::post('/listings', [ListingController::class, 'store'])->middleware('auth');
+    // **User Logout**
+    Route::post('/logout', function (Request $request) {
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/')->with('message', 'You have been logged out.');
+    })->withoutMiddleware(['auth', 'verified'])->name('logout');
+});
 
-// Show Edit Form
-Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->middleware('auth');
+// **GUEST-ONLY ROUTES**
+Route::middleware('guest')->group(function () {
+    Route::get('/register', fn() => view('users.register'))->name('register');
+    Route::get('/login', fn() => view('users.login'))->name('login');
+    Route::get('/forgot-password', fn() => view('users.forgot-password'))->name('password.request');
+    Route::get('/reset-password/{token}', fn($request) => view('users.reset-password', ['request' => $request]))->name('password.reset');
+});
 
-// Update Listing
-Route::put('/listings/{listing}', [ListingController::class, 'update'])->middleware('auth');
+// **EMAIL VERIFICATION ROUTES**
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', fn() => view('users.verify-email'))->name('verification.notice');
 
-// Delete Listing
-Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->middleware('auth');
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/users/profile')->with('message', 'Email verified successfully.');
+    })->middleware(['signed'])->name('verification.verify');
 
-// Manage Listings
-Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware('auth');
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('status', 'verification-link-sent');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});
 
-// Show Single Listing Management
-Route::get('/listings/show-manage/{listing}', [ListingController::class, 'showManage'])->middleware('auth');
-
-// Show Single Listing
-Route::get('/listings/{listing}', [ListingController::class, 'show'])->middleware('auth');
-
-// Show Register/Create Form
-Route::get('/register', [UserController::class, 'create'])->name('register')->middleware('guest');
-
-// Create New User
-Route::post('/users', [UserController::class, 'store']);
-
-// Log User Out
-Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
-
-// Show Login Form
-Route::get('/login', [UserController::class, 'login'])->name('login')->middleware('guest');
-
-// Log In User
-Route::post('/users/authenticate', [UserController::class, 'authenticate']);
-
-// Show User Profile
-Route::get('/users/profile', [UserController::class, 'show'])->middleware('auth');
-
-// Show Edit Profile Page
-Route::get('/users/edit-profile', [UserController::class, 'editProfile'])->middleware('auth')->name('users.edit-profile');
-
-// Edit Profile
-Route::put('/users/profile', [UserController::class, 'updateProfile'])->middleware('auth');
-
-// Delete Profile
-Route::delete('/users/profile', [UserController::class, 'deleteProfile'])->middleware('auth');
-
-// Apply to a listing
-Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])->middleware('auth')->name('listings.apply');
-
-// Accept an application
-Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])->middleware('auth')->name('listings.accept');
-
-// Deny an application
-Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth')->name('listings.deny');
-
+// **OTHER USER ACTIONS**
+Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])->middleware('auth', 'verified')->name('listings.apply');
+Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])->middleware('auth', 'verified')->name('listings.accept');
+Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth', 'verified')->name('listings.deny');

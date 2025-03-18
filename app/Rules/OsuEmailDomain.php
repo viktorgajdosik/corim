@@ -8,7 +8,7 @@ class OsuEmailDomain implements Rule
 {
     public function passes($attribute, $value)
     {
-        return preg_match('/@(osu\.cz|student\.osu\.cz|fno\.cz)$/', $value);
+        return preg_match('/@(osu\.cz|fno\.cz)$/', $value);
     }
 
     public function message()

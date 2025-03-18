@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('title');
+            $table->string('title')->index();       // Add index to title
             $table->longText('description');
-            $table->string('author');
-            $table->string('department');
-            $table->timestamps('');
+            $table->string('author')->index();      // Add index to author
+            $table->string('department')->index();  // Add index to department
+            $table->timestamps();
         });
     }
 

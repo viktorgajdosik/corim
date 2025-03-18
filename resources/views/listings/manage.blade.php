@@ -1,5 +1,6 @@
+@extends('components.layout')
+@section('content')
 
-<x-layout>
 
             <h3>Your Listings<i
                 class="fa fa-info-circle ms-1 info-icon"
@@ -30,4 +31,4 @@
 
               @endunless
 
-</x-layout>
+@endsection

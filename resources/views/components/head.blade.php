@@ -14,21 +14,19 @@
     <link rel="mask-icon" href="{{asset('favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#000">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @livewireStyles
     <title>CORIM</title>
 </head>
-<body x-data="{ isLoading: true }" x-init="setTimeout(() => isLoading = false, 500)">
-
-        <!-- Spinner Loader -->
-        <div id="loadingSpinner" class="loading-spinner" x-show="isLoading">
-            <div class="spinner-border text-white" role="status">
-            </div>
-        </div>
-
-    <!-- Actual Content (Slot) -->
-    <div x-show="!isLoading" style="display: none;">
-        {{$slot}}
-        <x-flash-message />
+<body>
+    <!-- Livewire Global Loading Spinner -->
+    <div wire:loading class="loading-spinner">
+        <div class="spinner-border text-white" role="status"></div>
     </div>
+
+    <!-- Actual Content -->
+    {{$slot}}
+    <x-flash-message />
+    @livewireScripts
 </body>
 </html>

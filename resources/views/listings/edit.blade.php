@@ -1,36 +1,36 @@
-
-<x-layout>
+@extends('components.layout')
+@section('content')
     <h3>Edit Listing</h3>
     <br>
 
-    <x-card-form>
-        <form method="POST" action="/listings/{{$listing->id}}">
+    <x-card-no-bg>
+        <form method="POST" action="/listings/{{$listing->id}}" class="custom-floating-label">
             @csrf
             @method('PUT')
 
             <!-- Title Input with Floating Label -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-md border-0 bg-white @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{ $listing->title }}">
+                <input type="text" class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{ $listing->title }}">
                 <label for="title">Title</label>
                 @error('title')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                <small class="form-text text-muted">Minimum 10 characters required.</small>
+                <small class="form-text text-secondary">Minimum 10 characters required.</small>
             </div>
 
             <!-- Description Input with Floating Label -->
             <div class="form-floating mb-3">
-                <textarea class="form-control form-control-md border-0 bg-white @error('description') is-invalid @enderror" id="description" name="description" placeholder="Description" style="height: 200px">{{ $listing->description }}</textarea>
+                <textarea class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('description') is-invalid @enderror" id="description" name="description" placeholder="Description" style="height: 200px">{{ $listing->description }}</textarea>
                 <label for="description">Description</label>
                 @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-                <small class="form-text text-muted">Minimum 50 characters required.</small>
+                <small class="form-text text-secondary">Minimum 50 characters required.</small>
             </div>
 
             <!-- Department Select with Floating Label -->
             <div class="form-floating mb-3">
-                <select class="form-select form-control-md border-0 bg-white @error('department') is-invalid @enderror" id="department" name="department" aria-label="Department">
+                <select class="form-select form-control-md border-1 border-secondary text-white bg-dark @error('department') is-invalid @enderror" id="department" name="department" aria-label="Department">
                     <option selected disabled>{{ $listing->department }}</option>
                     <option value="Anaesthesiology, Resuscitation and Intensive Care Medicine">Anaesthesiology, Resuscitation and Intensive Care Medicine</option>
                     <option value="Anatomy">Anatomy</option>
@@ -64,7 +64,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-secondary btn-lg">Edit Offer</button>
+            <button type="submit" class="btn btn-primary btn">Edit Offer</button>
         </form>
     </x-card-form>
-</x-layout>
+    @endsection

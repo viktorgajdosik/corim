@@ -1,5 +1,6 @@
+@extends('components.layout')
+@section('content')
 
-<x-layout>
 
     <h3>Listing Management<i
         class="fa fa-info-circle ms-1 info-icon"
@@ -12,19 +13,15 @@
 
     <x-card-form>
         <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
-            <span>
-                <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
-            </span>
+                <p>  <i class="fa fa-user" data-toggle="tooltip" title="Author"></i> {{ $listing->author }}
             <span> | </span>
-            <span>
                 <i class="fa solid fa-building" data-toggle="tooltip" title="Department"></i> {{ $listing->department }}
-            </span>
             <span> | </span>
-            <span><i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</span>
+            <i class="fa fa-calendar" data-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</p>
 
         <p class=" description text-justify mt-4 mb-3">{!! nl2br(e($listing->description)) !!}</p>
 
-        <button type="button" class="btn btn-secondary d-inline" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
+        <button type="button" class="btn btn-primary d-inline" onclick="window.location.href='/listings/{{$listing->id}}/edit'">
             <i class="fa fa-pencil"></i> Edit
         </button>
         <form method="POST" action="/listings/{{$listing->id}}" class="d-inline">
@@ -60,7 +57,7 @@
         <div class="d-flex">
             <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
                 @csrf
-                <button class="btn btn-secondary me-1" onclick="return confirm('Accept this application?')">
+                <button class="btn btn-primary me-1" onclick="return confirm('Accept this application?')">
                     <i class="fa fa-check"></i> Accept
                 </button>
             </form>
@@ -118,16 +115,16 @@
     data-bs-content="Here you can create tasks for this research listing and assign them to chosen participants."
     ></i></h3>
         <br>
-        <x-card-form>
+        <x-card-no-bg>
             <h4>Create Task</h4>
             <br>
-            <form method="POST" action="/tasks" enctype="multipart/form-data">
+            <form method="POST" action="/tasks" enctype="multipart/form-data" class="custom-floating-label">
                 @csrf
 
                 <!-- Task Name Input with Floating Label -->
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control form-control-md border-0 bg-white @error('task_name') is-invalid @enderror" id="task-name" name="task_name" placeholder="Task Name" value="{{ old('task_name') }}">
-                    <label for="task-name">Task Name</label>
+                    <input type="text" class="form-control form-control-md border-1 border-secondary bg-dark text-white @error('task_name') is-invalid @enderror" id="task-name" name="task_name" placeholder="Task Name" value="{{ old('task_name') }}">
+                    <label class="text-white" for="task-name">Task Name</label>
                     @error('task_name')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -135,8 +132,8 @@
 
                 <!-- Task Details Input with Floating Label -->
                 <div class="form-floating mb-3">
-                    <textarea class="form-control form-control-md border-0 bg-white @error('task_details') is-invalid @enderror" id="task-details" name="task_details" placeholder="Task Details" style="height: 200px">{{ old('task_details') }}</textarea>
-                    <label for="task-details">Task Details</label>
+                    <textarea class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('task_details') is-invalid @enderror" id="task-details" name="task_details" placeholder="Task Details" style="height: 200px">{{ old('task_details') }}</textarea>
+                    <label class="text-white" for="task-details">Task Details</label>
                     @error('task_details')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -152,7 +149,7 @@
 
                 <!-- Assign Task (unchanged) -->
                 <div class="form-group">
-                    <label for="students">Assign Task</label>
+                    <label class="mb-2" for="students">Assign Task</label>
                     @if ($listing->applications()->where('accepted', true)->exists())
                         @foreach ($listing->applications()->where('accepted', true)->with('user')->get() as $applicant)
                             <div class="form-check">
@@ -168,7 +165,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-secondary mt-3">Submit</button>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
         </x-card-form>
 
@@ -216,4 +213,4 @@
         <br>
         </x-card-form>
 
-</x-layout>
+        @endsection

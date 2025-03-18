@@ -9,14 +9,16 @@ class Listing extends Model
 {
     use HasFactory;
     public function scopeFilter($query, array $filters) {
-
-        if($filters['search'] ?? false) {
-            $query->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('author', 'like', '%' . request('search') . '%')
-                ->orWhere('description', 'like', '%' . request('search') . '%')
-                ->orWhere('department', 'like', '%' . request('search') . '%');
+        if (!empty($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('title', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('author', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('description', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('department', 'like', '%' . $filters['search'] . '%');
+            });
         }
     }
+
     // Relationship To User
     public function user() {
         return $this->belongsTo(User::class, 'user_id');

@@ -1,5 +1,5 @@
-
-<x-layout>
+@extends('components.layout')
+@section('content')
 
     <h3>Apply for the Research Work</h3>
     <br>
@@ -26,17 +26,32 @@
             <p>You have already applied for this research work. Please wait for the author's response.</p>
         </x-card-form>
     @else
-        <x-card-form>
-            <form action="{{ route('listings.apply', ['listing' => $listing->id]) }}" method="POST">
+        <x-card-no-bg>
+            <form action="{{ route('listings.apply', ['listing' => $listing->id]) }}" method="POST" class="custom-floating-label">
                 @csrf
+
+                <!-- Message the Author Floating Label -->
                 <div class="mb-3">
                     <h4 class="mb-2">Message the Author</h4>
                     <p>Tell the author something about yourself.</p>
-                    <textarea class="form-control bg-light border-0" id="message" name="message" rows="5" placeholder="Enter message" required></textarea>
+
+                    <div class="form-floating">
+                        <textarea class="form-control text-white bg-dark border-1 @error('message') is-invalid @enderror"
+                                  id="message"
+                                  name="message"
+                                  placeholder="Enter message"
+                                  style="height: 150px" required>{{ old('message') }}</textarea>
+                        <label for="message">Enter message</label>
+                    </div>
+
+                    @error('message')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                <button type="submit" class="btn btn-secondary mb-2">Apply</button>
+
+                <button type="submit" class="btn btn-primary mb-2">Apply</button>
             </form>
-        </x-card-form>
+        </x-card-no-bg>
     @endif
 
-</x-layout>
+@endsection

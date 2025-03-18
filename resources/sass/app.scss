@@ -1,1 +1,21 @@
-@import "~bootstrap/scss/bootstrap";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+// Optional: Customize Bootstrap variables here
+$dark: #2c2c2c;
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "light": $light,
+    "dark": $dark
+);
+
+
+@import "bootstrap/scss/bootstrap";
+
+@import "../css/app";
