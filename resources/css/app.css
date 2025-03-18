@@ -124,13 +124,6 @@
        color: gray;
     }
 
-    .date-container {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 5px;
-    }
-
     .date-created {
         margin: 0;
     }

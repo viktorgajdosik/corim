@@ -21,7 +21,7 @@
             <span><small>
                 <i class="fa solid fa-building"></i> {{ $listing->department }}</small>
             </span>
-            <span class="date-container"><small>
+            <span><small>
                 <i class="fa fa-calendar"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
             </span>
             <p class="description mt-2 mb-0 text-justify">
