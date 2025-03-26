@@ -10,7 +10,7 @@
         </i>
     </h3>
     <br>
-    <x-card-no-bg>
+    <x-card-form>
         <form method="POST" action="/listings" class="custom-floating-label">
             @csrf
 

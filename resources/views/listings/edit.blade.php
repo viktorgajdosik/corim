@@ -3,7 +3,7 @@
     <h3>Edit Listing</h3>
     <br>
 
-    <x-card-no-bg>
+    <x-card-form>
         <form method="POST" action="/listings/{{$listing->id}}" class="custom-floating-label">
             @csrf
             @method('PUT')

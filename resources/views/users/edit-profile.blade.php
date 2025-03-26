@@ -3,7 +3,7 @@
     <h3>Edit Profile</h3>
     <br>
 
-    <x-card-no-bg>
+    <x-card-form>
         <!-- ✅ FORM 1: UPDATE PROFILE INFO (NAME & DEPARTMENT) -->
         <form method="POST" action="{{ route('user-profile-information.update') }}" class="custom-floating-label">
             @csrf
@@ -88,5 +88,5 @@
             <!-- Submit Button for Password Update -->
             <button type="submit" class="btn-primary btn">Update Password</button>
         </form>
-    </x-card-no-bg>
+    </x-card-form>
     @endsection
