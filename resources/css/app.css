@@ -121,12 +121,12 @@
         border-bottom: 0.5px solid #202020;
     }
 
-    .listing-card .description{
+    .listing-card .description, .listing-card .date{
         color: #7a7a7a;
     }
 
     .listing-card:hover {
-        background-color: #191919;
+        background-color: #1a1a1a;
     }
 
     .date-created {
@@ -352,29 +352,16 @@
         color:#fff;
     }
 
-    .btn-tertiary {
-        background-color: transparent;
+    .btn-danger {
+        background-color: gray;
         border: none;
+        border-radius: 7rem;
         color:#fff;
     }
 
-    .btn-tertiary:hover {
-        background-color: transparent;
-        border: none;
-        color: gray;
-    }
-
-    .btn-danger {
-      background-color: transparent;
-      border: 1px solid #FF2814;
-      color:#FF2814;
-      border-radius: 7rem;
-    }
-
     .btn-danger:hover {
-        background-color: #FF2814;
-        border: 1px solid #FF2814;
-        color: #fff;
+        background-color: rgb(154, 154, 154);
+        color:#fff;
     }
 
     .form-group label {
@@ -546,6 +533,10 @@
         top: -8vh;
         width: 100%;
     }
+
+    .listing-card:hover {
+      background-color: #151515;
+  }
 
 
     }

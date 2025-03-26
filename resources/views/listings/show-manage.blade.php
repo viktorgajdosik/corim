@@ -115,7 +115,7 @@
     data-bs-content="Here you can create tasks for this research listing and assign them to chosen participants."
     ></i></h3>
         <br>
-        <x-card-no-bg>
+        <x-card-form>
             <h4>Create Task</h4>
             <br>
             <form method="POST" action="/tasks" enctype="multipart/form-data" class="custom-floating-label">

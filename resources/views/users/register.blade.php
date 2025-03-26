@@ -23,7 +23,7 @@
                         </a>
                     </div>
 
-                    <div class="card login-card" style="background-color: transparent; border: none;">
+                    <div class="card login-card" style="background-color: #1a1a1a; border: none;">
                         <div class="card-header border-0 text-center" style="background-color: transparent;">
                             <h2 class="fw-bold" style="color: #fff;">Sign Up</h2>
                             <p class="login-subtitle text-white">Create your account.</p>
