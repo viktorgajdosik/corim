@@ -15,7 +15,7 @@
                 </div>
 
                 <!-- Right Column (Registration Form) -->
-                <div class="container p-0 col-xl-6 d-flex align-items-center justify-content-center">
+                <div class="container p-3 col-xl-6 d-flex align-items-center justify-content-center">
                     <!-- Logo mobile -->
                     <div class="sign-logo">
                         <a href="/">
