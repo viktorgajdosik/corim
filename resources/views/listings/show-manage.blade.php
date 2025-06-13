@@ -145,12 +145,16 @@
         </div>
       </x-card-form>
     @empty
-      <p class="text-white">Currently no applications.</p>
+
+      <x-text class="text-white mb-5">Currently no applications.</x-text>
+
     @endforelse
 
     <x-secondary-heading>Current Participants</x-secondary-heading>
     @if ($listing->applications->where('accepted', true)->isEmpty())
-      <p class="text-white">Currently no participants.</p>
+
+      <x-text class="text-white mb-5">Currently no participants.</x-text>
+
     @else
       @foreach ($listing->applications->where('accepted', true) as $application)
         <x-card-form>
