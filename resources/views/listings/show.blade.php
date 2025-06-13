@@ -1,8 +1,7 @@
 @extends('components.layout')
 @section('content')
 
-    <h3>Apply for the Research Work</h3>
-    <br>
+    <x-secondary-heading>Apply for the Research Work</x-secondary-heading>
     <x-card-form>
         <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
         <span>
@@ -26,7 +25,7 @@
             <p>You have already applied for this research work. Please wait for the author's response.</p>
         </x-card-form>
     @else
-        <x-card-no-bg>
+        <x-card-form>
             <form action="{{ route('listings.apply', ['listing' => $listing->id]) }}" method="POST" class="custom-floating-label">
                 @csrf
 
@@ -51,7 +50,7 @@
 
                 <button type="submit" class="btn btn-primary mb-2">Apply</button>
             </form>
-        </x-card-no-bg>
+        </x-card-form>
     @endif
 
 @endsection

@@ -18,7 +18,9 @@ Route::post('/listings', [ListingController::class, 'store'])->middleware('auth'
 Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->middleware('auth', 'verified');
 Route::put('/listings/{listing}', [ListingController::class, 'update'])->middleware('auth', 'verified');
 Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->middleware('auth', 'verified');
-Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware(['auth', 'verified']);
+Route::get('/listings/manage', [ListingController::class, 'manage'])
+    ->middleware(['auth', 'verified'])
+    ->name('listings.manage');
 Route::get('/listings/show-manage/{listing}', [ListingController::class, 'showManage'])
     ->middleware(['auth', 'verified'])
     ->name('listings.show-manage');

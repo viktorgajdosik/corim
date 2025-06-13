@@ -1,3 +1,3 @@
-<div class="card-general p-3 mb-3 text-white rounded" style="background-color: #1a1a1a;">
+<div class="p-3 mb-5 text-white bg-dark rounded">
     {{$slot}}
 </div>

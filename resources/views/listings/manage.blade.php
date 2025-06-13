@@ -2,21 +2,19 @@
 @section('content')
 
 
-            <h3>Your Listings<i
+            <x-secondary-heading>Your Listings<i
                 class="fa fa-info-circle ms-1 info-icon"
                 data-bs-toggle="popover"
                 data-bs-trigger="hover"
                 data-bs-placement="bottom"
                 data-bs-content="This section displays the listings you have created."
-                ></i></h3>
+                ></i></x-secondary-heading>
 
             @if(session('error'))
 <div class="alert alert-danger">
     {{ session('error') }}
 </div>
 @endif
-
-            <br>
 
               @unless($listings->isEmpty())
               @foreach($listings as $listing)
@@ -27,7 +25,7 @@
 
               @else
 
-              <p>You have not created any listing yet.</p>
+              <x-text>You have not created any listing yet.</x-text>
 
               @endunless
 

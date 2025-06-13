@@ -12,7 +12,7 @@
         <!-- Email Input -->
         <div class="form-floating mb-3">
             <input type="email" wire:model.live="email"
-                   class="form-control form-control-md @error('email') is-invalid @enderror"
+                   class="form-control form-control-md border-black @error('email') is-invalid @enderror"
                    id="email" placeholder="Enter email" required>
             <label for="email">Email address</label>
             @error('email')
@@ -24,7 +24,7 @@
         <div class="mb-3">
             <div class="form-floating">
                 <input type="password" wire:model.live="password"
-                       class="form-control form-control-md @error('password') is-invalid @enderror"
+                       class="form-control form-control-md border-black @error('password') is-invalid @enderror"
                        id="password"
                        placeholder="Password"
                        required>

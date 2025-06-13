@@ -11,9 +11,9 @@ class LoginForm extends Component
     public string $password = '';
 
     // Live validate each input as the user types
-    public function updated($propertyName)
+    public function submit()
     {
-        $this->validateOnly($propertyName, [
+        $this->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);

@@ -13,9 +13,9 @@ class RegisterUser extends Component
     public $name, $email, $department, $password, $password_confirmation;
 
     // Dynamic validation as the user types
-    public function updated($propertyName)
+    public function submit()
     {
-        $this->validateOnly($propertyName, [
+        $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'department' => 'required|string',

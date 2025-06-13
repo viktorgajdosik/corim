@@ -1,10 +1,10 @@
 <div class="register-form">
-    <form wire:submit.prevent="register">
+    <form wire:submit.prevent="register" class="custom-floating-label">
         @csrf
 
         <!-- Name Input -->
         <div class="form-floating mb-3">
-            <input type="text" class="form-control form-control-md @error('name') is-invalid @enderror"
+            <input type="text" class="form-control form-control-md bg-dark text-white @error('name') is-invalid @enderror"
                    id="name" wire:model.live="name" placeholder="Forename, Surname, Titles">
             <label for="name">Forename, Surname, Titles</label>
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -12,7 +12,7 @@
 
         <!-- Email Input -->
         <div class="form-floating mb-3">
-            <input type="email" class="form-control form-control-md @error('email') is-invalid @enderror"
+            <input type="email" class="form-control form-control-md bg-dark text-white @error('email') is-invalid @enderror"
                    id="email" wire:model.live="email" placeholder="Organisation email address">
             <label for="email">Organisation email address</label>
             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -20,7 +20,7 @@
 
         <!-- Department Select -->
         <div class="form-floating mb-3">
-            <select class="form-select form-control-md border-secondary bg-white @error('department') is-invalid @enderror"
+            <select class="form-select form-control-md bg-dark text-white @error('department') is-invalid @enderror"
                     id="department" wire:model.live="department" required>
                 @foreach([
                     'Select Your Department','Student', 'Anaesthesiology, Resuscitation and Intensive Care Medicine',
@@ -44,7 +44,7 @@
         <!-- Password Input -->
         <div class="mb-3">
             <div class="form-floating">
-                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                <input type="password" class="form-control bg-dark text-white @error('password') is-invalid @enderror"
                        id="password" wire:model.live="password" placeholder="Password">
                 <label for="password">Password</label>
             </div>
@@ -54,7 +54,7 @@
         <!-- Confirm Password -->
         <div class="mb-3">
             <div class="form-floating">
-                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
+                <input type="password" class="form-control bg-dark text-white @error('password_confirmation') is-invalid @enderror"
                        id="password_confirmation" wire:model.live="password_confirmation" placeholder="Confirm Password">
                 <label for="password_confirmation">Confirm Password</label>
             </div>

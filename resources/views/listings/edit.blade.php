@@ -1,16 +1,32 @@
 @extends('components.layout')
+
 @section('content')
-    <h3>Edit Listing</h3>
-    <br>
+
+   {{-- Breadcrumb Navigation --}}
+<div class="d-flex justify-content-between align-items-center">
+    <x-secondary-heading>Edit Listing</x-secondary-heading>
+    <nav class="text-secondary fs-6 mb-3">
+        <a href="{{ route('listings.manage') }}" class="text-decoration-none text-secondary">My Listings</a>
+        <span class="mx-1">/</span>
+        <a href="{{ route('listings.show-manage', ['listing' => $listing->id]) }}" class="text-decoration-none text-secondary">Manage</a>
+        <span class="mx-1">/</span>
+        <span class="text-white">Edit</span>
+    </nav>
+</div>
 
     <x-card-form>
-        <form method="POST" action="/listings/{{$listing->id}}" class="custom-floating-label">
+        <form method="POST" action="/listings/{{ $listing->id }}" class="custom-floating-label" x-data="{ loading: false }" @submit="loading = true">
             @csrf
             @method('PUT')
 
-            <!-- Title Input with Floating Label -->
+            <!-- Title Input -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" value="{{ $listing->title }}">
+                <input type="text"
+                       class="form-control form-control-md text-white bg-dark @error('title') is-invalid @enderror"
+                       id="title"
+                       name="title"
+                       placeholder="Title"
+                       value="{{ old('title', $listing->title) }}">
                 <label for="title">Title</label>
                 @error('title')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -18,9 +34,13 @@
                 <small class="form-text text-secondary">Minimum 10 characters required.</small>
             </div>
 
-            <!-- Description Input with Floating Label -->
+            <!-- Description Input -->
             <div class="form-floating mb-3">
-                <textarea class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('description') is-invalid @enderror" id="description" name="description" placeholder="Description" style="height: 200px">{{ $listing->description }}</textarea>
+                <textarea class="form-control form-control-md text-white bg-dark @error('description') is-invalid @enderror"
+                          id="description"
+                          name="description"
+                          placeholder="Description"
+                          style="height: 200px">{{ old('description', $listing->description) }}</textarea>
                 <label for="description">Description</label>
                 @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -28,34 +48,28 @@
                 <small class="form-text text-secondary">Minimum 50 characters required.</small>
             </div>
 
-            <!-- Department Select with Floating Label -->
+            <!-- Department Select -->
             <div class="form-floating mb-3">
-                <select class="form-select form-control-md border-1 border-secondary text-white bg-dark @error('department') is-invalid @enderror" id="department" name="department" aria-label="Department">
-                    <option selected disabled>{{ $listing->department }}</option>
-                    <option value="Anaesthesiology, Resuscitation and Intensive Care Medicine">Anaesthesiology, Resuscitation and Intensive Care Medicine</option>
-                    <option value="Anatomy">Anatomy</option>
-                    <option value="Clinical Biochemistry">Clinical Biochemistry</option>
-                    <option value="Clinical Neurosciences">Clinical Neurosciences</option>
-                    <option value="Craniofacial Surgery">Craniofacial Surgery</option>
-                    <option value="Dentistry">Dentistry</option>
-                    <option value="Emergency Medicine">Emergency Medicine</option>
-                    <option value="Epidemiology and Public Health">Epidemiology and Public Health</option>
-                    <option value="Forensic Medicine">Forensic Medicine</option>
-                    <option value="Gynecology and Obstetrics">Gynecology and Obstetrics</option>
-                    <option value="Hematooncology">Hematooncology</option>
-                    <option value="Histology and Embryology">Histology and Embryology</option>
-                    <option value="Hyperbaric Medicine">Hyperbaric Medicine</option>
-                    <option value="Imaging Methods">Imaging Methods</option>
-                    <option value="Internal Medicine">Internal Medicine</option>
-                    <option value="Medical Microbiology">Medical Microbiology</option>
-                    <option value="Molecular and Clinical Pathology and Medical Genetics">Molecular and Clinical Pathology and Medical Genetics</option>
-                    <option value="Nursing and Midwifery">Nursing and Midwifery</option>
-                    <option value="Oncology">Oncology</option>
-                    <option value="Pediatrics">Pediatrics</option>
-                    <option value="Pharmacology">Pharmacology</option>
-                    <option value="Physiology and Pathophysiology">Physiology and Pathophysiology</option>
-                    <option value="Rehabilitation and Sports Medicine">Rehabilitation and Sports Medicine</option>
-                    <option value="Surgical Studies">Surgical Studies</option>
+                <select class="form-select form-control-md text-white bg-dark @error('department') is-invalid @enderror"
+                        id="department"
+                        name="department">
+                    <option value="" disabled>Select a department</option>
+                    @php
+                        $departments = [
+                            "Anaesthesiology, Resuscitation and Intensive Care Medicine",
+                            "Anatomy", "Clinical Biochemistry", "Clinical Neurosciences", "Craniofacial Surgery",
+                            "Dentistry", "Emergency Medicine", "Epidemiology and Public Health", "Forensic Medicine",
+                            "Gynecology and Obstetrics", "Hematooncology", "Histology and Embryology", "Hyperbaric Medicine",
+                            "Imaging Methods", "Internal Medicine", "Medical Microbiology",
+                            "Molecular and Clinical Pathology and Medical Genetics", "Nursing and Midwifery", "Oncology",
+                            "Pediatrics", "Pharmacology", "Physiology and Pathophysiology",
+                            "Rehabilitation and Sports Medicine", "Surgical Studies"
+                        ];
+                    @endphp
+
+                    @foreach ($departments as $dept)
+                        <option value="{{ $dept }}" {{ $listing->department === $dept ? 'selected' : '' }}>{{ $dept }}</option>
+                    @endforeach
                 </select>
                 <label for="department">Department</label>
                 @error('department')
@@ -63,8 +77,18 @@
                 @enderror
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn">Edit Offer</button>
+            <!-- Submit Button with Spinner -->
+            <div class="mb-3">
+                <button type="submit"
+                        class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                    <span>Edit Offer</span>
+                    <div x-show="loading" class="ms-2">
+                        <div class="spinner-grow spinner-grow-sm text-dark" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </button>
+            </div>
         </form>
     </x-card-form>
-    @endsection
+@endsection

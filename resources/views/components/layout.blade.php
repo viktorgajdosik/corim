@@ -24,7 +24,7 @@
     </div>
 
     <!-- Page Content -->
-    <div class="container container-custom-main">
+    <div class="container container-custom-main mt-3">
         @yield('content')
     </div>
 

@@ -23,7 +23,6 @@
     <div wire:loading class="loading-spinner">
         <div class="spinner-border text-white" role="status"></div>
     </div>
-
     <!-- Actual Content -->
     {{$slot}}
     <x-flash-message />

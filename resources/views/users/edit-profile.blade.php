@@ -1,17 +1,28 @@
 @extends('components.layout')
+
 @section('content')
-    <h3>Edit Profile</h3>
-    <br>
+
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <x-secondary-heading>Edit Profile</x-secondary-heading>
+    <nav class="text-secondary fs-6 mb-3">
+        <a href="{{ route('users.profile') }}" class="text-decoration-none text-secondary">Profile</a>
+        <span class="mx-1">/</span>
+        <span class="text-white">Edit</span>
+    </nav>
+</div>
 
     <x-card-form>
-        <!-- ✅ FORM 1: UPDATE PROFILE INFO (NAME & DEPARTMENT) -->
+
+        <!-- FORM 1: UPDATE PROFILE INFO -->
         <form method="POST" action="{{ route('user-profile-information.update') }}" class="custom-floating-label">
             @csrf
             @method('PUT')
 
-            <!-- Name Input -->
+            <!-- Name -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control form-control-md text-white border-1 border-secondary bg-dark @error('name') is-invalid @enderror"
+                <input type="text" class="form-control form-control-md bg-dark text-white border-secondary @error('name') is-invalid @enderror"
                        id="name" name="name" value="{{ old('name', auth()->user()->name) }}" placeholder="Name, Surname, Titles">
                 <label for="name">Name, Surname, Titles</label>
                 @error('name')
@@ -19,9 +30,9 @@
                 @enderror
             </div>
 
-            <!-- Department Select -->
+            <!-- Department -->
             <div class="form-floating mb-3">
-                <select class="form-select form-control-md text-white border-1 border-secondary bg-dark @error('department') is-invalid @enderror"
+                <select class="form-select form-control-md bg-dark text-white border-secondary @error('department') is-invalid @enderror"
                         id="department" name="department">
                     <option disabled {{ !auth()->user()->department ? 'selected' : '' }}>Select Your Department</option>
                     @foreach([
@@ -47,20 +58,20 @@
                 @enderror
             </div>
 
-            <!-- Submit Button for Profile Update -->
-            <button type="submit" class="btn-primary btn">Update Profile Info</button>
+            <!-- Submit Profile -->
+            <button type="submit" class="btn btn-primary btn-sm">Update Profile Info</button>
         </form>
 
         <hr class="my-4">
 
-        <!-- ✅ FORM 2: UPDATE PASSWORD -->
+        <!-- FORM 2: UPDATE PASSWORD -->
         <form method="POST" action="{{ route('user-password.update') }}" class="custom-floating-label">
             @csrf
             @method('PUT')
 
             <!-- Old Password -->
             <div class="form-floating mb-3">
-                <input type="password" class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('old_password') is-invalid @enderror"
+                <input type="password" class="form-control form-control-md bg-dark border-secondary text-white @error('old_password') is-invalid @enderror"
                        id="old_password" name="old_password" placeholder="Old Password">
                 <label for="old_password">Old Password</label>
                 @error('old_password')
@@ -70,7 +81,7 @@
 
             <!-- New Password -->
             <div class="form-floating mb-3">
-                <input type="password" class="form-control form-control-md border-1 border-secondary text-white bg-dark @error('password') is-invalid @enderror"
+                <input type="password" class="form-control form-control-md bg-dark border-secondary text-white @error('password') is-invalid @enderror"
                        id="password" name="password" placeholder="New Password">
                 <label for="password">New Password</label>
                 @error('password')
@@ -80,13 +91,13 @@
 
             <!-- Confirm New Password -->
             <div class="form-floating mb-3">
-                <input type="password" class="form-control form-control-md border-1 border-secondary text-white bg-dark"
+                <input type="password" class="form-control form-control-md bg-dark border-secondary text-white"
                        id="password_confirmation" name="password_confirmation" placeholder="Confirm New Password">
                 <label for="password_confirmation">Confirm New Password</label>
             </div>
 
-            <!-- Submit Button for Password Update -->
-            <button type="submit" class="btn-primary btn">Update Password</button>
+            <!-- Submit Password -->
+            <button type="submit" class="btn btn-primary btn-sm">Update Password</button>
         </form>
     </x-card-form>
-    @endsection
+@endsection

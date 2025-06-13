@@ -21,9 +21,10 @@ class SearchDropdown extends Component
             $searchResults = Cache::remember($cacheKey, 60, function () {
                 return Listing::query()
                     ->where(function (Builder $query) {
-                        $query->where('title', 'like', $this->search . '%') //  Uses index
-                              ->orWhere('author', 'like', $this->search . '%')
-                              ->orWhere('department', 'like', $this->search . '%');
+                        $query->where('title', 'like', '%' . $this->search . '%')
+                              ->orWhere('author', 'like', '%' . $this->search . '%')
+                              ->orWhere('department', 'like', '%' . $this->search . '%')
+                              ->orWhere('description', 'like', '%' . $this->search . '%');
                     })
                     ->orderBy('title') //  Optimized sorting
                     ->limit(5) //  Fetch only needed results

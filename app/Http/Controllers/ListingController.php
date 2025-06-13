@@ -27,24 +27,6 @@ class ListingController extends Controller
             return view('listings.create');
         }
 
-        //Store listing
-        public function store(Request $request) {
-            $formFields = $request->validate([
-                'title' => ['required', 'min:10', 'max:500'],
-                'description' => ['required', 'min:50', 'max:5000'],
-                'department' => 'required'
-
-            ]);
-
-
-        $formFields['author'] = auth()->user()->name;
-        $formFields['user_id'] = auth()->id();
-
-            Listing::create($formFields);
-
-            return redirect('/')->with('message', 'Listing created successfully');
-        }
-
          // Show Edit Form
     public function edit(Listing $listing) {
         return view('listings.edit', ['listing' => $listing]);
@@ -80,7 +62,7 @@ public function destroy(Listing $listing) {
     $listing->applications()->delete();
     $listing->delete();
 
-    return redirect('/')->with('message', 'Listing deleted successfully');
+    return redirect('/listings/manage')->with('message', 'Listing deleted successfully');
 }
             // Manage Listings
     public function manage() {
