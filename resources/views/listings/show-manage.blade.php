@@ -41,15 +41,14 @@
     <!-- Content shown only when modal is closed -->
     <template x-if="!modalOpen">
       <div>
-        <x-card-heading>{{ $listing->title }}</x-card-heading>
+        <x-card-heading class="listing-title mb-3">{{ $listing->title }}</x-card-heading>
+        <small><i class="fa fa-user me-1" title="Author"></i> {{ $listing->author }}</small>
+        <small> <i class="fa fa-calendar ms-3 me-1" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
+            <span class="ms-3" title="Department">
+                <x-department-dot :department="$listing->department" />
+            </span>
 
-        <p>
-          <i class="fa fa-user" title="Author"></i> {{ $listing->author }} |
-          <i class="fa fa-building" title="Department"></i> {{ $listing->department }} |
-          <i class="fa fa-calendar" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}
-        </p>
-
-        <p class="description mt-4 mb-3">{!! nl2br(e($listing->description)) !!}</p>
+        <x-text class="description mt-3 mb-3">{!! nl2br(e($listing->description)) !!}</x-text>
 
         <!-- Edit Button -->
         <button type="button" class="btn btn-primary btn-sm d-inline"

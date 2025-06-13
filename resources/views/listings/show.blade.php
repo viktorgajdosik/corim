@@ -3,26 +3,21 @@
 
     <x-secondary-heading>Apply for the Research Work</x-secondary-heading>
     <x-card-form>
-        <h4 class="listing-title mb-3">{{ $listing->title }}</h4>
-        <span>
-            <i class="fa fa-user" data-bs-toggle="tooltip" title="Author"></i> {{ $listing->author }}
-        </span>
-        <span> | </span>
-        <span>
-            <i class="fa fa-building" data-bs-toggle="tooltip" title="Department"></i> {{ $listing->department }}
-        </span>
-        <span> | </span>
-        <span>
-            <i class="fa fa-calendar" data-bs-toggle="tooltip" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}
-        </span>
-        <p class="description text-justify mt-4 mb-2">{!! nl2br(e($listing->description)) !!}</p>
+        <x-card-heading class="listing-title mb-3">{{ $listing->title }}</x-card-heading>
+        <small><i class="fa fa-user me-1" title="Author"></i> {{ $listing->author }}</small>
+        <small> <i class="fa fa-calendar ms-3 me-1" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
+            <span class="ms-3" title="Department">
+                <x-department-dot :department="$listing->department" />
+            </span>
+
+        <x-text class="description text-justify mt-3 mb-3">{!! nl2br(e($listing->description)) !!}</x-text>
     </x-card-form>
 
     <!-- Check if the user has an unprocessed application -->
     @if ($userHasUnprocessedApplication)
         <x-card-form>
-            <h4>Awaiting Application Results</h4>
-            <p>You have already applied for this research work. Please wait for the author's response.</p>
+            <x-card-heading>Awaiting Application Results</x-card-heading>
+            <x-text>You have already applied for this research work. Please wait for the author's response.</x-text>
         </x-card-form>
     @else
         <x-card-form>
@@ -31,8 +26,8 @@
 
                 <!-- Message the Author Floating Label -->
                 <div class="mb-3">
-                    <h4 class="mb-2">Message the Author</h4>
-                    <p>Tell the author something about yourself.</p>
+                    <x-card-heading class="mb-2">Message the Author</x-card-heading>
+                    <x-text>Tell the author something about yourself.</x-text>
 
                     <div class="form-floating">
                         <textarea class="form-control text-white bg-dark border-1 @error('message') is-invalid @enderror"
@@ -47,7 +42,6 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-
                 <button type="submit" class="btn btn-primary mb-2">Apply</button>
             </form>
         </x-card-form>
