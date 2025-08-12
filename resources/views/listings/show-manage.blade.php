@@ -44,9 +44,9 @@
         <x-card-heading class="listing-title mb-3">{{ $listing->title }}</x-card-heading>
         <small><i class="fa fa-user me-1" title="Author"></i> {{ $listing->author }}</small>
         <small> <i class="fa fa-calendar ms-3 me-1" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
-            <span class="ms-3" title="Department">
+            <small class="ms-3" title="Department">
                 <x-department-dot :department="$listing->department" />
-            </span>
+            </small>
 
         <x-text class="description mt-3 mb-3">{!! nl2br(e($listing->description)) !!}</x-text>
 
@@ -126,8 +126,12 @@
     @forelse ($listing->applications->where('accepted', false) as $application)
       <x-card-form>
         <x-card-heading>{{ $application->user->name }}</x-card-heading>
-        <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
-        <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
+           <div class="d-flex gap-3 mb-1">
+                 <small title="Email address"><i class="fa fa-envelope me-1"></i> {{ $application->user->email }}</small>
+            <small title="Department">
+                <x-department-dot :department="$application->user->department" />
+                </small>
+           </div>
         <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
         <div class="d-flex">
           <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
@@ -143,6 +147,7 @@
             </button>
           </form>
         </div>
+         </div>
       </x-card-form>
     @empty
 
@@ -157,79 +162,37 @@
 
     @else
       @foreach ($listing->applications->where('accepted', true) as $application)
-        <x-card-form>
-          <x-card-heading>{{ $application->user->name }}</x-card-heading>
-          <p><i class="fa fa-building"></i> {{ $application->user->department }}</p>
-          <p><i class="fa fa-envelope"></i> {{ $application->user->email }}</p>
-          <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
-            @csrf
-            <button class="btn btn-danger btn-sm" onclick="return confirm('Remove this participant?')">
-              <i class="fa fa-trash"></i> Remove
-            </button>
-          </form>
-        </x-card-form>
+       <x-card-form>
+  <div class="d-flex justify-content-between align-items-center">
+    {{-- Left content: Name, email, department --}}
+    <div>
+      <x-card-heading>{{ $application->user->name }}</x-card-heading>
+      <div class="d-flex gap-3 mb-1">
+        <small title="Email address">
+          <i class="fa fa-envelope me-1"></i> {{ $application->user->email }}
+        </small>
+        <small title="Department">
+          <x-department-dot :department="$application->user->department" />
+        </small>
+      </div>
+    </div>
+
+    {{-- Right content: Remove button --}}
+    <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
+      @csrf
+      <button class="btn btn-danger btn-sm" onclick="return confirm('Remove this participant?')">
+        <i class="fa fa-trash"></i> Remove
+      </button>
+    </form>
+  </div>
+</x-card-form>
+
       @endforeach
     @endif
   </section>
 
-  {{-- Tasks --}}
-  <section id="tasks">
-    <x-secondary-heading>Create Task</x-secondary-heading>
-    <x-card-form>
-      <form method="POST" action="/tasks" enctype="multipart/form-data" class="custom-floating-label">
-        @csrf
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control bg-dark text-white" id="task-name" name="task_name" placeholder="Task Name">
-          <label class="text-white" for="task-name">Task Name</label>
-        </div>
+{{-- Tasks --}}
+@livewire('show-manage-tasks', ['listing' => $listing])
 
-        <div class="form-floating mb-3">
-            <textarea class="form-control bg-dark text-white" id="task-details" name="task_details" placeholder="Task Details" style="height: 200px"></textarea>
-          <label class="text-white" for="task-details">Task Details</label>
-        </div>
-
-        <div class="form-group upload mb-3 rounded-pill">
-          <label for="task-file"><i class="fa fa-file"></i> Upload File</label>
-          <input type="file" class="form-control-file" id="task-file" name="task-file">
-        </div>
-
-        <div class="form-group">
-          <label class="mb-2">Assign Task</label>
-          @if ($listing->applications()->where('accepted', true)->exists())
-            @foreach ($listing->applications()->where('accepted', true)->with('user')->get() as $applicant)
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="assigned_users[]" value="{{ $applicant->user->id }}" id="{{ $applicant->user->id }}">
-                <label class="form-check-label" for="{{ $applicant->user->id }}">{{ $applicant->user->name }}</label>
-              </div>
-            @endforeach
-          @else
-            <p>No users have accepted applications for this listing yet.</p>
-          @endif
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-sm mt-3">Submit</button>
-      </form>
-    </x-card-form>
-
-    <x-secondary-heading>Assigned Tasks</x-secondary-heading>
-    <x-card-form>
-      <x-card-heading>Research relevant papers</x-card-heading>
-      <p><i class="fa fa-user"></i> John Doe</p>
-      <p><i class="fa fa-building"></i> Student</p>
-      <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-      <p><i class="fa fa-gears"></i> Status</p>
-      <p><i class="fa fa-file"></i> File</p>
-    </x-card-form>
-
-    <x-secondary-heading>Finished Tasks</x-secondary-heading>
-    <x-card-form>
-      <x-card-heading>Research relevant papers</x-card-heading>
-      <p><i class="fa fa-user"></i> John Doe</p>
-      <p><i class="fa fa-building"></i> Student</p>
-      <p><i class="fa fa-envelope"></i> student@osu.cz</p>
-      <p><i class="fa fa-gears"></i> Status</p>
-      <p><i class="fa fa-file"></i> File</p>
-    </x-card-form>
-  </section>
 </div>
 @endsection

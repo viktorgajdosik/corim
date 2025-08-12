@@ -43,6 +43,7 @@ class DepartmentDot extends Component
             'Physiology and Pathophysiology' => '#000000',
             'Rehabilitation and Sports Medicine' => '#00FF00',
             'Surgical Studies' => '#4169E1',
+            'Student' => '#FF5BFA',
         ];
 
         return $departmentColors[$department] ?? '#999999';

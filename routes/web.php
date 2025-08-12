@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TaskController;
 use App\Livewire\SearchDropdown;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -73,3 +74,15 @@ Route::middleware('auth')->group(function () {
 Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])->middleware('auth', 'verified')->name('listings.apply');
 Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])->middleware('auth', 'verified')->name('listings.accept');
 Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth', 'verified')->name('listings.deny');
+
+// **TASKS**
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+
+    Route::post('/tasks/{task}/submit', [TaskController::class, 'submit'])->name('tasks.submit');
+
+Route::put('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+});

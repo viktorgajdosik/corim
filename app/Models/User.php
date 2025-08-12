@@ -67,4 +67,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $this->delete();
     }
+
+    public function tasks()
+{
+    return $this->belongsToMany(Task::class, 'task_participants')
+                ->withPivot(['result_text', 'result_file', 'status'])
+                ->withTimestamps();
+}
 }

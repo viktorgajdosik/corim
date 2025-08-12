@@ -29,4 +29,10 @@ class Listing extends Model
 {
     return $this->hasMany(Application::class, 'listing_id');
 }
+
+public function tasks()
+{
+    return $this->hasMany(Task::class);
+}
+
 }

@@ -19,13 +19,15 @@
     <title>CORIM</title>
 </head>
 <body>
-    <!-- Livewire Global Loading Spinner -->
-    <div wire:loading class="loading-spinner">
-        <div class="spinner-border text-white" role="status"></div>
-    </div>
+
     <!-- Actual Content -->
     {{$slot}}
     <x-flash-message />
-    @livewireScripts
+
+@livewireScripts
+
+    {{-- Toast container for flash messages --}}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080"></div>
+
 </body>
 </html>

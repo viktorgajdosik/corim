@@ -13,20 +13,27 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('author_id')->constrained('users');
+            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('listing_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description');
-            $table->string('file')->nullable();
+            $table->string('file')->nullable(); // Optional assignment document
             $table->enum('status', ['not_assigned', 'assigned', 'submitted', 'pending', 'requested_modification', 'finished'])->default('not_assigned');
-            $table->foreignId('listing_id')->constrained()->onDelete('cascade'); // Add this line
             $table->timestamps();
         });
 
-        // Pivot table for task participants
         Schema::create('task_participants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('task_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
+            // Submission fields by student
+            $table->text('result_text')->nullable();
+            $table->string('result_file')->nullable();
+
+            // Per-student status for this task
+            $table->enum('status', ['assigned', 'submitted', 'modification_requested', 'finished'])->default('assigned');
+
             $table->timestamps();
         });
     }
