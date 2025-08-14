@@ -23,7 +23,9 @@
                     </a>
                 </div>
 
-                <div class="card login-card p-3 border-0" style="background-image: url('{{ asset('images/car-bg-1.jpg') }}'); background-size: cover; background-position: center;" x-data="{ showPassword: false }">
+                  <div class="card login-card p-3 border-0"
+                     style="background: linear-gradient(90deg, #E96479, #8A80FF); background-size: cover; background-position: center;"
+                     x-data="{ showPassword: false }">
                     <div class="card-header border-0 text-center" style="background-color: transparent;">
                         <h2 class="fw-bold text-white">Welcome</h2>
                         <p class="login-subtitle text-white">Sign in to access your account.</p>

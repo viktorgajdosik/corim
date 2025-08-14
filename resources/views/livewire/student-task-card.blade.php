@@ -1,10 +1,48 @@
-@php $ts = optional($task->updated_at)->timestamp; @endphp
+@php
+  $ts = optional($task->updated_at)->timestamp;
+@endphp
 
 {{-- Put data attributes on the root so app.js can find the new version --}}
 <div data-task-id="{{ $task->id }}" data-updated-at="{{ $ts }}">
   <x-card-form>
     <div x-data="taskCardState({{ $task->id }})"
-         x-init="console.log('✅ Student Alpine init for task {{ $task->id }}')">
+         x-init="
+           console.log('✅ Student Alpine init for task {{ $task->id }}');
+
+           // Init Bootstrap popovers ONLY on mobile (<768px)
+           $nextTick(() => {
+             const isMobile = window.innerWidth < 768;
+             const cardRoot = $el; // scope to this card
+
+             // Dispose any existing instances
+             cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
+               const inst = bootstrap?.Popover?.getInstance(el);
+               if (inst) inst.dispose();
+             });
+
+             if (isMobile) {
+               cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
+                 new bootstrap.Popover(el);
+               });
+             }
+           });
+
+           // Re-init on resize for mobile/desktop switch
+           const onResize = () => {
+             const isMobile = window.innerWidth < 768;
+             const cardRoot = $el;
+             cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
+               const inst = bootstrap?.Popover?.getInstance(el);
+               if (inst) inst.dispose();
+             });
+             if (isMobile) {
+               cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
+                 new bootstrap.Popover(el);
+               });
+             }
+           };
+           window.addEventListener('resize', onResize);
+         ">
 
       {{-- Header --}}
       <div class="d-flex justify-content-between align-items-start">
@@ -18,15 +56,49 @@
       </div>
 
       {{-- Status line --}}
-      <x-text class="d-flex align-items-center gap-2 mb-0">
+      <x-text class="d-flex align-items-center gap-2 mb-0 flex-wrap">
         <span class="badge bg-{{ $task->status === 'finished' ? 'success' : ($task->status === 'modification_requested' ? 'warning text-dark' : 'secondary') }}">
           {{ ucfirst(str_replace('_', ' ', $task->status)) }}
         </span>
 
-        <small class="text-white"><i class="fa fa-calendar me-1"></i> Created {{ $task->created_at->format('d/m/Y') }}</small>
+        {{-- Created date --}}
+        <small class="text-white d-flex align-items-center">
+          {{-- Mobile: icon popover (focus trigger) --}}
+          <span class="d-inline d-md-none" role="button" tabindex="0"
+                aria-label="Show created date"
+                data-bs-toggle="popover"
+                data-bs-trigger="focus"
+                data-bs-placement="top"
+                data-bs-container="body"
+                data-bs-title="Created"
+                data-bs-content="Created {{ $task->created_at->format('d/m/Y') }}">
+            <i class="fa fa-calendar me-1"></i>
+          </span>
+          {{-- Desktop: plain text --}}
+          <span class="d-none d-md-inline">
+            <i class="fa fa-calendar me-1"></i>Created {{ $task->created_at->format('d/m/Y') }}
+          </span>
+        </small>
 
+        {{-- Deadline --}}
         @if ($task->deadline)
-          <small class="text-white"><i class="fa fa-hourglass-end me-1"></i> Due {{ $task->deadline->format('d/m/Y') }}</small>
+          <small class="text-white d-flex align-items-center">
+            {{-- Mobile: icon popover (focus trigger) --}}
+            <span class="d-inline d-md-none" role="button" tabindex="0"
+                  aria-label="Show deadline"
+                  data-bs-toggle="popover"
+                  data-bs-trigger="focus"
+                  data-bs-placement="top"
+                  data-bs-container="body"
+                  data-bs-title="Deadline"
+                  data-bs-content="Due {{ $task->deadline->format('d/m/Y') }}">
+              <i class="fa fa-hourglass-end me-1"></i>
+            </span>
+            {{-- Desktop: plain text --}}
+            <span class="d-none d-md-inline">
+              <i class="fa fa-hourglass-end me-1"></i>Due {{ $task->deadline->format('d/m/Y') }}
+            </span>
+          </small>
         @endif
 
         @if ($task->deadline && $task->status !== 'finished' && now()->gt($task->deadline))
