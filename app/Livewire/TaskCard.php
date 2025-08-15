@@ -15,6 +15,13 @@ class TaskCard extends Component
         'taskDeleted' => '$refresh',
     ];
 
+        public function ready(): void
+    {
+        // If you want to lazy-load heavy relations, do it here (optional)
+        // $this->task->loadMissing(['assignedUser']);
+        $this->ready = true;
+    }
+
     public function render()
     {
         return view('livewire.task-card');

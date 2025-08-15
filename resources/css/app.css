@@ -141,10 +141,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         background-color: #222 !important;
       }
 
-      .carousel-inner{
-       z-index: 0;
-      }
-
       .scrollable-listings {
         overflow-y: auto;
         border: 1px solid #000;
@@ -421,6 +417,55 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     animation: progressAnimation 2s linear forwards;
 }
 
+ /* Gradient card background */
+   .animated-gradient {
+  min-height: 260px;
+  background: linear-gradient(270deg, #E96479, #8A80FF, #E96479);
+  background-size: 600% 600%;
+  animation: gradientFlow 12s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+      /* Indicators */
+      #heroCarousel .carousel-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      /* Side control click zones */
+      .carousel-control-surface {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 20%;
+        background: transparent;
+        border: 0;
+        z-index: 10;
+      }
+      .carousel-control-surface.start-0 { left: 0; }
+      .carousel-control-surface.end-0 { right: 0; }
+
+      /* Allow clicks through to buttons in center */
+      .carousel-control-surface {
+        pointer-events: auto;
+      }
+      .carousel-inner a,
+      .carousel-inner button {
+        position: relative;
+        z-index: 20;
+      }
+
+      @media (min-width: 992px) {
+        .carousel-control-surface.start-0 { cursor: w-resize; }
+        .carousel-control-surface.end-0 { cursor: e-resize; }
+      }
+
 @keyframes progressAnimation {
     0% {
         width: 0;
@@ -443,10 +488,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 
     @media (max-width: 1200px) {
-
-        .carousel-height {
-          height: 400px;
-        }
 
         .login-card {
             width: 50%;

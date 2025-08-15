@@ -23,8 +23,7 @@
                     </a>
                 </div>
 
-                  <div class="card login-card p-3 border-0"
-                     style="background: linear-gradient(90deg, #E96479, #8A80FF); background-size: cover; background-position: center;"
+                <div class="card login-card p-3 border-0 animated-gradient"
                      x-data="{ showPassword: false }">
                     <div class="card-header border-0 text-center" style="background-color: transparent;">
                         <h2 class="fw-bold text-white">Welcome</h2>
@@ -33,7 +32,6 @@
 
                     <div class="card-body">
                         <livewire:login-form />
-
                     </div>
 
                     <!-- Sign Up Link -->
