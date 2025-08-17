@@ -11,15 +11,8 @@
     {{ $isAccepted ? 'Listing Information' : 'Apply for the Research Work' }}
 </x-secondary-heading>
 
-<x-card-form>
-    <x-card-heading class="listing-title mb-3">{{ $listing->title }}</x-card-heading>
-    <small><i class="fa fa-user me-1" title="Author"></i> {{ $listing->author }}</small>
-    <small><i class="fa fa-calendar ms-3 me-1" title="Date Created"></i> {{ $listing->created_at->format('d/m/Y') }}</small>
-    <span class="ms-3" title="Department">
-        <x-department-dot :department="$listing->department" />
-    </span>
-    <x-text class="description text-justify mt-3 mb-3">{!! nl2br(e($listing->description)) !!}</x-text>
-</x-card-form>
+@livewire('listing-manage-card', ['listing' => $listing], key('listing-manage-'.$listing->id))
+
 
 @if (!$application)
     <x-card-form>

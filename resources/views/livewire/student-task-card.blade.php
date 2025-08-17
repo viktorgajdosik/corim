@@ -90,7 +90,6 @@
                   data-bs-trigger="focus"
                   data-bs-placement="top"
                   data-bs-container="body"
-                  data-bs-title="Created"
                   data-bs-content="Created {{ $task->created_at->format('d/m/Y') }}">
               <i class="fa fa-calendar me-1"></i>
             </span>
@@ -109,7 +108,6 @@
                     data-bs-trigger="focus"
                     data-bs-placement="top"
                     data-bs-container="body"
-                    data-bs-title="Deadline"
                     data-bs-content="Due {{ $task->deadline->format('d/m/Y') }}">
                 <i class="fa fa-hourglass-end me-1"></i>
               </span>

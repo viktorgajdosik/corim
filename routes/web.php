@@ -14,11 +14,25 @@ Livewire::component('search-dropdown', SearchDropdown::class);
 // **HOME PAGE ROUTE (SHOW DEFAULT LISTINGS VIA CONTROLLER)**
 Route::get('/', [ListingController::class, 'index']); // Use controller
 // **LISTINGS ROUTES**
-Route::get('/listings/create', [ListingController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/listings', [ListingController::class, 'store'])->middleware('auth', 'verified');
-Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->middleware('auth', 'verified');
-Route::put('/listings/{listing}', [ListingController::class, 'update'])->middleware('auth', 'verified');
-Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->middleware('auth', 'verified');
+Route::get('/listings/create', [ListingController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('listings.create');
+
+Route::post('/listings', [ListingController::class, 'store'])
+    ->middleware('auth', 'verified')
+    ->name('listings.store');
+
+Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])
+    ->middleware('auth', 'verified')
+    ->name('listings.edit');
+
+Route::put('/listings/{listing}', [ListingController::class, 'update'])
+    ->middleware('auth', 'verified')
+    ->name('listings.update');
+
+Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])
+    ->middleware('auth', 'verified')
+    ->name('listings.destroy');
 Route::get('/listings/manage', [ListingController::class, 'manage'])
     ->middleware(['auth', 'verified'])
     ->name('listings.manage');
