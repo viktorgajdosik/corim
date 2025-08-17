@@ -461,52 +461,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         z-index: 20;
       }
 
-      /*  Skeleton styles (task-card.blade.php, student-task-card.blade.php) */
-.task-skeleton-overlay {
-  position: absolute;
-  inset: 0;
-  padding: 1rem;
-  background: transparent;
-  border-radius: inherit;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.skeleton-line,
-.skeleton-pill {
-  position: relative;
-  overflow: hidden;
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.skeleton-line { height: 20px; border-radius: 999px; }
-.skeleton-pill { height: 14px; border-radius: 999px; }
-
-/* responsive scaling */
-.skeleton-pill.w-25 { width: 25%; max-width: 90px; }
-.skeleton-pill.w-15 { width: 15%; max-width: 70px; }
-
-.skeleton-line::after,
-.skeleton-pill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.15) 50%,
-    transparent 100%
-  );
-  animation: skeleton-shimmer 1.2s linear infinite;
-}
-
-@keyframes skeleton-shimmer {
-  100% { transform: translateX(100%); }
-}
-
-      @media (min-width: 992px) {
+            @media (min-width: 992px) {
         .carousel-control-surface.start-0 { cursor: w-resize; }
         .carousel-control-surface.end-0 { cursor: e-resize; }
       }
@@ -531,6 +486,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             transform: translateY(-5px) rotate(45deg);
         }
     }
+
+
+      /*  Skeleton styles (task-card.blade.php, student-task-card.blade.php) */
+.task-skeleton-overlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border-radius: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.skeleton-line,
+.skeleton-pill {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.skeleton-line, .skeleton-pill { height: 20px; border-radius: 999px; }
+
+/* responsive scaling */
+.skeleton-pill.w-25 { width: 25%; max-width: 90px; }
+.skeleton-pill.w-15 { width: 15%; max-width: 70px; }
+
+.skeleton-line::after,
+.skeleton-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.2s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% { transform: translateX(100%); }
+}
+
 
     @media (max-width: 1200px) {
 
@@ -597,6 +597,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     .listing-card:hover {
       background-color: #202020;
+  }
+
+    .pill-circle-mobile {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
   }
 
 

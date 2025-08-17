@@ -6,18 +6,18 @@
   {{-- Trigger a quick init call so we get a loading phase to show skeleton --}}
   <div wire:init="ready"
        class="position-relative"
-       style="min-height: 70px; border-radius: .5rem; overflow: hidden;">
+       style="min-height: 55px; border-radius: .5rem; overflow: hidden;">
 
       {{-- Skeleton overlay --}}
       <div class="task-skeleton-overlay" wire:loading aria-hidden="true">
           {{-- Title line --}}
-          <div class="skeleton-line w-100 mb-2"></div>
+          <div class="skeleton-line w-100 mb-3"></div>
 
           {{-- Metadata pills --}}
-          <div class="d-flex flex-wrap gap-2 mb-2">
+          <div class="d-flex flex-wrap gap-2">
            <div class="skeleton-pill w-15"></div>
-           <div class="skeleton-pill w-25"></div>
-           <div class="skeleton-pill w-25"></div>
+           <div class="skeleton-pill w-25 pill-circle-mobile"></div>
+           <div class="skeleton-pill w-25 pill-circle-mobile"></div>
            <div class="skeleton-pill w-15"></div>
           </div>
 
