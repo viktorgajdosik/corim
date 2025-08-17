@@ -15,7 +15,10 @@ class StudentTaskCard extends Component
         'refreshTask' => '$refresh',
         'studentSubmitted' => '$refresh',
     ];
-
+        public function ready(): void
+    {
+        $this->ready = true;
+    }
     public function render()
     {
         return view('livewire.student-task-card');

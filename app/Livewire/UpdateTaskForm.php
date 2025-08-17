@@ -92,7 +92,6 @@ class UpdateTaskForm extends Component
         $name = pathinfo($origName, PATHINFO_FILENAME);
         $ext  = strtolower($file->getClientOriginalExtension());
 
-        // Human-readable but safe
         $safeName = Str::slug($name, '-');
         if ($safeName === '') {
             $safeName = 'file';

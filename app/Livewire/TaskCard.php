@@ -17,7 +17,6 @@ class TaskCard extends Component
 
         public function ready(): void
     {
-        // If you want to lazy-load heavy relations, do it here (optional)
         // $this->task->loadMissing(['assignedUser']);
         $this->ready = true;
     }
