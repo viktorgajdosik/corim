@@ -3,46 +3,58 @@
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
-use App\Livewire\SearchDropdown;
+use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
 // **Register Livewire Component for Search**
-Livewire::component('search-dropdown', SearchDropdown::class);
+Livewire::component('search-dropdown', \App\Livewire\SearchDropdown::class);
 
 // **HOME PAGE ROUTE (SHOW DEFAULT LISTINGS VIA CONTROLLER)**
 Route::get('/', [ListingController::class, 'index']); // Use controller
+
 // **LISTINGS ROUTES**
+
+// Create/store — any authenticated & verified user may create
 Route::get('/listings/create', [ListingController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('listings.create');
 
-Route::post('/listings', [ListingController::class, 'store'])
-    ->middleware('auth', 'verified')
-    ->name('listings.store');
-
+// Edit/update/destroy — AUTHOR ONLY
 Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])
-    ->middleware('auth', 'verified')
+    ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
     ->name('listings.edit');
 
 Route::put('/listings/{listing}', [ListingController::class, 'update'])
-    ->middleware('auth', 'verified')
+    ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
     ->name('listings.update');
 
 Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])
-    ->middleware('auth', 'verified')
+    ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
     ->name('listings.destroy');
+
+// Author’s dashboards/pages (list of their listings + single manage view)
 Route::get('/listings/manage', [ListingController::class, 'manage'])
     ->middleware(['auth', 'verified'])
     ->name('listings.manage');
+
 Route::get('/listings/show-manage/{listing}', [ListingController::class, 'showManage'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
     ->name('listings.show-manage');
 
-    Route::get('/listings/{listing}', [ListingController::class, 'show'])
-    ->middleware('auth', 'verified')
-    ->name('listings.show');
+// Participant-facing show — NOT author
+Route::get('/listings/{listing}', function (\App\Models\Listing $listing) {
+    // If current user is the author, redirect to show-manage
+    if (auth()->check() && $listing->user_id === auth()->id()) {
+        return redirect()->route('listings.show-manage', $listing);
+    }
+
+    // Otherwise call the normal show action
+    return app(\App\Http\Controllers\ListingController::class)->show($listing);
+})
+->middleware(['auth', 'verified'])
+->name('listings.show');
 
 // **PROFILE USER ROUTES**
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -85,18 +97,22 @@ Route::middleware('auth')->group(function () {
 });
 
 // **OTHER USER ACTIONS**
-Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])->middleware('auth', 'verified')->name('listings.apply');
-Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])->middleware('auth', 'verified')->name('listings.accept');
-Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])->middleware('auth', 'verified')->name('listings.deny');
+Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])
+    ->middleware(['auth', 'verified', 'can:notAuthor,listing'])
+    ->name('listings.apply');
+
+// (Optional hardening) Only authors should accept/deny applications.
+// These routes reference Application, so enforce author check inside the controller
+// or write a dedicated middleware. For now keep them auth+verified:
+Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])
+    ->middleware(['auth', 'verified'])
+    ->name('listings.accept');
+
+Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])
+    ->middleware(['auth', 'verified'])
+    ->name('listings.deny');
 
 // **TASKS**
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-
-    Route::post('/tasks/{task}/submit', [TaskController::class, 'submit'])->name('tasks.submit');
-
-Route::put('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
-Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });

@@ -8,12 +8,14 @@
          class="position-relative"
          style="min-height: 55px; border-radius: .5rem; overflow: hidden;">
 
-      {{-- Skeleton overlay --}}
-      <div class="task-skeleton-overlay" wire:loading aria-hidden="true">
-        {{-- Title line --}}
+      {{-- =======================
+           SKELETON
+           ======================= --}}
+      <div class="task-skeleton-overlay"
+           wire:loading
+           wire:target="ready"
+           aria-hidden="true">
         <div class="skeleton-line w-75 mb-3"></div>
-
-        {{-- Metadata pills --}}
         <div class="d-flex flex-wrap gap-2">
           <div class="skeleton-pill w-15"></div>
           <div class="skeleton-pill w-25 pill-circle-mobile"></div>
@@ -22,47 +24,11 @@
       </div>
 
       {{-- =======================
-           REAL CARD CONTENT
+           REAL CONTENT
            ======================= --}}
-      <div wire:loading.remove
-           x-data="taskCardState({{ $task->id }})"
-           x-init="
-             console.log('✅ Student Alpine init for task {{ $task->id }}');
-
-             // Init Bootstrap popovers ONLY on mobile (<768px)
-             $nextTick(() => {
-               const isMobile = window.innerWidth < 768;
-               const cardRoot = $el; // scope to this card
-
-               // Dispose existing instances
-               cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                 const inst = bootstrap?.Popover?.getInstance(el);
-                 if (inst) inst.dispose();
-               });
-
-               if (isMobile) {
-                 cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                   new bootstrap.Popover(el);
-                 });
-               }
-             });
-
-             // Re-init on resize
-             const onResize = () => {
-               const isMobile = window.innerWidth < 768;
-               const cardRoot = $el;
-               cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                 const inst = bootstrap?.Popover?.getInstance(el);
-                 if (inst) inst.dispose();
-               });
-               if (isMobile) {
-                 cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                   new bootstrap.Popover(el);
-                 });
-               }
-             };
-             window.addEventListener('resize', onResize);
-           ">
+      <div @unless($isReady) class="d-none" @endunless
+           x-data="studentTaskCard({{ $task->id }})"
+           x-cloak>
 
         {{-- Header --}}
         <div class="d-flex justify-content-between align-items-start">
@@ -75,7 +41,7 @@
           </button>
         </div>
 
-        {{-- Status line --}}
+        {{-- Status + Metadata --}}
         <x-text class="d-flex align-items-center gap-2 mb-0 flex-wrap">
           <span class="badge bg-{{ $task->status === 'finished' ? 'success' : ($task->status === 'modification_requested' ? 'warning text-dark' : 'secondary') }}">
             {{ ucfirst(str_replace('_', ' ', $task->status)) }}
@@ -83,7 +49,6 @@
 
           {{-- Created date --}}
           <small class="text-white d-flex align-items-center">
-            {{-- Mobile: icon popover --}}
             <span class="d-inline d-md-none" role="button" tabindex="0"
                   aria-label="Show created date"
                   data-bs-toggle="popover"
@@ -93,7 +58,6 @@
                   data-bs-content="Created {{ $task->created_at->format('d/m/Y') }}">
               <i class="fa fa-calendar me-1"></i>
             </span>
-            {{-- Desktop --}}
             <span class="d-none d-md-inline">
               <i class="fa fa-calendar me-1"></i>Created {{ $task->created_at->format('d/m/Y') }}
             </span>
@@ -122,8 +86,9 @@
           @endif
         </x-text>
 
-        {{-- Expanded content --}}
+        {{-- Expanded section --}}
         <div x-show="detailsOpen" x-cloak x-transition.duration.150ms class="mt-2">
+
           {{-- Description --}}
           <x-text class="mt-2">{{ $task->description }}</x-text>
 
@@ -133,7 +98,7 @@
             </a>
           @endif
 
-          {{-- Previous submission / modification note --}}
+          {{-- Previous submission --}}
           @if ($task->result_text || $task->result_file || ($task->status === 'modification_requested' && $task->modification_note))
             <x-card-heading class="mt-4 pt-3 border-top border-secondary">Your Submission</x-card-heading>
 
@@ -157,7 +122,7 @@
           {{-- Submit form --}}
           @if (in_array($task->status, ['assigned', 'modification_requested']))
             <div class="mt-4">
-              <livewire:submit-task-form :task="$task" :wire:key="'submit-task-' . $task->id . '-' . $ts" />
+              @livewire('submit-task-form', ['task' => $task], key('submit-task-' . $task->id . '-' . $ts))
             </div>
           @endif
         </div>
@@ -165,3 +130,4 @@
     </div>
   </x-card-form>
 </div>
+

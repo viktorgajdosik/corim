@@ -8,58 +8,32 @@
        class="position-relative"
        style="min-height: 55px; border-radius: .5rem; overflow: hidden;">
 
-      {{-- Skeleton overlay --}}
-      <div class="task-skeleton-overlay" wire:loading aria-hidden="true">
-          {{-- Title line --}}
-          <div class="skeleton-line w-100 mb-3"></div>
+    {{-- =======================
+         SKELETON OVERLAY
+         ======================= --}}
+    <div class="task-skeleton-overlay"
+         wire:loading
+         wire:target="ready"
+         aria-hidden="true">
+      {{-- Title line --}}
+      <div class="skeleton-line w-100 mb-3"></div>
 
-          {{-- Metadata pills --}}
-          <div class="d-flex flex-wrap gap-2">
-           <div class="skeleton-pill w-15"></div>
-           <div class="skeleton-pill w-25 pill-circle-mobile"></div>
-           <div class="skeleton-pill w-25 pill-circle-mobile"></div>
-           <div class="skeleton-pill w-15"></div>
-          </div>
-
+      {{-- Metadata pills --}}
+      <div class="d-flex flex-wrap gap-2">
+        <div class="skeleton-pill w-15"></div>
+        <div class="skeleton-pill w-25 pill-circle-mobile"></div>
+        <div class="skeleton-pill w-25 pill-circle-mobile"></div>
+        <div class="skeleton-pill w-15"></div>
       </div>
+    </div>
+
     {{-- =======================
          REAL CARD CONTENT
          ======================= --}}
-    <div wire:loading.remove
-         x-data="{ detailsOpen: false, editOpen: false, modOpen: false }"
-         x-init="
-          console.log('✅ Alpine initialized for task {{ $task->id }}');
-          // Init Bootstrap popovers ONLY on mobile (<768px)
-          $nextTick(() => {
-            const isMobile = window.innerWidth < 768;
-            const cardRoot = $el;
-            cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-              const inst = bootstrap?.Popover?.getInstance(el);
-              if (inst) inst.dispose();
-            });
-            if (isMobile) {
-              cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                new bootstrap.Popover(el);
-              });
-            }
-          });
-          // Re-init on resize to keep behavior mobile-only
-          const onResize = () => {
-            const isMobile = window.innerWidth < 768;
-            const cardRoot = $el;
-            cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-              const inst = bootstrap?.Popover?.getInstance(el);
-              if (inst) inst.dispose();
-            });
-            if (isMobile) {
-              cardRoot.querySelectorAll('[data-bs-toggle=\'popover\']').forEach(el => {
-                new bootstrap.Popover(el);
-              });
-            }
-          };
-          window.addEventListener('resize', onResize);
-         "
-    >
+    <div @unless($isReady) class="d-none" @endunless
+         x-data="taskCard({{ $task->id }})"
+         x-cloak>
+
       {{-- Header with task title and controls --}}
       <div class="d-flex justify-content-between align-items-start">
         <x-card-heading>{{ $task->name }}</x-card-heading>
@@ -236,3 +210,4 @@
     </div>
   </div>
 </x-card-form>
+

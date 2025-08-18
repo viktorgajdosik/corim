@@ -160,3 +160,66 @@ document.addEventListener('alpine:init', () => {
     }
   });
 });
+
+window.taskCard = function taskCard(taskId) {
+  return {
+    detailsOpen: false,
+    editOpen: false,
+    modOpen: false,
+    init() {
+      console.log(`✅ Alpine initialized for task ${taskId}`);
+
+      const setup = () => {
+        const isMobile = window.innerWidth < 768;
+        const cardRoot = this.$el;
+
+        // Dispose existing popovers in this card
+        cardRoot.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+          const inst = window.bootstrap?.Popover?.getInstance(el);
+          if (inst) inst.dispose();
+        });
+
+        // (Re)init popovers only on mobile
+        if (isMobile) {
+          cardRoot.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            new window.bootstrap.Popover(el);
+          });
+        }
+      };
+
+      setup();
+      window.addEventListener('resize', setup);
+    }
+  };
+};
+
+// Usage in Blade: x-data="studentTaskCard({{ $task->id }})" x-init="init()"
+window.studentTaskCard = function studentTaskCard(taskId) {
+  return {
+    detailsOpen: false,
+    init() {
+      console.log(`🎓 Alpine initialized for student task ${taskId}`);
+
+      const setup = () => {
+        const isMobile = window.innerWidth < 768;
+        const cardRoot = this.$el;
+
+        // Dispose existing popovers in this card
+        cardRoot.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+          const inst = window.bootstrap?.Popover?.getInstance(el);
+          if (inst) inst.dispose();
+        });
+
+        // (Re)init popovers only on mobile
+        if (isMobile) {
+          cardRoot.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            new window.bootstrap.Popover(el);
+          });
+        }
+      };
+
+      setup();
+      window.addEventListener('resize', setup);
+    }
+  };
+};
