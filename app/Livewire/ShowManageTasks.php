@@ -9,6 +9,9 @@ class ShowManageTasks extends Component
 {
     public Listing $listing;
 
+    // local flag for the Create Task card (mirrors task-card pattern)
+    public bool $createReady = false;
+
     protected $listeners = [
         'taskCreated' => '$refresh',
         'taskDeleted' => '$refresh',
@@ -16,7 +19,16 @@ class ShowManageTasks extends Component
         'modificationRequested' => '$refresh',
         'taskStatusChanged' => '$refresh',
         'refreshTask' => '$refresh',
+
+        // Ensure this component refreshes when participants change
+        'applicationsChanged' => '$refresh',
     ];
+
+    // Triggered by wire:init on the Create Task card wrapper
+    public function readyCreate(): void
+    {
+        $this->createReady = true;
+    }
 
     public function render()
     {
@@ -30,10 +42,10 @@ class ShowManageTasks extends Component
         return view('livewire.show-manage-tasks', ['tasks' => $tasks]);
     }
 
-    // 🔔 This runs after Livewire finishes morphing the DOM for THIS component
+    // 🔔 Runs after Livewire morphs the DOM for THIS component
     public function rendered()
     {
-        // Browser event (Livewire v3): listen to this in your Alpine forms
-     $this->dispatch('tasksPatchComplete');
+        // Browser event (Livewire v3): forms/widgets can listen for this
+        $this->dispatch('tasksPatchComplete');
     }
 }

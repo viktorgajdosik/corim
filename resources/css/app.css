@@ -328,17 +328,32 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         color:#fff;
     }
 
-    .btn-danger {
-        background-color: gray;
-        border: none;
-        border-radius: 7rem;
-        color:#fff;
-    }
+.btn-danger{
+  /* base + radius */
+  --bs-btn-color: #fff;
+  --bs-btn-bg: gray;
+  --bs-btn-border-color: gray;
+  border-radius: 7rem;
+  border: none;
 
-    .btn-danger:hover {
-        background-color: rgb(154, 154, 154);
-        color:#fff;
-    }
+  /* hover */
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: rgb(154, 154, 154);
+  --bs-btn-hover-border-color: rgb(154, 154, 154);
+
+  /* focus ring tint */
+  --bs-btn-focus-shadow-rgb: 128,128,128;
+
+  /* active/pressed (prevents red) */
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: gray;
+  --bs-btn-active-border-color: gray;
+
+  /* disabled */
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: gray;
+  --bs-btn-disabled-border-color: gray;
+}
 
     .form-group label {
       font-weight: bold;

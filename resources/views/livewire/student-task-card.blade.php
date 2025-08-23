@@ -6,7 +6,7 @@
   <x-card-form>
     <div wire:init="ready"
          class="position-relative"
-         style="min-height: 55px; border-radius: .5rem; overflow: hidden;">
+         style="min-height: 55px; overflow: hidden;">
 
       {{-- =======================
            SKELETON

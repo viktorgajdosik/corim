@@ -38,75 +38,10 @@
 
 
   {{-- Applications & Participants --}}
-  <section id="applications-participants">
-    <x-secondary-heading>Applications</x-secondary-heading>
-    @forelse ($listing->applications->where('accepted', false) as $application)
-      <x-card-form>
-        <x-card-heading>{{ $application->user->name }}</x-card-heading>
-           <div class="d-flex gap-3 mb-1">
-                 <small title="Email address"><i class="fa fa-envelope me-1"></i> {{ $application->user->email }}</small>
-            <small title="Department">
-                <x-department-dot :department="$application->user->department" />
-                </small>
-           </div>
-        <p><i class="fa fa-edit"></i> {{ $application->message }}</p>
-        <div class="d-flex">
-          <form method="POST" action="{{ route('listings.accept', ['application' => $application->id]) }}">
-            @csrf
-            <button class="btn btn-primary btn-sm me-1" onclick="return confirm('Accept this application?')">
-              <i class="fa fa-check"></i> Accept
-            </button>
-          </form>
-          <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
-            @csrf
-            <button class="btn btn-danger btn-sm" onclick="return confirm('Deny this application?')">
-              <i class="fa fa-times"></i> Deny
-            </button>
-          </form>
-        </div>
-         </div>
-      </x-card-form>
-    @empty
+<section id="applications-participants">
+  @livewire('manage-applicants', ['listing' => $listing], key('manage-applicants-'.$listing->id))
+</section>
 
-      <x-text class="text-white mb-5">Currently no applications.</x-text>
-
-    @endforelse
-
-    <x-secondary-heading>Current Participants</x-secondary-heading>
-    @if ($listing->applications->where('accepted', true)->isEmpty())
-
-      <x-text class="text-white mb-5">Currently no participants.</x-text>
-
-    @else
-      @foreach ($listing->applications->where('accepted', true) as $application)
-       <x-card-form>
-  <div class="d-flex justify-content-between align-items-center">
-    {{-- Left content: Name, email, department --}}
-    <div>
-      <x-card-heading>{{ $application->user->name }}</x-card-heading>
-      <div class="d-flex gap-3 mb-1">
-        <small title="Email address">
-          <i class="fa fa-envelope me-1"></i> {{ $application->user->email }}
-        </small>
-        <small title="Department">
-          <x-department-dot :department="$application->user->department" />
-        </small>
-      </div>
-    </div>
-
-    {{-- Right content: Remove button --}}
-    <form method="POST" action="{{ route('listings.deny', ['application' => $application->id]) }}">
-      @csrf
-      <button class="btn btn-danger btn-sm" onclick="return confirm('Remove this participant?')">
-        <i class="fa fa-trash"></i> Remove
-      </button>
-    </form>
-  </div>
-</x-card-form>
-
-      @endforeach
-    @endif
-  </section>
 
 {{-- Tasks --}}
 @livewire('show-manage-tasks', ['listing' => $listing])

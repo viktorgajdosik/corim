@@ -21,14 +21,10 @@ Route::get('/listings/create', [ListingController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('listings.create');
 
-// Edit/update/destroy — AUTHOR ONLY
+// Edit/destroy — AUTHOR ONLY
 Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])
     ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
     ->name('listings.edit');
-
-Route::put('/listings/{listing}', [ListingController::class, 'update'])
-    ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
-    ->name('listings.update');
 
 Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])
     ->middleware(['auth', 'verified', 'can:authorOnly,listing'])
@@ -94,25 +90,4 @@ Route::middleware('auth')->group(function () {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('status', 'verification-link-sent');
     })->middleware(['throttle:6,1'])->name('verification.send');
-});
-
-// **OTHER USER ACTIONS**
-Route::post('/listings/{listing}/apply', [ListingController::class, 'apply'])
-    ->middleware(['auth', 'verified', 'can:notAuthor,listing'])
-    ->name('listings.apply');
-
-// (Optional hardening) Only authors should accept/deny applications.
-// These routes reference Application, so enforce author check inside the controller
-// or write a dedicated middleware. For now keep them auth+verified:
-Route::post('/listings/applications/{application}/accept', [ListingController::class, 'acceptApplication'])
-    ->middleware(['auth', 'verified'])
-    ->name('listings.accept');
-
-Route::post('/listings/applications/{application}/deny', [ListingController::class, 'denyApplication'])
-    ->middleware(['auth', 'verified'])
-    ->name('listings.deny');
-
-// **TASKS**
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
