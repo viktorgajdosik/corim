@@ -59,4 +59,14 @@ public function destroy(Listing $listing) {
             return view('listings.show-manage', ['listing' => $listing]);
         }
 
+
+public function hasUnprocessedApplication(Listing $listing, $user)
+{
+    // Check if the user has an unprocessed application for this listing
+    return Application::where('listing_id', $listing->id)
+        ->where('user_id', $user->id)
+        ->where('accepted', 0) // Check for unprocessed applications
+        ->exists();
+}
+
 }
