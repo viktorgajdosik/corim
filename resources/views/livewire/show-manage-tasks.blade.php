@@ -5,14 +5,12 @@
     const thisId = root ? root.getAttribute('wire:id') : null;
     if (!thisId) return;
 
-    // Prevent double-registration if this component re-renders
     window.__tasksHookRegistry ??= new Set();
     if (window.__tasksHookRegistry.has(thisId)) return;
     window.__tasksHookRegistry.add(thisId);
 
     Livewire.hook('message.processed', (message, component) => {
       if (component.id === thisId) {
-        // Fire after Livewire morph + next paint frame
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             window.dispatchEvent(new CustomEvent('tasksPatchComplete'));
@@ -41,10 +39,9 @@
              aria-hidden="true">
           {{-- Title line --}}
           <div class="skeleton-line w-100 mb-2"></div>
-           <div class="skeleton-line w-100 mb-2"></div>
-            <div class="skeleton-line w-100 mb-2"></div>
-             <div class="skeleton-line w-100"></div>
-
+          <div class="skeleton-line w-100 mb-2"></div>
+          <div class="skeleton-line w-100 mb-2"></div>
+          <div class="skeleton-line w-100"></div>
         </div>
 
         {{-- =======================
@@ -59,9 +56,9 @@
     <x-text class="text-white mb-5">You must have accepted students before you can assign tasks.</x-text>
   @endif
 
-  <x-secondary-heading class="mt-4">All Tasks</x-secondary-heading>
+  <x-secondary-heading class="mt-4">Tasks</x-secondary-heading>
 
-  @foreach ($tasks as $task)
+  @forelse ($tasks as $task)
     <div
       class="task-card-wrap"
       data-task-id="{{ $task->id }}"
@@ -73,5 +70,7 @@
         key('task-card-' . $task->id . '-' . optional($task->updated_at)->timestamp)
       )
     </div>
-  @endforeach
+  @empty
+    <x-text class="text-white">You have not created any tasks so far.</x-text>
+  @endforelse
 </section>

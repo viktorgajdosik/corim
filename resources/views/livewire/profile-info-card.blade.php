@@ -9,8 +9,8 @@
          wire:target="ready"
          aria-hidden="true">
       <div class="skeleton-line w-75 mb-3"></div>
-      <div class="d-flex flex-wrap gap-2 mb-3">
-        <div class="skeleton-pill w-50"></div>
+      <div class="d-flex flex-wrap gap-2">
+        <div class="skeleton-pill w-50 mb-2"></div>
         <div class="skeleton-pill w-50"></div>
       </div>
     </div>
@@ -28,9 +28,9 @@
             <i class="me-1 text-white fa fa-envelope"></i> {{ $user->email }}
           </x-text>
 
-          <x-text style="max-width: 220px; word-break: break-word;">
-            <i class="me-1 text-white fa fa-building"></i> {{ $user->department }}
-          </x-text>
+            <div class="d-flex align-items-center">
+          <x-department-dot :department="$user->department" />
+        </div>
         </div>
 
         {{-- Right-aligned stacked icons --}}
