@@ -2,23 +2,43 @@
     <form wire:submit.prevent="register" class="custom-floating-label">
         @csrf
 
-        <!-- Name Input -->
+        <!-- Name -->
         <div class="form-floating mb-3">
-            <input type="text" class="form-control form-control-md bg-dark text-white @error('name') is-invalid @enderror"
+            <input type="text"
+                   class="form-control form-control-md bg-dark text-white @error('name') is-invalid @enderror"
                    id="name" wire:model.live="name" placeholder="Forename, Surname, Titles">
             <label for="name">Forename, Surname, Titles</label>
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Email Input -->
+        <!-- Organization -->
         <div class="form-floating mb-3">
-            <input type="email" class="form-control form-control-md bg-dark text-white @error('email') is-invalid @enderror"
+            <select id="organization"
+                    class="form-select form-control-md bg-dark text-white @error('organization') is-invalid @enderror"
+                    wire:model.live="organization" required>
+                <option value="">Select organization</option>
+                <option value="Fakultní nemocnice Ostrava">Fakultní nemocnice Ostrava</option>
+                <option value="Lékařská fakulta Ostravské univerzity">Lékařská fakulta Ostravské univerzity</option>
+            </select>
+            <label for="organization">Organization</label>
+            @error('organization') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        </div>
+
+        <!-- Email -->
+        <div class="form-floating mb-1">
+            <input type="email"
+                   class="form-control form-control-md bg-dark text-white @error('email') is-invalid @enderror"
                    id="email" wire:model.live="email" placeholder="Organisation email address">
             <label for="email">Organisation email address</label>
             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
+        <small class="text-secondary d-block mb-3">
+            Use your institutional email:
+            <span class="text-white-50">@fno.cz</span> (FNO) or
+            <span class="text-white-50">@osu.cz</span> (LF OU).
+        </small>
 
-        <!-- Department Select -->
+        <!-- Department -->
         <div class="form-floating mb-3">
             <select class="form-select form-control-md bg-dark text-white @error('department') is-invalid @enderror"
                     id="department" wire:model.live="department" required>
@@ -41,7 +61,7 @@
             @error('department') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Password Input -->
+        <!-- Password -->
         <div class="mb-3">
             <div class="form-floating">
                 <input type="password" class="form-control bg-dark text-white @error('password') is-invalid @enderror"
@@ -61,7 +81,7 @@
             @error('password_confirmation') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Sign Up Button with Loading -->
+        <!-- Submit -->
         <div class="mb-3">
             <button type="submit" class="btn btn-sign btn-lg w-100 d-flex align-items-center justify-content-center"
                     wire:loading.attr="disabled">

@@ -1,24 +1,19 @@
 <x-card-form>
   <div wire:init="ready"
        class="position-relative"
-       style="min-height: 130px; border-radius: .5rem; overflow: hidden;">
+       style="min-height: 150px; border-radius: .5rem; overflow: hidden;">
 
-    {{-- =============== SKELETON OVERLAY =============== --}}
-    <div class="task-skeleton-overlay"
-         wire:loading
-         wire:target="ready"
-         aria-hidden="true">
+    <div class="task-skeleton-overlay" wire:loading wire:target="ready" aria-hidden="true">
       <div class="skeleton-line w-75 mb-3"></div>
       <div class="d-flex flex-wrap gap-2">
+        <div class="skeleton-pill w-50 mb-2"></div>
         <div class="skeleton-pill w-50 mb-2"></div>
         <div class="skeleton-pill w-50"></div>
       </div>
     </div>
 
-    {{-- =============== REAL CONTENT =============== --}}
     <div @unless($isReady) class="d-none" @endunless
-         x-data="{ modalOpen: false, countdown: 5, timer: null, confirming: false }"
-         x-cloak>
+         x-data="{ modalOpen: false, countdown: 5, timer: null, confirming: false }" x-cloak>
 
       <div class="d-flex justify-content-between align-items-start">
         <div>
@@ -28,9 +23,15 @@
             <i class="me-1 text-white fa fa-envelope"></i> {{ $user->email }}
           </x-text>
 
-            <div class="d-flex align-items-center">
-          <x-department-dot :department="$user->department" />
-        </div>
+          @if($user->organization)
+            <x-text>
+              <i class="me-1 text-white fa fa-building"></i> {{ $user->organization }}
+            </x-text>
+          @endif
+
+          <div class="d-flex align-items-center">
+            <x-department-dot :department="$user->department" />
+          </div>
         </div>
 
         {{-- Right-aligned stacked icons --}}

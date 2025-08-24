@@ -30,21 +30,27 @@
 
 <!-- Footer -->
 <footer class="site-footer mt-4" style="margin-bottom: 100px;">
-
   <div class="container py-5">
-    <div class="row gy-4">
+    <div class="row gy-5">
       <!-- Brand / About -->
       <div class="col-12 col-lg-5">
-        <h5 class="mb-2">CORIM</h5>
-        <p class="mb-0 text-muted-70">
+        <h5 class="mb-2 fw-semibold">CORIM</h5>
+        <p class="mb-3 text-muted-70 small">
           Collaborative Research Initiative in Medicine — connecting students and authors to drive clinical and basic science projects.
         </p>
+
+        <!-- Subtle contact button under the brand -->
+<a href="{{ url('/contact') }}"
+   class="footer-cta footer-cta--ghost rounded-pill d-inline-flex align-items-center gap-2">
+  <i class="fa fa-envelope"></i>
+  <span>Contact us</span>
+</a>
       </div>
 
       <!-- Quick Links -->
       <div class="col-6 col-lg-3">
-        <h6 class="mb-3 text-muted-70">Quick Links</h6>
-        <ul class="list-unstyled d-grid gap-2">
+        <h6 class="mb-3 text-muted-70 small text-uppercase">Quick Links</h6>
+        <ul class="list-unstyled d-grid gap-2 small">
           <li><a href="{{ url('/') }}" class="footer-link">Home</a></li>
           <li><a href="{{ route('listings.manage') }}" class="footer-link">Manage Listings</a></li>
           <li><a href="{{ route('listings.create') }}" class="footer-link">Create Listing</a></li>
@@ -55,8 +61,8 @@
 
       <!-- Resources / Policies -->
       <div class="col-6 col-lg-2">
-        <h6 class="mb-3 text-muted-70">Resources</h6>
-        <ul class="list-unstyled d-grid gap-2">
+        <h6 class="mb-3 text-muted-70 small text-uppercase">Resources</h6>
+        <ul class="list-unstyled d-grid gap-2 small">
           <li><a href="#" class="footer-link" title="Planned uptime / incident page">Status</a></li>
           <li><a href="#" class="footer-link" title="Author & participant rules and best practices">Guidelines</a></li>
           <li><a href="#" class="footer-link">Privacy</a></li>
@@ -66,12 +72,19 @@
       </div>
 
       <!-- Institutions CTA -->
-      <div class="col-12 col-lg-2">
-        <h6 class="mb-3 text-muted-70">For Institutions</h6>
-        <p class="text-muted-60 mb-2">Partner with CORIM to onboard mentors and streamline student participation.</p>
-        <a href="{{ url('/institutions/register') }}" class="btn btn-primary w-100 cta-btn">
-          Register Institution
-        </a>
+      <div class="col-12 col-lg-2 text-center text-lg-start">
+        <h6 class="mb-2 text-muted-70 small text-uppercase">For Institutions</h6>
+        <p class="text-muted-60 small mb-3">
+          Partner with CORIM to onboard mentors and streamline student participation.
+        </p>
+
+        <!-- Smaller, centered, elegant CTA -->
+<!-- Register institution (solid) -->
+<a href="{{ url('/institutions/register') }}"
+   class="footer-cta footer-cta--solid rounded-pill d-inline-flex align-items-center gap-2">
+  <i class="fa fa-building-o"></i>
+  <span>Register institution</span>
+</a>
       </div>
     </div>
 
@@ -86,6 +99,7 @@
     </div>
   </div>
 </footer>
+
 
 
 
