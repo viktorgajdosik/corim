@@ -29,7 +29,7 @@ class NotificationsPage extends Component
         }
 
         // Ask the bell to refresh its badge
-        $this->dispatch('notificationsChanged')->to(\App\Livewire\Nav\NotificationsBell::class);
+        $this->dispatch('notificationsChanged')->to(\App\Livewire\nav\NotificationsBell::class);
 
         // Safe redirect – we expect relative internal paths like /listings/5
         $target = $notif->url ?: route('notifications.index');
