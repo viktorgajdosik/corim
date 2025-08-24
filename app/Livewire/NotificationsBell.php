@@ -27,7 +27,7 @@ class NotificationsBell extends Component
 
     public function render()
     {
-        return view('\App\Livewire\nav\NotificationsBell');
+        return view('livewire.notifications-bell');
     }
 }
 

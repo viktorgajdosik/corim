@@ -8,8 +8,7 @@
                 <li class="nav-item"><a class="nav-link {{ request()->is('listings/manage*', 'listings/show-manage*') ? 'active' : '' }}" href="/listings/manage"><i class="fa fa-list"></i></a></li>
                 <li class="nav-item"><a class="nav-link {{ request()->is('users/profile*') ? 'active' : '' }}" href="/users/profile"><i class="fa fa-user"></i></a></li>
                 <li class="nav-item"><a class="nav-link {{ request()->is('listings/create') ? 'active' : '' }}" href="/listings/create"><i class="fa fa-plus-circle"></i></a></li>
-            @livewire(\App\Livewire\nav\NotificationsBell::class)
-
+             @livewire('notifications-bell')
                 @auth
                     <li class="nav-item">
                         <form method="POST" class="m-0" action="/logout">
