@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Listing;
 use App\Models\Application;
+use App\Models\Notification;
 
 class ManageApplicants extends Component
 {
@@ -28,7 +29,7 @@ class ManageApplicants extends Component
 
     public function accept(int $applicationId): void
     {
-        $app = Application::with('listing')
+        $app = Application::with(['listing', 'user'])
             ->where('id', $applicationId)
             ->where('listing_id', $this->listing->id)
             ->firstOrFail();
@@ -39,30 +40,48 @@ class ManageApplicants extends Component
         $app->save();
         $expectedTs = $app->updated_at->getTimestamp();
 
-        // Move it from Applications -> Participants
+        // 🔔 notify participant
+        Notification::create([
+            'user_id' => $app->user_id,
+            'type'    => 'application.accepted',
+            'title'   => 'You’ve been accepted',
+            'body'    => "Your application to “{$app->listing->title}” was accepted.",
+            'url'     => route('listings.show', $app->listing_id),
+        ]);
+        $this->dispatch('notificationsChanged');
+
         $this->listing->load(['applications.user']);
 
-        // Tell browser to wait for the NEW participant card, then stop spinner + remove one ghost via app.js
         $this->dispatch(
             'appDomShouldReflect',
             appId: $app->id,
             action: 'accept',
             updatedAt: $expectedTs,
-            listingId: $this->listing->id, // <-- important
+            listingId: $this->listing->id,
             flash: ['message' => 'Application accepted.', 'type' => 'success']
         );
 
-       $this->dispatch('applicationsChanged')->to(\App\Livewire\ShowManageTasks::class);
+        $this->dispatch('applicationsChanged')->to(\App\Livewire\ShowManageTasks::class);
     }
 
     public function deny(int $applicationId): void
     {
-        $app = Application::with('listing')
+        $app = Application::with(['listing', 'user'])
             ->where('id', $applicationId)
             ->where('listing_id', $this->listing->id)
             ->firstOrFail();
 
         if ($app->listing->user_id !== auth()->id()) abort(403);
+
+        // 🔔 notify participant BEFORE delete
+        Notification::create([
+            'user_id' => $app->user_id,
+            'type'    => 'application.denied',
+            'title'   => 'Application denied',
+            'body'    => "Your application to “{$app->listing->title}” was denied.",
+            'url'     => route('listings.show', $app->listing_id),
+        ]);
+        $this->dispatch('notificationsChanged');
 
         $id = $app->id;
         $app->delete();
@@ -78,18 +97,28 @@ class ManageApplicants extends Component
             flash: ['message' => 'Application denied.', 'type' => 'success']
         );
 
-       $this->dispatch('applicationsChanged')->to(\App\Livewire\ShowManageTasks::class);
+        $this->dispatch('applicationsChanged')->to(\App\Livewire\ShowManageTasks::class);
     }
 
     public function remove(int $applicationId): void
     {
-        $app = Application::with('listing')
+        $app = Application::with(['listing', 'user'])
             ->where('id', $applicationId)
             ->where('listing_id', $this->listing->id)
             ->where('accepted', true)
             ->firstOrFail();
 
         if ($app->listing->user_id !== auth()->id()) abort(403);
+
+        // 🔔 notify participant BEFORE delete
+        Notification::create([
+            'user_id' => $app->user_id,
+            'type'    => 'participant.removed',
+            'title'   => 'Removed from project',
+            'body'    => "You were removed from “{$app->listing->title}”.",
+            'url'     => route('listings.show', $app->listing_id),
+        ]);
+        $this->dispatch('notificationsChanged');
 
         $id = $app->id;
         $app->delete();

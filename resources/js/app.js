@@ -237,6 +237,24 @@ document.addEventListener('alpine:init', () => {
     }
   });
 
+  // ===== Task removal (stop delete spinner after card disappears) =====
+  window.addEventListener('taskRemovedDomShouldReflect', async (e) => {
+    const { taskId, flash } = e.detail || {};
+    if (taskId == null) return;
+
+    try {
+      // Wait until the wrapper for this task is gone
+      const sel = `.task-card-wrap[data-task-id="${taskId}"]`;
+      await waitForSelector(sel, { appear: false, timeout: 7000 });
+    } catch (err) {
+      console.debug('[ui] task remove wait timeout', err?.message);
+    } finally {
+      // Stop delete spinner either way
+      Alpine.store('ui').stopDelete?.(taskId);
+      if (flash?.message) showToast(flash);
+    }
+  });
+
   function showToast(flash) {
     const { message, type='success', delay=3000 } = flash || {};
     if (!message) return;

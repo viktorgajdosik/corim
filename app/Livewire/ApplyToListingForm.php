@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Listing;
-use App\Models\Application; // adjust if your namespace differs
+use App\Models\Application;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class ApplyToListingForm extends Component
@@ -28,12 +30,13 @@ class ApplyToListingForm extends Component
     {
         $this->validate();
 
-        // If already accepted, don't overwrite to pending; just flash
-        $existing = $this->listing->applications()
-            ->where('user_id', Auth::id())
-            ->first();
+        $userId     = Auth::id();
+        $authorId   = (int) $this->listing->user_id;
+        $old        = $this->listing->applications()->where('user_id', $userId)->first();
+        $oldMessage = $old?->message;
 
-        if ($existing && (int)$existing->accepted === 1) {
+        // If already accepted, don’t flip it back to pending
+        if ($old && (int) $old->accepted === 1) {
             $this->dispatch(
                 'applicationDomShouldReflect',
                 listingId: $this->listing->id,
@@ -43,18 +46,43 @@ class ApplyToListingForm extends Component
             return;
         }
 
-        // Upsert to PENDING (accepted = 0) to satisfy NOT NULL constraint
-        $this->listing->applications()
-            ->updateOrCreate(
-                ['user_id' => Auth::id()],
-                ['message' => $this->message, 'accepted' => 0]
-            );
+        // Upsert as PENDING
+        $this->listing->applications()->updateOrCreate(
+            ['user_id' => $userId],
+            ['message' => $this->message, 'accepted' => 0]
+        );
 
-        // Refresh the panel (switch to "awaiting")
+        // ===== NOTIFY THE AUTHOR =====
+        // Don’t notify yourself (in case author applies to own listing somehow)
+        if ($authorId && $authorId !== $userId) {
+            $type = $old ? (
+                $oldMessage !== $this->message ? 'application.updated' : null
+            ) : 'application.new';
+
+            if ($type) {
+                Notification::create([
+                    'user_id' => $authorId,
+                    'type'    => $type,
+                    'title'   => 'New application · ' . Str::limit($this->listing->title, 60),
+                    'body'    => Str::limit(
+                        (Auth::user()?->name ?? 'A user') .
+                        ' applied' . ($type === 'application.updated' ? ' (updated message)' : '') .
+                        ': ' . $this->message,
+                        200
+                    ),
+                    'url'     => route('listings.show-manage', $this->listing->id) . '#applications-participants',
+                ]);
+
+                // If the author is on a page with the bell component, it can refresh
+                $this->dispatch('notificationsChanged');
+            }
+        }
+
+        // Re-render the panel into "awaiting" state
         $this->dispatch('$refresh')->to(ListingApplicationPanel::class);
         $this->dispatch('applicationsChanged')->to(ListingApplicationPanel::class);
 
-        // Wait for 'awaiting' DOM, then stop spinner + toast
+        // Tell the browser to stop the spinner once the "awaiting" DOM appears
         $this->dispatch(
             'applicationDomShouldReflect',
             listingId: $this->listing->id,
@@ -62,7 +90,7 @@ class ApplyToListingForm extends Component
             flash: ['message' => 'Application submitted successfully.', 'type' => 'success']
         );
 
-        // Optional: clear
+        // Clear textarea
         $this->message = '';
     }
 

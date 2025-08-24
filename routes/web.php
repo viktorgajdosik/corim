@@ -91,3 +91,8 @@ Route::middleware('auth')->group(function () {
         return back()->with('status', 'verification-link-sent');
     })->middleware(['throttle:6,1'])->name('verification.send');
 });
+
+// Notifications (auth + verified)
+Route::get('/notifications', fn () => view('notifications.index'))
+    ->middleware(['auth','verified'])
+    ->name('notifications.index');

@@ -44,7 +44,7 @@
       <select wire:model.defer="assigned_user_id"
               class="form-select bg-dark text-white @error('assigned_user_id') is-invalid @enderror"
               id="assigned_user_id">
-        <option value="" disabled @if(!$assigned_user_id) selected @endif>Choose participant</option>
+        <option value="" @if(!$assigned_user_id) selected @endif>Choose participant</option>
         @foreach ($participants as $applicant)
           <option value="{{ $applicant->user->id }}">
             {{ $applicant->user->name }} ({{ $applicant->user->email }})

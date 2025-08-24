@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Task;
+use App\Models\Notification; // ⬅️ add
+use App\Livewire\ShowManageTasks; // optional, for clarity
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -23,27 +25,44 @@ class DeleteTaskButton extends Component
             abort(403, 'Unauthorized');
         }
 
-        // Delete any stored file
-        if ($this->task->file) {
-            try {
-                Storage::disk('public')->delete($this->task->file);
-            } catch (\Throwable $e) {
-                // Non-fatal; proceed with task deletion anyway
-            }
+        // Preload relations/values we need BEFORE deletion
+        $this->task->loadMissing('listing');
+        $taskId        = $this->task->id;
+        $participantId = $this->task->assigned_user_id;
+        $taskName      = $this->task->name;
+        $listingId     = $this->task->listing_id;
+        $listingTitle  = optional($this->task->listing)->title;
+
+        // Delete stored files (assignment + student result if any)
+        foreach (array_filter([$this->task->file, $this->task->result_file]) as $path) {
+            try { Storage::disk('public')->delete($path); } catch (\Throwable $e) {}
         }
 
-        $taskId = $this->task->id;
+        // 🔔 Notify participant (if any) that the task was deleted
+        if ($participantId) {
+            Notification::create([
+                'user_id' => $participantId,
+                'type'    => 'task.deleted',
+                'title'   => 'Task deleted',
+                'body'    => $listingTitle
+                              ? "“{$taskName}” in “{$listingTitle}” was deleted by the author."
+                              : "The task “{$taskName}” was deleted by the author.",
+                // Send them back to the listing page
+                'url'     => route('listings.show', $listingId),
+            ]);
+
+            // Let the bell refresh its unseen count
+            $this->dispatch('notificationsChanged');
+        }
 
         // Remove from DB
         $this->task->delete();
 
         // Ask the parent task list to refresh (so the card disappears)
-        // You already use ShowManageTasks as the wrapper that owns the list
         $this->dispatch('$refresh')->to(ShowManageTasks::class);
         $this->dispatch('taskDeleted', taskId: $taskId)->to(ShowManageTasks::class);
 
-        // Tell the browser to keep the spinner until the DOM no longer contains this task card,
-        // then stop spinner + show toast
+        // Tell browser to wait for card disappearance, then stop spinner + toast
         $this->dispatch(
             'taskRemovedDomShouldReflect',
             taskId: $taskId,

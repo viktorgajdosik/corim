@@ -10,26 +10,20 @@
     wire:init="ready"
     style="min-height:140px; overflow:hidden;"
   >
-    {{-- =======================
-         SKELETON (server-first)
-         ======================= --}}
+    {{-- Skeleton --}}
     @unless ($isReady)
       <div class="lc-skeleton-overlay" aria-hidden="true">
         <div class="skeleton-line w-100 mb-3"></div>
-
         <div class="d-flex flex-wrap gap-2 mb-3">
           <div class="skeleton-pill w-25"></div>
           <div class="skeleton-pill w-25"></div>
         </div>
-
         <div class="skeleton-line-sm w-100 mb-2"></div>
         <div class="skeleton-line-sm w-25 mb-2"></div>
       </div>
     @endunless
 
-    {{-- =======================
-         REAL CONTENT
-         ======================= --}}
+    {{-- Real content --}}
     @if ($isReady)
       {{-- Title + Date --}}
       <div class="d-flex justify-content-between align-items-start mb-2">
@@ -41,16 +35,26 @@
           {{ $listing->created_at->format('d/m/Y') }}
         </small>
       </div>
+{{-- Author + Department + Applied badge --}}
+<div class="d-flex align-items-center gap-3 flex-wrap small text-white">
+  <span class="d-inline-flex align-items-center">
+    <i class="fa fa-user me-1"></i> {{ $listing->author }}
+  </span>
 
-      {{-- Author + Department --}}
-      <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
-        <small class="text-white">
-          <i class="fa fa-user me-1"></i> {{ $listing->author }}
-        </small>
-        <div class="d-flex align-items-center">
-          <x-department-dot :department="$listing->department" />
-        </div>
-      </div>
+  <span class="d-inline-flex align-items-center">
+    <x-department-dot :department="$listing->department" />
+
+    @if (($status ?? null) === 'applied')
+      <span
+        class="badge bg-transparent border border-secondary text-secondary rounded ms-2 d-inline-flex align-items-center"
+        style="font-size:1em; font-weight: 500;"
+      >
+        Applied
+      </span>
+    @endif
+  </span>
+</div>
+
 
       {{-- Description --}}
       <small>

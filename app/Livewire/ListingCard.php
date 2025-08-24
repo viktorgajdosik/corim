@@ -8,20 +8,25 @@ use Livewire\Component;
 class ListingCard extends Component
 {
     public Listing $listing;
-      public bool $isReady = false;
+    public bool $isReady = false;
 
-    public function mount(Listing $listing): void
+    /**
+     * Optional status label for this card.
+     * Example: "applied" (used on the profile page to mark pending apps)
+     */
+    public ?string $status = null;
+
+    public function mount(Listing $listing, ?string $status = null): void
     {
         $this->listing = $listing;
+        $this->status  = $status;
     }
 
     // just to trigger wire:loading once
     public function ready(): void
     {
-      $this->isReady = true;
+        $this->isReady = true;
     }
-
-
 
     public function getIsAuthorProperty(): bool
     {

@@ -5,8 +5,6 @@
   <!-- Personal Information Section -->
   <div class="col-xl-3">
     <x-secondary-heading>Personal Information</x-secondary-heading>
-
-    {{-- Livewire profile info card with initial placeholder --}}
     @livewire('profile-info-card', ['user' => $user], key('profile-info-'.$user->id.'-'.optional($user->updated_at)->timestamp))
   </div>
 
@@ -22,11 +20,27 @@
       </i>
     </x-secondary-heading>
 
+    @php
+      $accepted = $user->acceptedApplications ?? collect();
+
+      // Pending (applied) applications
+      $applied = $user->applications()
+                      ->where('accepted', false)
+                      ->with('listing')
+                      ->get();
+    @endphp
+
     <div class="scrollable-listings border-0 h-75">
-      @if ($user->acceptedApplications->isEmpty())
-        <x-text>You have not participated in other author's research work yet.</x-text>
+      @if ($accepted->isEmpty() && $applied->isEmpty())
+        <x-text>You have not participated in other author's research work yet, and you have no pending applications.</x-text>
       @else
-        @foreach ($user->acceptedApplications as $application)
+        {{-- Show APPLIED first --}}
+        @foreach ($applied as $application)
+          <x-listing-card :listing="$application->listing" status="applied" />
+        @endforeach
+
+        {{-- Then PARTICIPATING (accepted) --}}
+        @foreach ($accepted as $application)
           <x-listing-card :listing="$application->listing" />
         @endforeach
       @endif

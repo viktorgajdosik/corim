@@ -18,35 +18,54 @@ class DepartmentDot extends Component
     private function resolveColor(string $department): string
     {
         $departmentColors = [
-            'Anaesthesiology, Resuscitation and Intensive Care Medicine' => '#FF0000',
-            'Anatomy' => '#0066FF',
-            'Clinical Biochemistry' => '#00CC66',
-            'Clinical Neurosciences' => '#00BFFF',
-            'Craniofacial Surgery' => '#FFA500',
-            'Dentistry' => '#8A2BE2',
-            'Dermatovenerology' => '#800000',
-            'Emergency Medicine' => '#FF3333',
-            'Epidemiology and Public Health' => '#228B22',
-            'Forensic Medicine' => '#6A5ACD',
-            'Gynecology and Obstetrics' => '#FF1493',
-            'Hematooncology' => '#B22222',
-            'Histology and Embryology' => '#1E90FF',
-            'Hyperbaric Medicine' => '#2F4F4F',
-            'Imaging Methods' => '#A9A9A9',
-            'Internal Medicine' => '#0000CD',
-            'Medical Microbiology' => '#FFD700',
-            'Molecular and Clinical Pathology and Medical Genetics' => '#32CD32',
-            'Nursing and Midwifery' => '#9932CC',
-            'Oncology' => '#DC143C',
-            'Pediatrics' => '#00CED1',
-            'Pharmacology' => '#A52A2A',
-            'Physiology and Pathophysiology' => '#000000',
-            'Rehabilitation and Sports Medicine' => '#00FF00',
-            'Surgical Studies' => '#4169E1',
-            'Student' => '#FF5BFA',
+            // Acute / critical
+            'Anaesthesiology, Resuscitation and Intensive Care Medicine' => '#C62828', // critical red
+
+            // Basic sciences
+            'Anatomy'                        => '#D7CCC8', // bone/tissue ivory
+            'Clinical Biochemistry'          => '#00897B', // teal chemistry / reagents
+            'Histology and Embryology'       => '#6A1B9A', // microscope violets
+            'Physiology and Pathophysiology' => '#455A64', // slate for systems/graphs
+
+            // Neuro / imaging
+            'Clinical Neurosciences'         => '#5C6BC0', // indigo neural
+            'Imaging Methods'                => '#B0BEC5', // radiology blue–grey
+
+            // Surgery & peri-op
+            'Craniofacial Surgery'           => '#FF7043', // reconstructive orange
+            'Surgical Studies'               => '#2E8B57', // surgical green
+
+            // Frontline care
+            'Emergency Medicine'             => '#FF6D00', // urgency amber
+            'Internal Medicine'              => '#0D47A1', // trust navy
+            'Nursing and Midwifery'          => '#81D4FA', // calm scrubs blue
+
+            // Specialty clinics
+            'Dermatovenerology'              => '#F4A261', // skin peach
+            'Dentistry'                      => '#00BFA5', // clean mint
+            'Gynecology and Obstetrics'      => '#D81B60', // maternal pink (deeper)
+            'Pediatrics'                     => '#00BCD4', // playful cyan
+            'Rehabilitation and Sports Medicine' => '#2E7D32', // recovery green
+
+            // Lab & pathogens
+            'Medical Microbiology'           => '#7CB342', // microbe green
+            'Molecular and Clinical Pathology and Medical Genetics' => '#EC407A', // H&E pink (Pathology)
+
+            // Oncology / blood / forensic
+            'Oncology'                       => '#FBC02D', // gold ribbon family
+            'Hematooncology'                 => '#8B0000', // deep blood red
+            'Forensic Medicine'              => '#8E24AA', // forensic purple
+
+            // Population & environment
+            'Epidemiology and Public Health' => '#9E9D24', // olive-lime maps
+            'Hyperbaric Medicine'            => '#004D40', // deep sea teal
+
+            // Misc
+            'Pharmacology'                   => '#8D6E63', // tablet brown
+            'Student'                        => '#FF5BFA', // bright magenta
         ];
 
-        return $departmentColors[$department] ?? '#999999';
+        return $departmentColors[$department] ?? '#999999'; // fallback neutral
     }
 
     public function render()

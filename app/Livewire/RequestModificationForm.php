@@ -4,7 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Task;
-use App\Livewire\ShowManageTasks; // 👈 add this
+use App\Models\Notification; // 🔔
+use App\Livewire\ShowManageTasks;
 
 class RequestModificationForm extends Component
 {
@@ -45,24 +46,25 @@ class RequestModificationForm extends Component
         $this->task->status = 'modification_requested';
         $this->task->save();
 
-        // ✅ expected DOM version
+        // 🔔 notify participant
+        Notification::create([
+            'user_id' => $this->task->assigned_user_id,
+            'type'    => 'task.modification_requested',
+            'title'   => 'Modification requested',
+            'body'    => $this->task->modification_note
+                ? "For “{$this->task->name}”: {$this->task->modification_note}"
+                : "Please modify “{$this->task->name}”.",
+            'url'     => route('listings.show', $this->task->listing_id),
+        ]);
+        $this->dispatch('notificationsChanged');
+
         $expectedTs = $this->task->updated_at->getTimestamp();
         $flash = ['message' => 'Modification requested.', 'type' => 'success'];
 
-        // ✅ refresh parent + keep your event if you like
         $this->dispatch('$refresh')->to(ShowManageTasks::class);
         $this->dispatch('modificationRequested')->to(ShowManageTasks::class);
 
-        // ✅ tell browser which version to wait for
-        $this->dispatch('taskDomShouldReflect', taskId: $this->task->id, updatedAt: $expectedTs);
-
-         // Send flash info along with DOM wait instruction
-    $this->dispatch(
-        'taskDomShouldReflect',
-        taskId: $this->task->id,
-        updatedAt: $expectedTs,
-        flash: $flash
-    );
+        $this->dispatch('taskDomShouldReflect', taskId: $this->task->id, updatedAt: $expectedTs, flash: $flash);
     }
 
     public function render()

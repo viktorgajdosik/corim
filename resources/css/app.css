@@ -95,6 +95,41 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         color: #fff;
     }
 
+    /* NProgress → make the bar white */
+#nprogress .bar { background: #fff !important; }
+/* the little glow at the front of the bar */
+#nprogress .peg { box-shadow: 0 0 10px #fff, 0 0 5px #fff !important; }
+/* spinner (if enabled) */
+#nprogress .spinner-icon { border-top-color:#fff; border-left-color:#fff; }
+
+  .site-footer{
+      position: relative;
+      background: #151515;
+      color: #e9ecef;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .footer-link{
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      transition: color .2s ease, opacity .2s ease;
+    }
+    .footer-link:hover{ color:#fff; opacity:1; }
+    .text-muted-70{ color: rgba(255,255,255,.7) !important; }
+    .text-muted-60{ color: rgba(255,255,255,.6) !important; }
+    .text-muted-50{ color: rgba(255,255,255,.5) !important; }
+    .cta-btn{
+      border-radius: .75rem;
+    }
+    .notify-item{
+      cursor: pointer;
+      padding: .5rem .75rem;
+      border-radius: .5rem;
+      transition: background-color .15s ease, box-shadow .15s ease;
+    }
+    .notify-item:hover{
+      background-color: rgba(255,255,255,0.035);
+    }
 
     .page-link {
         background-color: #fff;

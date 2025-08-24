@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Task;
+use App\Models\Notification; // 🔔
 use App\Livewire\ShowManageTasks;
 
 class MarkTaskAsFinished extends Component
@@ -25,24 +26,23 @@ class MarkTaskAsFinished extends Component
         $this->task->modification_note = null;
         $this->task->save();
 
+        // 🔔 notify participant
+        Notification::create([
+            'user_id' => $this->task->assigned_user_id,
+            'type'    => 'task.finished',
+            'title'   => 'Task marked as finished',
+            'body'    => "“{$this->task->name}” has been marked as finished.",
+            'url'     => route('listings.show', $this->task->listing_id),
+        ]);
+        $this->dispatch('notificationsChanged');
+
         $expectedTs = $this->task->updated_at->getTimestamp();
         $flash = ['message' => 'Task finished.', 'type' => 'success'];
 
-        // Re-render parent task list
         $this->dispatch('$refresh')->to(ShowManageTasks::class);
         $this->dispatch('taskStatusChanged')->to(ShowManageTasks::class);
 
-        // Tell the browser which DOM version to wait for
-        $this->dispatch('taskDomShouldReflect', taskId: $this->task->id, updatedAt: $expectedTs);
-
-        // Send flash info along with DOM wait instruction
-    $this->dispatch(
-        'taskDomShouldReflect',
-        taskId: $this->task->id,
-        updatedAt: $expectedTs,
-        flash: $flash
-    );
-
+        $this->dispatch('taskDomShouldReflect', taskId: $this->task->id, updatedAt: $expectedTs, flash: $flash);
     }
 
     public function render()
@@ -50,5 +50,3 @@ class MarkTaskAsFinished extends Component
         return view('livewire.mark-task-as-finished');
     }
 }
-
-
