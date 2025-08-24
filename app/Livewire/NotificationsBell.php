@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Nav;
+namespace App\Livewire;
 
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
