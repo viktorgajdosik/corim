@@ -16,6 +16,9 @@
     <meta name="theme-color" content="#000">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
+    @once
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+@endonce
     <title>CORIM</title>
 </head>
 <body>

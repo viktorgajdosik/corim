@@ -47,4 +47,7 @@
     </div>
   </div>
 </div>
+{{-- Organization Analytics --}}
+@livewire('org-analytics', ['user' => $user], key('org-analytics-'.$user->id))
+
 @endsection

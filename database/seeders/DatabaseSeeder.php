@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user->id
         ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+       $this->call([
+        OrgDemoSeeder::class,
+    ]);
     }
 }
+
