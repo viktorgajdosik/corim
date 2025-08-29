@@ -18,7 +18,14 @@
     {{-- REAL CONTENT --}}
     <div @unless($panelReady) class="d-none" @endunless>
 
-      @if (!$application)
+      @if (!$listing->is_open)
+        {{-- Closed message --}}
+        <div class="p-3 border rounded bg-transparent">
+          <x-card-heading class="mb-1">Applications Closed</x-card-heading>
+          <x-text>The author has closed this listing. New applications are currently disabled.</x-text>
+        </div>
+
+      @elseif (!$application)
         <x-card-heading class="mb-2">Message the Author</x-card-heading>
         <x-text class="mb-2">Tell the author something about yourself.</x-text>
 

@@ -13,7 +13,8 @@ class ListingApplicationPanel extends Component
     public bool $panelReady = false;
 
     protected $listeners = [
-        'applicationsChanged' => '$refresh',
+        'applicationsChanged'      => '$refresh',
+        'listingOpenStateChanged'  => '$refresh',
     ];
 
     public function mount(Listing $listing): void
@@ -29,11 +30,14 @@ class ListingApplicationPanel extends Component
 
     public function render()
     {
+        // ensure we have the latest is_open state
+        $this->listing->refresh();
+
         $application = $this->listing->applications()
             ->where('user_id', auth()->id())
             ->first();
 
-        $isAccepted = $application && (int)$application->accepted === 1;
+        $isAccepted = $application && (int) $application->accepted === 1;
 
         return view('livewire.listing-application-panel', compact('application', 'isAccepted'));
     }

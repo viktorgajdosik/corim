@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\Listing;
 use App\Models\Task;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
@@ -16,10 +17,7 @@ class OrgAnalytics extends Component
 {
     public User $user;
 
-    /**
-     * Time window: '6m' | '1y' | '5y' | 'all'
-     * Default 6 months (includes current month).
-     */
+    /** Time window: '6m' | '1y' | '5y' | 'all' */
     public string $window = '6m';
 
     public function mount(User $user): void
@@ -27,7 +25,6 @@ class OrgAnalytics extends Component
         $this->user = $user;
     }
 
-    /** Department color mapping */
     protected function deptColor(string $dept): string
     {
         static $map = [
@@ -62,7 +59,6 @@ class OrgAnalytics extends Component
         return $map[$dept] ?? '#999999';
     }
 
-    /** Oldest month present in org (listings/tasks/accepted applications/users) */
     protected function earliestMonth(string $org): Carbon
     {
         $lm = Listing::query()
@@ -94,10 +90,9 @@ class OrgAnalytics extends Component
         return Carbon::parse(min($candidates))->startOfMonth();
     }
 
-    /** Keys/labels from an inclusive start up to and including CURRENT month */
     protected function monthBucketsInclusive(Carbon $start): array
     {
-        $end = now()->startOfMonth(); // current month
+        $end = now()->startOfMonth();
         if ($start->greaterThan($end)) {
             $start = $end->copy();
         }
@@ -113,30 +108,22 @@ class OrgAnalytics extends Component
         return ['keys' => $keys, 'labels' => $labels];
     }
 
-    /** Build month buckets for the selected window (inclusive of current month) */
     protected function monthBuckets(string $org): array
     {
         $end = now()->startOfMonth();
         $start = match ($this->window) {
-            '6m'  => $end->copy()->subMonthsNoOverflow(5),   // 6 labels incl. current
-            '1y'  => $end->copy()->subMonthsNoOverflow(11),  // 12 labels incl. current
-            '5y'  => $end->copy()->subMonthsNoOverflow(59),  // 60 labels incl. current
+            '6m'  => $end->copy()->subMonthsNoOverflow(5),
+            '1y'  => $end->copy()->subMonthsNoOverflow(11),
+            '5y'  => $end->copy()->subMonthsNoOverflow(59),
             'all' => $this->earliestMonth($org),
             default => $end->copy()->subMonthsNoOverflow(5),
         };
         return $this->monthBucketsInclusive($start);
     }
 
-    /**
-     * Build per-dept monthly datasets (NO "Other") aligned to month keys.
-     * Input rows: dept, ym(YYYY-MM), cnt
-     * Includes EVERY department that has at least one point in the window.
-     */
     protected function buildMonthlySeriesAll(Collection $rows, array $monthKeys): array
     {
-        // Order datasets by total descending for nicer legend
         $totalsByDept = $rows->groupBy('dept')->map(fn($g) => (int)$g->sum('cnt'))->sortDesc();
-
         $idxByYm = array_flip($monthKeys);
         $datasets = [];
 
@@ -160,7 +147,6 @@ class OrgAnalytics extends Component
         return $datasets;
     }
 
-    /** Build a single aligned line for a specific department (case-insensitive). */
     protected function buildMineDataset(Collection $rows, array $monthKeys, string $deptLabel, string $color = '#FFFFFF'): array
     {
         $want = mb_strtolower(trim($deptLabel ?? ''));
@@ -178,7 +164,7 @@ class OrgAnalytics extends Component
         return ['label' => $deptLabel ?: 'Unknown', 'data' => $series, 'color' => $color];
     }
 
-    /** ===== Shared query set for both charts and exports ===== */
+    /** Shared queries (includes open listings) */
     protected function queryAllRows(string $org, array $monthKeys): array
     {
         $trendStart = Carbon::createFromFormat('Y-m', $monthKeys[0])->startOfMonth();
@@ -186,6 +172,17 @@ class OrgAnalytics extends Component
         $rowsListings = Listing::query()
             ->join('users', 'users.id', '=', 'listings.user_id')
             ->where('users.organization', $org)
+            ->where('listings.created_at', '>=', $trendStart)
+            ->selectRaw("COALESCE(NULLIF(listings.department,''),'Unknown') AS dept,
+                         DATE_FORMAT(listings.created_at,'%Y-%m') AS ym,
+                         COUNT(*) AS cnt")
+            ->groupBy('dept', 'ym')
+            ->get();
+
+        $rowsOpenListings = Listing::query()
+            ->join('users', 'users.id', '=', 'listings.user_id')
+            ->where('users.organization', $org)
+            ->where('listings.is_open', 1)
             ->where('listings.created_at', '>=', $trendStart)
             ->selectRaw("COALESCE(NULLIF(listings.department,''),'Unknown') AS dept,
                          DATE_FORMAT(listings.created_at,'%Y-%m') AS ym,
@@ -226,10 +223,9 @@ class OrgAnalytics extends Component
             ->groupBy('dept', 'ym')
             ->get();
 
-        return compact('rowsListings','rowsTasks','rowsParticipantsAccepted','rowsUsersPerDept');
+        return compact('rowsListings','rowsOpenListings','rowsTasks','rowsParticipantsAccepted','rowsUsersPerDept');
     }
 
-    /** Tall arrays for export: [ [month, department, count], ... ] */
     protected function rowsToTallArray(Collection $rows): array
     {
         return $rows->map(fn($r) => [
@@ -239,7 +235,6 @@ class OrgAnalytics extends Component
         ])->values()->all();
     }
 
-    /** Simple summary for PDF header/footer */
     protected function buildSummary(Collection $rows, array $monthKeys): array
     {
         $lastKey = $monthKeys[count($monthKeys)-1] ?? null;
@@ -264,9 +259,8 @@ class OrgAnalytics extends Component
 
     public function exportXlsx()
     {
-        // Requires: composer require maatwebsite/excel
         if (!class_exists(\Maatwebsite\Excel\Facades\Excel::class)) {
-            return $this->exportCsvZip(); // graceful fallback
+            return $this->exportCsvZip();
         }
 
         $org = $this->user->organization ?? 'Unknown';
@@ -307,6 +301,7 @@ class OrgAnalytics extends Component
             'tasks.csv'       => $this->csvFromTall($this->rowsToTallArray($rows['rowsTasks'])),
             'participants_accepted.csv' => $this->csvFromTall($this->rowsToTallArray($rows['rowsParticipantsAccepted'])),
             'users_all.csv'   => $this->csvFromTall($this->rowsToTallArray($rows['rowsUsersPerDept'])),
+            'open_listings.csv' => $this->csvFromTall($this->rowsToTallArray($rows['rowsOpenListings'])),
             'meta.txt'        => "org: {$org}\nwindow: {$this->window}\nmonths: ".implode(', ', $b['labels'])."\ngenerated_at: ".now()->toDateTimeString()."\n",
         ];
 
@@ -333,25 +328,27 @@ class OrgAnalytics extends Component
         return stream_get_contents($out) ?: '';
     }
 
+    /** PDF export — expects $images[] with data-URIs from the client */
     public function exportPdf(?array $images = null)
     {
+        // Log environment quickly (optional)
+        \Log::info('[PDF export] runtime diag', [
+            'php'     => PHP_VERSION,
+            'sapi'    => php_sapi_name(),
+            'gd'      => extension_loaded('gd'),
+            'imagick' => extension_loaded('imagick'),
+        ]);
 
-        // ---- quick diagnostics ----
-    $diag = [
-        'php'     => PHP_VERSION,
-        'sapi'    => php_sapi_name(),
-        'gd'      => extension_loaded('gd'),
-        'imagick' => extension_loaded('imagick'),
-        'ini'     => php_ini_loaded_file() ?: '(none)',
-        'extdir'  => ini_get('extension_dir') ?: '(none)',
-    ];
-    \Log::info('[PDF export] runtime diag', $diag);
-    // ---------------------------
-        // Requires: composer require barryvdh/laravel-dompdf
         if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-            // Fallback to CSV zip if DomPDF is not installed
             return $this->exportCsvZip();
         }
+
+        // DomPDF options – not strictly required for data URIs, but harmless
+        Pdf::setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'dpi'                  => 144,
+        ]);
 
         $org = $this->user->organization ?? 'Unknown';
         $b = $this->monthBuckets($org);
@@ -361,10 +358,11 @@ class OrgAnalytics extends Component
         $rows = $this->queryAllRows($org, $monthKeys);
 
         $summary = [
-            'listings'   => $this->buildSummary($rows['rowsListings'], $monthKeys),
-            'tasks'      => $this->buildSummary($rows['rowsTasks'], $monthKeys),
-            'accepted'   => $this->buildSummary($rows['rowsParticipantsAccepted'], $monthKeys),
-            'users_all'  => $this->buildSummary($rows['rowsUsersPerDept'], $monthKeys),
+            'listings'       => $this->buildSummary($rows['rowsListings'], $monthKeys),
+            'open_listings'  => $this->buildSummary($rows['rowsOpenListings'], $monthKeys),
+            'tasks'          => $this->buildSummary($rows['rowsTasks'], $monthKeys),
+            'accepted'       => $this->buildSummary($rows['rowsParticipantsAccepted'], $monthKeys),
+            'users_all'      => $this->buildSummary($rows['rowsUsersPerDept'], $monthKeys),
         ];
 
         $html = view('exports.org-analytics-report', [
@@ -372,13 +370,14 @@ class OrgAnalytics extends Component
             'window' => $this->window,
             'generated_at' => now(),
             'months' => $monthLabels,
-            'images' => $images ?? [], // data URLs captured from canvases (optional)
+            'images' => $images ?? [],
             'summary'=> $summary,
         ])->render();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
         $filename = 'corim-org-analytics-' . Str::slug($org) . '-' . now()->format('Ymd-His') . '.pdf';
 
+        // Return a streamed response (works the same way as your previous setup)
         return response()->streamDownload(function() use ($pdf) {
             echo $pdf->output();
         }, $filename);
@@ -394,6 +393,7 @@ class OrgAnalytics extends Component
                 'window'  => $this->window,
                 'charts'  => [
                     'listingsMonthlyByDept'              => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
+                    'openListingsMonthlyByDept'          => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'tasksMonthlyByDept'                 => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'participantsAcceptedPerDeptMonthly' => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'usersPerDeptMonthly'                => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
@@ -402,7 +402,6 @@ class OrgAnalytics extends Component
             ]);
         }
 
-        // Month buckets (inclusive of current month)
         $buckets     = $this->monthBuckets($org);
         $monthKeys   = $buckets['keys'];
         $monthLabels = $buckets['labels'];
@@ -413,6 +412,7 @@ class OrgAnalytics extends Component
                 'window'  => $this->window,
                 'charts'  => [
                     'listingsMonthlyByDept'              => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
+                    'openListingsMonthlyByDept'          => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'tasksMonthlyByDept'                 => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'participantsAcceptedPerDeptMonthly' => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
                     'usersPerDeptMonthly'                => ['labels' => [], 'datasets' => [], 'mine' => ['label' => '', 'data' => []]],
@@ -421,30 +421,30 @@ class OrgAnalytics extends Component
             ]);
         }
 
-        // Shared queries
         $rows = $this->queryAllRows($org, $monthKeys);
 
-        // Build datasets (NO "Other")
-        $dsListings   = $this->buildMonthlySeriesAll($rows['rowsListings'], $monthKeys);
-        $dsTasks      = $this->buildMonthlySeriesAll($rows['rowsTasks'], $monthKeys);
-        $dsPartAcc    = $this->buildMonthlySeriesAll($rows['rowsParticipantsAccepted'], $monthKeys);
-        $dsUsersAll   = $this->buildMonthlySeriesAll($rows['rowsUsersPerDept'], $monthKeys);
+        $dsListings       = $this->buildMonthlySeriesAll($rows['rowsListings'], $monthKeys);
+        $dsOpenListings   = $this->buildMonthlySeriesAll($rows['rowsOpenListings'], $monthKeys);
+        $dsTasks          = $this->buildMonthlySeriesAll($rows['rowsTasks'], $monthKeys);
+        $dsPartAcc        = $this->buildMonthlySeriesAll($rows['rowsParticipantsAccepted'], $monthKeys);
+        $dsUsersAll       = $this->buildMonthlySeriesAll($rows['rowsUsersPerDept'], $monthKeys);
 
-        // 'Mine' fallback lines (so My department never renders empty)
-        $currentUserDept = $this->user->department ?: 'Unknown';
-        $listingsMine    = $this->buildMineDataset($rows['rowsListings'],              $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
-        $tasksMine       = $this->buildMineDataset($rows['rowsTasks'],                 $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
-        $partAccMine     = $this->buildMineDataset($rows['rowsParticipantsAccepted'],  $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
-        $usersAllMine    = $this->buildMineDataset($rows['rowsUsersPerDept'],          $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
+        $currentUserDept  = $this->user->department ?: 'Unknown';
+        $listingsMine     = $this->buildMineDataset($rows['rowsListings'],             $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
+        $openListingsMine = $this->buildMineDataset($rows['rowsOpenListings'],         $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
+        $tasksMine        = $this->buildMineDataset($rows['rowsTasks'],                $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
+        $partAccMine      = $this->buildMineDataset($rows['rowsParticipantsAccepted'], $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
+        $usersAllMine     = $this->buildMineDataset($rows['rowsUsersPerDept'],         $monthKeys, $currentUserDept, $this->deptColor($currentUserDept));
 
         return view('livewire.org-analytics', [
             'hasOrg'         => true,
             'window'         => $this->window,
             'charts'         => [
-                'listingsMonthlyByDept'              => ['labels' => $monthLabels, 'datasets' => $dsListings,   'mine' => $listingsMine],
-                'tasksMonthlyByDept'                 => ['labels' => $monthLabels, 'datasets' => $dsTasks,      'mine' => $tasksMine],
-                'participantsAcceptedPerDeptMonthly' => ['labels' => $monthLabels, 'datasets' => $dsPartAcc,    'mine' => $partAccMine],
-                'usersPerDeptMonthly'                => ['labels' => $monthLabels, 'datasets' => $dsUsersAll,   'mine' => $usersAllMine],
+                'openListingsMonthlyByDept'          => ['labels' => $monthLabels, 'datasets' => $dsOpenListings, 'mine' => $openListingsMine],
+                'listingsMonthlyByDept'              => ['labels' => $monthLabels, 'datasets' => $dsListings,     'mine' => $listingsMine],
+                'tasksMonthlyByDept'                 => ['labels' => $monthLabels, 'datasets' => $dsTasks,        'mine' => $tasksMine],
+                'participantsAcceptedPerDeptMonthly' => ['labels' => $monthLabels, 'datasets' => $dsPartAcc,      'mine' => $partAccMine],
+                'usersPerDeptMonthly'                => ['labels' => $monthLabels, 'datasets' => $dsUsersAll,     'mine' => $usersAllMine],
             ],
             'currentUserDept' => $currentUserDept,
         ]);

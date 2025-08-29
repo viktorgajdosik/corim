@@ -10,21 +10,39 @@ class DefaultListings extends Component
 {
     use WithPagination;
 
-    public $perPage = 4; // Number of listings to load initially
+    public int $perPage = 4;
+    public bool $openOnly = false;
 
-    protected $listeners = ['loadMore'];
+    protected $listeners = [
+        'openOnlyUpdated' => 'openOnlyUpdated',
+    ];
 
-    public function loadMore()
+    public function loadMore(): void
     {
-        $this->perPage += 4; // Increase the number of listings displayed
+        $this->perPage += 4;
+    }
+
+    public function openOnlyUpdated($openOnly): void
+    {
+        $this->openOnly = (bool) $openOnly;
+        $this->resetPage();
+    }
+
+    public function updatingOpenOnly(): void
+    {
+        $this->resetPage();
     }
 
     public function render()
     {
-        $listings = Listing::orderBy('created_at', 'desc')->paginate($this->perPage);
+        $query = Listing::query()->orderBy('created_at', 'desc');
 
-        return view('livewire.default-listings', compact('listings'))
-            ->extends('components.layout')
-            ->section('content');
+        if ($this->openOnly) {
+            $query->where('is_open', 1);
+        }
+
+        $listings = $query->paginate($this->perPage);
+
+        return view('livewire.default-listings', compact('listings'));
     }
 }

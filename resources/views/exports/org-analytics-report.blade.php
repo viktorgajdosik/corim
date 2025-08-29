@@ -28,6 +28,7 @@
 
   @php
     $blocks = [
+      ['key'=>'open_listings', 'title'=>'Open Listings (is_open=1) — per Department', 'img'=>$images['openListings'] ?? null, 'sum'=>$summary['open_listings'] ?? null],
       ['key'=>'listings', 'title'=>'Listings per Department — Trend', 'img'=>$images['listings'] ?? null, 'sum'=>$summary['listings'] ?? null],
       ['key'=>'tasks', 'title'=>'Tasks per Department — Trend', 'img'=>$images['tasks'] ?? null, 'sum'=>$summary['tasks'] ?? null],
       ['key'=>'accepted', 'title'=>'Participating Users (accepted) — per Department', 'img'=>$images['participantsAccepted'] ?? null, 'sum'=>$summary['accepted'] ?? null],

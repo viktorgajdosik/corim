@@ -19,6 +19,9 @@
 @endunless
 
 @if ($isAccepted)
+    {{-- Chat (participant) --}}
+  @livewire('listing-chat', ['listing' => $listing], key('listing-chat-'.$listing->id))
+
     @livewire('show-student-tasks', ['listing' => $listing], key('student-tasks-' . $listing->id))
 @endif
 

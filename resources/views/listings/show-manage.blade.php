@@ -36,6 +36,8 @@
     @livewire('listing-manage-card', ['listing' => $listing], key('listing-manage-'.$listing->id.'-'.optional($listing->updated_at)->timestamp))
   </section>
 
+  {{-- Chat (author) --}}
+  @livewire('listing-chat', ['listing' => $listing], key('listing-chat-'.$listing->id))
 
   {{-- Applications & Participants --}}
 <section id="applications-participants">
