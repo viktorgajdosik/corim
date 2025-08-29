@@ -11,23 +11,19 @@
   ];
 @endphp
 
-<style>
-  /* Default heights (desktop/tablet) */
-  :root { --oa-h: 320px; --oa-h-tall: 340px; }
-  /* Taller on mobile so legends fit */
-  @media (max-width: 767.98px) {
-    :root { --oa-h: 420px; --oa-h-tall: 480px; }
-  }
-  .oa-chart { position: relative; height: var(--oa-h); }
-  .oa-chart--tall { height: var(--oa-h-tall); }
-</style>
-
 <div
   x-data="orgAnalyticsComponent(@js($oaState))"
   x-init="init()"
   x-on:oa:scope.window="setScope($event.detail)"
   class="mt-4"
 >
+  <style>
+    :root { --oa-h: 320px; --oa-h-tall: 340px; }
+    @media (max-width: 767.98px) { :root { --oa-h: 420px; --oa-h-tall: 480px; } }
+    .oa-chart { position: relative; height: var(--oa-h); }
+    .oa-chart--tall { height: var(--oa-h-tall); }
+  </style>
+
   {{-- Alpine re-reads latest state here after Livewire updates --}}
   <script type="application/json" x-ref="state">
     @json($oaState)
