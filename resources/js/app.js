@@ -107,320 +107,311 @@ document.addEventListener('alpine:init', () => {
     },
   });
 
-// ========== ORG ANALYTICS ==========
-Alpine.data('orgAnalyticsComponent', (payload) => ({
-  charts: {
-    openListings: null,
-    listings: null,
-    tasks: null,
-    participantsAccepted: null,
-    usersAll: null,
-  },
-  data: payload,
-  demoMode: false,
-  scopes: {
-    openListings: 'all',
-    listings: 'all',
-    tasks: 'all',
-    participantsAccepted: 'all',
-    usersAll: 'all',
-  },
-  stateObserver: null,
+  // ========== ORG ANALYTICS ==========
+  Alpine.data('orgAnalyticsComponent', (payload) => ({
+    charts: {
+      openListings: null,
+      listings: null,
+      tasks: null,
+      participantsAccepted: null,
+      usersAll: null,
+    },
+    data: payload,
+    demoMode: false,
+    scopes: {
+      openListings: 'all',
+      listings: 'all',
+      tasks: 'all',
+      participantsAccepted: 'all',
+      usersAll: 'all',
+    },
+    stateObserver: null,
 
-  async init() {
-    if (this.$el.__oaInit) return;
-    this.$el.__oaInit = true;
+    async init() {
+      if (this.$el.__oaInit) return;
+      this.$el.__oaInit = true;
 
-    await this.ensureChartJs();
-    this.readState();
-    await this.nextPaint();
-    this.renderAll();
-    this.observeState();
+      await this.ensureChartJs();
+      this.readState();
+      await this.nextPaint();
+      this.renderAll();
+      this.observeState();
 
-    if (window.Livewire?.hook) {
-      Livewire.hook('message.processed', async (m, c) => {
-        const root = this.$el.closest('[wire\\:id]');
-        if (root && root.getAttribute('wire:id') === c.id) {
-          if (!this.demoMode) {
-            this.readState();
-            this.observeState();
+      if (window.Livewire?.hook) {
+        Livewire.hook('message.processed', async (m, c) => {
+          const root = this.$el.closest('[wire\\:id]');
+          if (root && root.getAttribute('wire:id') === c.id) {
+            if (!this.demoMode) {
+              this.readState();
+              this.observeState();
+            }
+            await this.nextPaint();
+            this.renderAll();
           }
-          await this.nextPaint();
-          this.renderAll();
+        });
+      }
+    },
+
+    setScope(detail) {
+      const { key, scope } = detail || {};
+      if (!key || !scope) return;
+      if (!(key in this.scopes)) return;
+      this.scopes[key] = scope;
+      this.renderAll();
+    },
+
+    ensureChartJs() {
+      if (window.Chart) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Chart.js failed'));
+        document.head.appendChild(s);
+      });
+    },
+
+    nextPaint() { return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); },
+
+    readState() {
+      try {
+        const el = this.$el.querySelector('script[x-ref="state"]');
+        const json = el?.textContent;
+        if (json) this.data = JSON.parse(json);
+      } catch {}
+    },
+
+    observeState() {
+      try { this.stateObserver?.disconnect?.(); } catch {}
+      const el = this.$el.querySelector('script[x-ref="state"]');
+      if (!el) return;
+      this.stateObserver = new MutationObserver(() => { this.readState(); this.renderAll(); });
+      this.stateObserver.observe(el, { childList: true, characterData: true, subtree: true });
+    },
+
+    hexToRgba(hex, alpha) {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+      if (!m) return `rgba(153,153,153,${alpha})`;
+      const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    },
+
+    destroyChart(canvas) {
+      const e = window.Chart?.getChart?.(canvas);
+      if (e) try { e.destroy(); } catch {}
+    },
+
+    renderLine(canvas, key, labels, datasets) {
+      if (!canvas || !window.Chart || !labels) return;
+      if (!document.contains(canvas)) return;
+
+      const parent = canvas.parentElement;
+      canvas.width  = (parent?.clientWidth || 600);
+      canvas.height = (parent?.clientHeight || 300);
+      this.destroyChart(canvas);
+
+      if (!datasets?.length) return;
+
+      const chartDatasets = datasets
+        .map(d => ([
+          d.label || '',
+          (d.data || []).map(v => Number(v) || 0),
+          d.color ? this.hexToRgba(d.color, 0.95) : 'rgba(255,255,255,.9)',
+          d.color ? this.hexToRgba(d.color, 0.25) : 'rgba(255,255,255,.25)'
+        ]))
+        .map(([label, data, borderColor, backgroundColor]) => ({
+          label, data, fill: false, borderColor, backgroundColor,
+          borderWidth: 2, pointRadius: 2, tension: 0.25
+        }));
+
+      const ctx = canvas.getContext('2d'); if (!ctx) return;
+      this.charts[key] = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: chartDatasets },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: false,
+          plugins: {
+            legend: { display: true, labels: { color: 'rgba(255,255,255,.85)', boxWidth: 12 } },
+            tooltip: { intersect: false, mode: 'index' }
+          },
+          scales: {
+            x: { ticks: { color: 'rgba(255,255,255,.85)', font: { size: 11 }, maxRotation: 0, autoSkip: true }, grid: { display: false } },
+            y: { ticks: { color: 'rgba(255,255,255,.7)', precision: 0, font: { size: 11 } }, grid: { color: 'rgba(255,255,255,.08)' }, beginAtZero: true }
+          }
         }
       });
-    }
-  },
+    },
 
-  setScope(detail) {
-    const { key, scope } = detail || {};
-    if (!key || !scope) return;
-    if (!(key in this.scopes)) return;
-    this.scopes[key] = scope;
-    this.renderAll();
-  },
+    pickDatasets(block, scopeKey) {
+      const scope = this.scopes[scopeKey];
+      if (scope === 'mine') {
+        const filtered = this.filterDatasetsForDept(block?.datasets, this.data.currentUserDept);
+        if (filtered.length) return filtered;
+        if (block?.mine?.data?.length) return [block.mine];
+        return [];
+      }
+      if (scope === 'total') {
+        const total = this.makeTotalDataset(block);
+        return total ? [total] : [];
+      }
+      return block?.datasets || [];
+    },
 
-  ensureChartJs() {
-    if (window.Chart) return Promise.resolve();
-    return new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
-      s.async = true;
-      s.onload = resolve;
-      s.onerror = () => reject(new Error('Chart.js failed'));
-      document.head.appendChild(s);
-    });
-  },
+    makeTotalDataset(block) {
+      const datasets = block?.datasets || [];
+      const labels   = block?.labels || [];
+      if (!datasets.length || !labels.length) return null;
+      const len = Math.max(...datasets.map(d => (d?.data?.length || 0)));
+      const series = new Array(len).fill(0);
+      datasets.forEach(d => (d?.data || []).forEach((v,i) => { series[i] += Number(v||0); }));
+      return { label: 'Total', data: series.slice(0, labels.length), color: '#FFD166' };
+    },
 
-  nextPaint() { return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); },
+    filterDatasetsForDept(datasets, deptName) {
+      if (!datasets?.length) return [];
+      const want = String(deptName || '').trim().toLowerCase();
+      return datasets.filter(d => String(d?.label || '').trim().toLowerCase() === want);
+    },
 
-  readState() {
-    try {
-      const el = this.$el.querySelector('script[x-ref="state"]');
-      const json = el?.textContent;
-      if (json) this.data = JSON.parse(json);
-    } catch {}
-  },
+    renderAll() {
+      this.renderOpenListings();
+      this.renderListings();
+      this.renderTasks();
+      this.renderParticipantsAccepted();
+      this.renderUsersAll();
+    },
 
-  observeState() {
-    try { this.stateObserver?.disconnect?.(); } catch {}
-    const el = this.$el.querySelector('script[x-ref="state"]');
-    if (!el) return;
-    this.stateObserver = new MutationObserver(() => { this.readState(); this.renderAll(); });
-    this.stateObserver.observe(el, { childList: true, characterData: true, subtree: true });
-  },
+    renderOpenListings() {
+      const block = this.data.openListingsMonthlyByDept || {};
+      const use   = this.pickDatasets(block, 'openListings');
+      this.renderLine(this.$refs.cOpenListings, 'openListings', block.labels || [], use);
+    },
+    renderListings() {
+      const block = this.data.listingsMonthlyByDept || {};
+      const use   = this.pickDatasets(block, 'listings');
+      this.renderLine(this.$refs.cListings, 'listings', block.labels || [], use);
+    },
+    renderTasks() {
+      const block = this.data.tasksMonthlyByDept || {};
+      const use   = this.pickDatasets(block, 'tasks');
+      this.renderLine(this.$refs.cTasks, 'tasks', block.labels || [], use);
+    },
+    renderParticipantsAccepted() {
+      const block = this.data.participantsAcceptedPerDeptMonthly || {};
+      const use   = this.pickDatasets(block, 'participantsAccepted');
+      this.renderLine(this.$refs.cParticipantsAccepted, 'participantsAccepted', block.labels || [], use);
+    },
+    renderUsersAll() {
+      const block = this.data.usersPerDeptMonthly || {};
+      const use   = this.pickDatasets(block, 'usersAll');
+      this.renderLine(this.$refs.cUsersAll, 'usersAll', block.labels || [], use);
+    },
 
-  hexToRgba(hex, alpha) {
-    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
-    if (!m) return `rgba(153,153,153,${alpha})`;
-    const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  },
+    // ---------- LIGHT THEME CLONE & CAPTURE (no mutation of live chart) ----------
+    deepClone(obj) {
+      try { return JSON.parse(JSON.stringify(obj)); } catch { return obj; }
+    },
 
-  destroyChart(canvas) {
-    const e = window.Chart?.getChart?.(canvas);
-    if (e) try { e.destroy(); } catch {}
-  },
-
-  renderLine(canvas, key, labels, datasets) {
-    if (!canvas || !window.Chart || !labels) return;
-    if (!document.contains(canvas)) return;
-
-    const parent = canvas.parentElement;
-    canvas.width  = (parent?.clientWidth || 600);
-    canvas.height = (parent?.clientHeight || 300);
-    this.destroyChart(canvas);
-
-    if (!datasets?.length) return;
-
-    const chartDatasets = datasets
-      .map(d => ([
-        d.label || '',
-        (d.data || []).map(v => Number(v) || 0),
-        d.color ? this.hexToRgba(d.color, 0.95) : 'rgba(255,255,255,.9)',
-        d.color ? this.hexToRgba(d.color, 0.25) : 'rgba(255,255,255,.25)'
-      ]))
-      .map(([label, data, borderColor, backgroundColor]) => ({
-        label, data, fill: false, borderColor, backgroundColor,
-        borderWidth: 2, pointRadius: 2, tension: 0.25
-      }));
-
-    const ctx = canvas.getContext('2d'); if (!ctx) return;
-    this.charts[key] = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: chartDatasets },
-      options: {
-        responsive: true, maintainAspectRatio: false, animation: false,
+    buildLightOptionsForClone(orig, w, h) {
+      return {
+        responsive: false,
+        maintainAspectRatio: false,
+        animation: false,
         plugins: {
-          legend: { display: true, labels: { color: 'rgba(255,255,255,.85)', boxWidth: 12 } },
-          tooltip: { intersect: false, mode: 'index' }
+          legend: { display: true, labels: { color: '#000', boxWidth: 12 } },
+          tooltip: { enabled: false }
         },
         scales: {
-          x: { ticks: { color: 'rgba(255,255,255,.85)', font: { size: 11 }, maxRotation: 0, autoSkip: true }, grid: { display: false } },
-          y: { ticks: { color: 'rgba(255,255,255,.7)', precision: 0, font: { size: 11 } }, grid: { color: 'rgba(255,255,255,.08)' }, beginAtZero: true }
+          x: { ticks: { color: '#000', font: { size: 11 }, maxRotation: 0, autoSkip: true }, grid: { color: '#ddd', display: true } },
+          y: { ticks: { color: '#000', font: { size: 11 } }, grid: { color: '#eee' }, beginAtZero: true }
         }
+      };
+    },
+
+    captureChartToDataURL(chart, srcCanvas) {
+      if (!chart || !srcCanvas) {
+        if (!srcCanvas) return null;
+        const w = srcCanvas.width || 1200, h = srcCanvas.height || 600;
+        const white = document.createElement('canvas');
+        white.width = w; white.height = h;
+        const wctx = white.getContext('2d');
+        wctx.fillStyle = '#fff';
+        wctx.fillRect(0,0,w,h);
+        wctx.drawImage(srcCanvas, 0, 0, w, h);
+        return white.toDataURL('image/jpeg', 0.9);
       }
-    });
-  },
 
-  pickDatasets(block, scopeKey) {
-    const scope = this.scopes[scopeKey];
-    if (scope === 'mine') {
-      const filtered = this.filterDatasetsForDept(block?.datasets, this.data.currentUserDept);
-      if (filtered.length) return filtered;
-      if (block?.mine?.data?.length) return [block.mine];
-      return [];
-    }
-    if (scope === 'total') {
-      const total = this.makeTotalDataset(block);
-      return total ? [total] : [];
-    }
-    return block?.datasets || [];
-  },
-
-  makeTotalDataset(block) {
-    const datasets = block?.datasets || [];
-    const labels   = block?.labels || [];
-    if (!datasets.length || !labels.length) return null;
-    const len = Math.max(...datasets.map(d => (d?.data?.length || 0)));
-    const series = new Array(len).fill(0);
-    datasets.forEach(d => (d?.data || []).forEach((v,i) => { series[i] += Number(v||0); }));
-    return { label: 'Total', data: series.slice(0, labels.length), color: '#FFD166' };
-  },
-
-  filterDatasetsForDept(datasets, deptName) {
-    if (!datasets?.length) return [];
-    const want = String(deptName || '').trim().toLowerCase();
-    return datasets.filter(d => String(d?.label || '').trim().toLowerCase() === want);
-  },
-
-  renderAll() {
-    this.renderOpenListings();
-    this.renderListings();
-    this.renderTasks();
-    this.renderParticipantsAccepted();
-    this.renderUsersAll();
-  },
-
-  renderOpenListings() {
-    const block = this.data.openListingsMonthlyByDept || {};
-    const use   = this.pickDatasets(block, 'openListings');
-    this.renderLine(this.$refs.cOpenListings, 'openListings', block.labels || [], use);
-  },
-  renderListings() {
-    const block = this.data.listingsMonthlyByDept || {};
-    const use   = this.pickDatasets(block, 'listings');
-    this.renderLine(this.$refs.cListings, 'listings', block.labels || [], use);
-  },
-  renderTasks() {
-    const block = this.data.tasksMonthlyByDept || {};
-    const use   = this.pickDatasets(block, 'tasks');
-    this.renderLine(this.$refs.cTasks, 'tasks', block.labels || [], use);
-  },
-  renderParticipantsAccepted() {
-    const block = this.data.participantsAcceptedPerDeptMonthly || {};
-    const use   = this.pickDatasets(block, 'participantsAccepted');
-    this.renderLine(this.$refs.cParticipantsAccepted, 'participantsAccepted', block.labels || [], use);
-  },
-  renderUsersAll() {
-    const block = this.data.usersPerDeptMonthly || {};
-    const use   = this.pickDatasets(block, 'usersAll');
-    this.renderLine(this.$refs.cUsersAll, 'usersAll', block.labels || [], use);
-  },
-
-  // ---------- LIGHT THEME CLONE & CAPTURE (no mutation of live chart) ----------
-  deepClone(obj) {
-    // datasets & labels are primitives/arrays; JSON clone is fine here
-    try { return JSON.parse(JSON.stringify(obj)); } catch { return obj; }
-  },
-
-  buildLightOptionsForClone(orig, w, h) {
-    // Minimal options for a static export render
-    return {
-      responsive: false,
-      maintainAspectRatio: false,
-      animation: false,
-      // dimensions are set on canvas, not here
-      plugins: {
-        legend: { display: true, labels: { color: '#000', boxWidth: 12 } },
-        tooltip: { enabled: false }
-      },
-      scales: {
-        x: { ticks: { color: '#000', font: { size: 11 }, maxRotation: 0, autoSkip: true }, grid: { color: '#ddd', display: true } },
-        y: { ticks: { color: '#000', font: { size: 11 } }, grid: { color: '#eee' }, beginAtZero: true }
-      }
-    };
-  },
-
-  captureChartToDataURL(chart, srcCanvas) {
-    // If the live chart/canvas isn’t ready, try to capture whatever pixels are there.
-    if (!chart || !srcCanvas) {
-      if (!srcCanvas) return null;
       const w = srcCanvas.width || 1200, h = srcCanvas.height || 600;
-      const white = document.createElement('canvas');
-      white.width = w; white.height = h;
-      const wctx = white.getContext('2d');
-      wctx.fillStyle = '#fff';
-      wctx.fillRect(0,0,w,h);
-      wctx.drawImage(srcCanvas, 0, 0, w, h);
-      return white.toDataURL('image/jpeg', 0.9);
-    }
+      const off = document.createElement('canvas');
+      off.width = w; off.height = h;
 
-    // 1) Build an offscreen canvas and clone chart with a light theme
-    const w = srcCanvas.width || 1200, h = srcCanvas.height || 600;
-    const off = document.createElement('canvas');
-    off.width = w; off.height = h;
+      const clonedData = this.deepClone(chart.config.data);
+      const lightOptions = this.buildLightOptionsForClone(chart.options, w, h);
 
-    const clonedData = this.deepClone(chart.config.data);
-    const lightOptions = this.buildLightOptionsForClone(chart.options, w, h);
-
-    let tempChart = null;
-    try {
-      tempChart = new Chart(off.getContext('2d'), {
-        type: chart.config.type || 'line',
-        data: clonedData,
-        options: lightOptions
-      });
-    } catch (e) {
-      console.error('[oa] temp chart build failed', e);
-      // Fallback to capturing the live canvas pixels
-      const white = document.createElement('canvas');
-      white.width = w; white.height = h;
-      const wctx = white.getContext('2d');
-      wctx.fillStyle = '#fff';
-      wctx.fillRect(0,0,w,h);
-      wctx.drawImage(srcCanvas, 0, 0, w, h);
-      return white.toDataURL('image/jpeg', 0.9);
-    }
-
-    // 2) Composite onto a white canvas to avoid transparency in PDF
-    const out = document.createElement('canvas');
-    out.width = w; out.height = h;
-    const octx = out.getContext('2d');
-    octx.fillStyle = '#fff';
-    octx.fillRect(0,0,w,h);
-    octx.drawImage(off, 0, 0, w, h);
-
-    const url = out.toDataURL('image/jpeg', 0.9);
-
-    // 3) Cleanup temp chart
-    try { tempChart.destroy(); } catch {}
-    return url;
-  },
-
-  // ----- export all canvases -----
-  async exportPdf() {
-    await this.ensureChartJs();
-
-    // Ensure charts exist
-    if (!this.charts.listings || !this.charts.tasks || !this.charts.participantsAccepted || !this.charts.usersAll || !this.charts.openListings) {
-      this.renderAll();
-      await this.nextPaint();
-    }
-
-    const toImg = (key, refName) => {
+      let tempChart = null;
       try {
-        const canvas = this.$refs[refName];
-        const chart  = this.charts[key];
-        return this.captureChartToDataURL(chart, canvas);
+        tempChart = new Chart(off.getContext('2d'), {
+          type: chart.config.type || 'line',
+          data: clonedData,
+          options: lightOptions
+        });
       } catch (e) {
-        console.error('[oa] capture error', key, e);
-        return null;
+        console.error('[oa] temp chart build failed', e);
+        const white = document.createElement('canvas');
+        white.width = w; white.height = h;
+        const wctx = white.getContext('2d');
+        wctx.fillStyle = '#fff';
+        wctx.fillRect(0,0,w,h);
+        wctx.drawImage(srcCanvas, 0, 0, w, h);
+        return white.toDataURL('image/jpeg', 0.9);
       }
-    };
 
-    const images = {
-      openListings:         toImg('openListings', 'cOpenListings'),
-      listings:             toImg('listings', 'cListings'),
-      tasks:                toImg('tasks', 'cTasks'),
-      participantsAccepted: toImg('participantsAccepted', 'cParticipantsAccepted'),
-      usersAll:             toImg('usersAll', 'cUsersAll'),
-    };
+      const out = document.createElement('canvas');
+      out.width = w; out.height = h;
+      const octx = out.getContext('2d');
+      octx.fillStyle = '#fff';
+      octx.fillRect(0,0,w,h);
+      octx.drawImage(off, 0, 0, w, h);
 
-    await this.$wire.exportPdf(images);
-  },
-}));
-// ========== /ORG ANALYTICS ==========
+      const url = out.toDataURL('image/jpeg', 0.9);
+
+      try { tempChart.destroy(); } catch {}
+      return url;
+    },
+
+    // ----- export all canvases -----
+    async exportPdf() {
+      await this.ensureChartJs();
+
+      if (!this.charts.listings || !this.charts.tasks || !this.charts.participantsAccepted || !this.charts.usersAll || !this.charts.openListings) {
+        this.renderAll();
+        await this.nextPaint();
+      }
+
+      const toImg = (key, refName) => {
+        try {
+          const canvas = this.$refs[refName];
+          const chart  = this.charts[key];
+          return this.captureChartToDataURL(chart, canvas);
+        } catch (e) {
+          console.error('[oa] capture error', key, e);
+          return null;
+        }
+      };
+
+      const images = {
+        openListings:         toImg('openListings', 'cOpenListings'),
+        listings:             toImg('listings', 'cListings'),
+        tasks:                toImg('tasks', 'cTasks'),
+        participantsAccepted: toImg('participantsAccepted', 'cParticipantsAccepted'),
+        usersAll:             toImg('usersAll', 'cUsersAll'),
+      };
+
+      await this.$wire.exportPdf(images);
+    },
+  }));
+  // ========== /ORG ANALYTICS ==========
 
 
 
@@ -641,7 +632,7 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
   }
 
   // Browser event fired from PHP: $this->dispatch('chat:scrollBottom')
-  // (Scope: page-wide; fine if you have one chat on the page.)
+  // (Page-scoped — fine if you have a single chat on the page)
   window.addEventListener('chat:scrollBottom', () => {
     scrollLogToBottom(document);
   });
@@ -680,7 +671,7 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
       const queue   = msg?.updateQueue || [];
       const methods = queue.map(u => u?.payload?.method).filter(Boolean);
 
-      // Initial load (wire:init="ready") and after sending/saving an edit
+      // Initial load and after sending/saving an edit
       if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
         scrollLogToBottom(root);
       }
