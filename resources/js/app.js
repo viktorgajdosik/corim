@@ -308,7 +308,7 @@ document.addEventListener('alpine:init', () => {
       this.renderLine(this.$refs.cUsersAll, 'usersAll', block.labels || [], use);
     },
 
-    // ---------- LIGHT THEME CLONE & CAPTURE (no mutation of live chart) ----------
+    // ---------- LIGHT THEME CLONE & CAPTURE ----------
     deepClone(obj) {
       try { return JSON.parse(JSON.stringify(obj)); } catch { return obj; }
     },
@@ -631,36 +631,51 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     return document.querySelector(`[wire\\:id="${id}"]`) || document;
   }
 
-  // Browser event fired from PHP: $this->dispatch('chat:scrollBottom')
-  // (Page-scoped — fine if you have a single chat on the page)
+  // Page-level scroll request fired from PHP: $this->dispatch('chat:scrollBottom')
   window.addEventListener('chat:scrollBottom', () => {
     scrollLogToBottom(document);
   });
 
-  // Optional: focus input if you ever dispatch('chat:focusInput')
+  // Optional: focus input if you dispatch('chat:focusInput')
   window.addEventListener('chat:focusInput', () => {
     const input = document.querySelector('[x-ref="input"]');
     if (input) input.focus();
   });
 
   document.addEventListener('livewire:initialized', () => {
-    // Keep the audience dropdown open across morphs
-    let wasOpen = false;
+    // Keep audience & message kebab dropdowns open across Livewire morphs
+    let audienceWasOpen = false;
+    let openMsgMenuLabelId = null;
+
     Livewire.hook('morph.pre', () => {
-      const menu = document.getElementById('audienceMenu');
-      wasOpen = !!(menu && menu.classList.contains('show'));
+      const audMenu = document.getElementById('audienceMenu');
+      audienceWasOpen = !!(audMenu && audMenu.classList.contains('show'));
+
+      const openMsgMenu = document.querySelector('.msg-menu.show');
+      openMsgMenuLabelId = openMsgMenu?.getAttribute('aria-labelledby') || null;
     });
+
     Livewire.hook('morph.updated', () => {
-      if (wasOpen) {
+      if (audienceWasOpen) {
         const btn = document.getElementById('audienceBtn');
-        if (!btn) return;
-        const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: 'outside' });
-        dd.show();
-        wasOpen = false;
+        if (btn) {
+          const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false });
+          dd.show();
+        }
+        audienceWasOpen = false;
+      }
+
+      if (openMsgMenuLabelId) {
+        const btn = document.getElementById(openMsgMenuLabelId);
+        if (btn) {
+          const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false });
+          dd.show();
+        }
+        openMsgMenuLabelId = null;
       }
     });
 
-    // Initial nudge to bottom after first paint (covers page load)
+    // Initial nudge to bottom after first paint
     requestAnimationFrame(() => scrollLogToBottom(document));
 
     // Auto-scroll AFTER Livewire applies DOM changes for our actions
@@ -671,7 +686,6 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
       const queue   = msg?.updateQueue || [];
       const methods = queue.map(u => u?.payload?.method).filter(Boolean);
 
-      // Initial load and after sending/saving an edit
       if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
         scrollLogToBottom(root);
       }

@@ -3,46 +3,39 @@
      @if(!$editingId) wire:poll.7s="refreshChat" @endif>
 
   <style>
-    /* Card + log */
     .chat-card{border-radius:.75rem;background:#151515;border:1px solid rgba(255,255,255,.1)}
     .chat-log{max-height:360px;overflow-y:auto;padding:.75rem;scroll-behavior:smooth}
 
-    /* Bubbles (white text) */
     .bubble{display:inline-block;padding:.5rem .75rem;border-radius:.75rem;max-width:85%;word-wrap:break-word;white-space:pre-wrap;color:#fff}
     .bubble.me{background:rgba(157,157,157,.18);border:1px solid rgba(255,255,255,.1)}
     .bubble.them{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
     .meta{font-size:.75rem;color:rgba(255,255,255,.6)}
     .to-tag{font-size:.7rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:.5rem;padding:.1rem .4rem;margin-left:.4rem}
 
-    /* More spacing between messages */
     .msg-row { margin-bottom: 1rem; }
 
-    /* Per-message kebab: icon only (no bg, no circle) */
     .kebab-xs{background:transparent;border:none;color:rgba(255,255,255,.75);padding:2px;line-height:0}
     .kebab-xs:hover{color:#fff}
     .kebab-xs .fa-ellipsis-v{font-size:14px}
 
-    /* Input row (pill) */
     .chat-input-wrap{position:relative;height:52px}
     .chat-input{
       height:100%;border-radius:999px;
       background:rgb(44,44,44);color:#fff;border:1px solid rgba(255,255,255,.12);
-      padding-left:56px;   /* left circle */
-      padding-right:56px;  /* right send circle */
+      padding-left:56px;
+      padding-right:56px;
     }
     .chat-input::placeholder{color:rgba(255,255,255,.55)}
     .chat-input:focus,.chat-input:focus-visible{
       background:rgb(44,44,44);color:#fff;border-color:rgba(255,255,255,.2);box-shadow:none;
     }
 
-    /* Edit frame (Messenger-like) — white text */
     .edit-wrap{border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#0f0f10;padding:8px}
     .edit-topbar{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 6px 6px}
     .edit-topbar .label{color:#fff;font-weight:600;font-size:.9rem}
     .edit-topbar .close-btn{background:transparent;border:none;color:#fff;line-height:0;padding:4px}
     .edit-topbar .close-btn:hover{opacity:.85}
 
-    /* Left inset audience button */
     .audience-anchor{
       position:absolute;left:8px;top:50%;transform:translateY(-50%);
       display:flex;align-items:center;justify-content:center;height:36px;width:36px;
@@ -54,14 +47,12 @@
     }
     .audience-trigger .fa-ellipsis-v{font-size:15px}
 
-    /* Right inset SEND/SAVE (circle) */
     .send-inset{
       position:absolute;right:8px;top:50%;transform:translateY(-50%);
       width:36px;height:36px;border-radius:999px;
       display:inline-flex;align-items:center;justify-content:center;padding:0;
     }
 
-    /* Dark menus for both audience and message kebab */
     .audience-menu,
     .msg-menu {
       --bs-dropdown-bg:#0f0f10;
@@ -88,16 +79,14 @@
       </small>
     </div>
 
-    {{-- Log (auto-scrolls on init + whenever content changes) --}}
+    {{-- Log --}}
     <div class="chat-log"
          x-ref="log"
          x-init="
            $nextTick(() => {
              const el = $refs.log;
              const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
-             // initial
              scroll();
-             // keep bottom on any DOM change inside log
              const mo = new MutationObserver(scroll);
              mo.observe(el, { childList: true, subtree: true });
            })
@@ -106,7 +95,7 @@
         @php
           $me = $m->user_id === auth()->id();
           $isLastVisible = ($lastVisibleId !== null && $m->id === $lastVisibleId);
-          $canKebab = $me && $isLastVisible; // only show for my latest message
+          $canKebab = $me && $isLastVisible;
           $to = [];
           if (!$m->is_broadcast) {
             $to = $m->recipients->pluck('name')->take(4)->all();
@@ -129,10 +118,18 @@
 
               @if ($canKebab)
                 <div class="dropdown">
-                  <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
+                  <button class="kebab-xs"
+                          type="button"
+                          id="msgKebab-{{ $m->id }}"
+                          data-bs-toggle="dropdown"
+                          data-bs-auto-close="false"
+                          aria-expanded="false"
+                          aria-label="Message actions">
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
-                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu">
+                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu"
+                      id="msgMenu-{{ $m->id }}"
+                      aria-labelledby="msgKebab-{{ $m->id }}">
                     <li>
                       <button class="dropdown-item" wire:click="startEdit({{ $m->id }})">
                         <i class="fa fa-pencil me-2"></i> Edit
@@ -182,7 +179,7 @@
             id="audienceBtn"
             class="audience-trigger"
             data-bs-toggle="dropdown"
-            data-bs-auto-close="outside"
+            data-bs-auto-close="false"
             aria-expanded="false"
             aria-label="Message audience">
             <i class="fa fa-ellipsis-v"></i>
@@ -235,7 +232,7 @@
           @keydown.enter.prevent="$wire.{{ $editingId ? 'saveEdit()' : 'send()' }}"
         >
 
-        {{-- Send / Save button: icon OR spinner --}}
+        {{-- Send / Save button --}}
         <button
           type="button"
           class="btn btn-primary send-inset"

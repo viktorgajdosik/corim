@@ -115,7 +115,6 @@ class ListingChat extends Component
         $this->perPage += 50;
     }
 
-    /** Return the absolute latest message id for this listing (global conversation last). */
     protected function latestMessageId(): ?int
     {
         return ChatMessage::query()
@@ -125,7 +124,7 @@ class ListingChat extends Component
             ->value('id');
     }
 
-    /** SEND (or SAVE if editing) */
+    // ---- SEND (or SAVE if in edit) ----
     public function send(): void
     {
         if ($this->editingId) { $this->saveEdit(); return; }
@@ -185,22 +184,28 @@ class ListingChat extends Component
         $this->dispatch('refreshChat')->self();
     }
 
-    /** EDIT FLOW */
+    // ---- EDIT FLOW ----
     public function startEdit(int $id): void
     {
         $m = ChatMessage::query()
+            ->with('recipients:id')
             ->whereKey($id)
             ->where('listing_id', $this->listing->id)
             ->firstOrFail();
 
         abort_unless($m->user_id === auth()->id(), 403);
 
-        // enforce: only the latest message is editable
         $latestId = $this->latestMessageId();
         abort_unless($latestId && $m->id === $latestId, 403);
 
         $this->editingId = $m->id;
         $this->body = $m->body;
+
+        // Prime recipient controls based on the existing message
+        $this->sendToAll = (bool) $m->is_broadcast;
+        $this->recipientIds = $m->is_broadcast
+            ? []
+            : $m->recipients->pluck('id')->map(fn($v)=>(int)$v)->values()->all();
 
         $this->dispatch('chat:focusInput');
     }
@@ -209,6 +214,9 @@ class ListingChat extends Component
     {
         $this->editingId = null;
         $this->body = '';
+        // optional reset to defaults
+        $this->sendToAll = true;
+        $this->recipientIds = [];
     }
 
     public function saveEdit(): void
@@ -216,7 +224,10 @@ class ListingChat extends Component
         abort_if(!$this->editingId, 400);
 
         $this->validate([
-            'body' => 'required|string|min:1|max:5000',
+            'body'           => 'required|string|min:1|max:5000',
+            'sendToAll'      => 'boolean',
+            'recipientIds'   => 'array',
+            'recipientIds.*' => 'integer',
         ]);
 
         $m = ChatMessage::query()
@@ -226,21 +237,53 @@ class ListingChat extends Component
 
         abort_unless($m->user_id === auth()->id(), 403);
 
-        // enforce: only the latest message is editable
         $latestId = $this->latestMessageId();
         abort_unless($latestId && $m->id === $latestId, 403);
 
+        // Re-validate audience
+        $this->refreshAudience();
+        $allowedIds = collect($this->audience)->pluck('id');
+        $senderId = auth()->id();
+
+        $isBroadcast = (bool) $this->sendToAll;
+        if ($isBroadcast) {
+            $targets = $allowedIds->reject(fn ($id) => $id === $senderId)->values();
+        } else {
+            $targets = collect($this->recipientIds)
+                ->map(fn ($v) => (int) $v)
+                ->intersect($allowedIds)
+                ->reject(fn ($id) => $id === $senderId)
+                ->values();
+
+            if ($targets->isEmpty()) {
+                $this->addError('recipientIds', 'Choose at least one recipient or send to all.');
+                return;
+            }
+        }
+
+        // Apply updates
         $m->body = trim($this->body);
+        $m->is_broadcast = $isBroadcast;
         $m->save();
 
+        // Sync recipients
+        if ($isBroadcast) {
+            $m->recipients()->sync([]); // none for broadcast
+        } else {
+            $m->recipients()->sync($targets->all());
+        }
+
+        // exit edit mode
         $this->editingId = null;
         $this->body = '';
+        $this->sendToAll = true;
+        $this->recipientIds = [];
 
         $this->dispatch('chat:scrollBottom');
         $this->dispatch('refreshChat')->self();
     }
 
-    /** DELETE */
+    // ---- DELETE ----
     public function deleteMessage(int $id): void
     {
         $m = ChatMessage::query()
@@ -250,7 +293,6 @@ class ListingChat extends Component
 
         abort_unless($m->user_id === auth()->id(), 403);
 
-        // enforce: only the latest message can be deleted
         $latestId = $this->latestMessageId();
         abort_unless($latestId && $m->id === $latestId, 403);
 
@@ -260,6 +302,8 @@ class ListingChat extends Component
         if ($this->editingId === $id) {
             $this->editingId = null;
             $this->body = '';
+            $this->sendToAll = true;
+            $this->recipientIds = [];
         }
 
         $this->dispatch('chat:scrollBottom');
