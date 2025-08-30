@@ -6,11 +6,12 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Task;
 use App\Models\Listing;
-use App\Models\Notification; // 🔔
+use App\Models\Notification;
 use App\Livewire\ShowManageTasks;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 
 class CreateTaskForm extends Component
 {
@@ -33,6 +34,21 @@ class CreateTaskForm extends Component
         }
     }
 
+    #[On('applicationsChanged')]
+    public function refreshParticipants(): void
+    {
+        // keep current selection if still valid; otherwise pick sensible default
+        $acceptedIds = $this->listing->applications()
+            ->where('accepted', true)
+            ->pluck('user_id')
+            ->all();
+
+        if ($this->assigned_user_id && !in_array($this->assigned_user_id, $acceptedIds)) {
+            $this->assigned_user_id = count($acceptedIds) === 1 ? $acceptedIds[0] : null;
+        }
+        // re-render occurs after method call
+    }
+
     protected function rules()
     {
         return [
@@ -48,7 +64,6 @@ class CreateTaskForm extends Component
     {
         $this->validate();
 
-        // 1) create task
         $task = new Task();
         $task->author_id        = auth()->id();
         $task->listing_id       = $this->listing->id;
@@ -59,13 +74,11 @@ class CreateTaskForm extends Component
         $task->status           = 'assigned';
         $task->save();
 
-        // 2) store file (optional)
         if ($this->task_file) {
             $task->file = $this->storeWithOriginalName($this->task_file, "task_assignments/{$task->id}");
             $task->save();
         }
 
-        // 🔔 notify participant (new task)
         Notification::create([
             'user_id' => $task->assigned_user_id,
             'type'    => 'task.assigned',
@@ -75,20 +88,16 @@ class CreateTaskForm extends Component
         ]);
         $this->dispatch('notificationsChanged');
 
-        // expected DOM
         $expectedTs = $task->updated_at->getTimestamp();
 
-        // refresh list
         $this->dispatch('$refresh')->to(ShowManageTasks::class);
         $this->dispatch('taskCreated')->to(ShowManageTasks::class);
 
-        // wait for DOM + toast
         $this->dispatch('taskDomShouldReflect', taskId: $task->id, updatedAt: $expectedTs, flash: [
             'message' => 'Task created.',
             'type'    => 'success'
         ]);
 
-        // reset
         $this->reset(['task_name', 'task_details', 'deadline', 'task_file']);
     }
 

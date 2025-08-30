@@ -592,7 +592,25 @@ Alpine.data('orgAnalyticsComponent', (payload) => ({
   }
 });
 
-// Helpers you already use (unchanged)
+
+// ===== Chat helpers =====
+window.addEventListener('chat:scrollBottom', (e) => {
+  // scope to this Livewire component root if possible
+  const root = e?.target?.closest?.('[wire\\:id]') || document;
+  const el = root.querySelector('[x-ref="log"]');
+  if (el) el.scrollTop = el.scrollHeight;
+});
+
+window.addEventListener('chat:focusInput', (e) => {
+  const root = e?.target?.closest?.('[wire\\:id]') || document;
+  const input = root.querySelector('[x-ref="input"]');
+  if (input) input.focus();
+});
+
+
+
+
+
 window.taskCard = function taskCard(taskId){ return {
   detailsOpen:false, editOpen:false, modOpen:false,
   init(){

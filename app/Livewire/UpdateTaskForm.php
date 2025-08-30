@@ -5,11 +5,12 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Task;
-use App\Models\Notification; // 🔔
+use App\Models\Notification;
 use App\Livewire\ShowManageTasks;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 
 class UpdateTaskForm extends Component
 {
@@ -24,8 +25,24 @@ class UpdateTaskForm extends Component
 
     public function mount(Task $task)
     {
-        $this->task = $task->loadMissing('listing'); // ensure listing for notification text
+        $this->task = $task->loadMissing('listing');
         $this->resetForm();
+    }
+
+    #[On('applicationssChanged')]
+    public function refreshParticipants(): void
+    {
+        $acceptedIds = $this->task->listing
+            ->applications()
+            ->where('accepted', true)
+            ->pluck('user_id')
+            ->all();
+
+        if ($this->assigned_user_id && !in_array($this->assigned_user_id, $acceptedIds)) {
+            // if current assignee got removed, clear selection
+            $this->assigned_user_id = null;
+        }
+        // re-render follows automatically
     }
 
     protected function rules()
@@ -45,7 +62,6 @@ class UpdateTaskForm extends Component
 
         $previousAssignee = $this->task->assigned_user_id;
 
-        // apply updates
         $this->task->name             = $this->task_name;
         $this->task->description      = $this->task_details;
         $this->task->deadline         = $this->deadline;
@@ -63,9 +79,7 @@ class UpdateTaskForm extends Component
 
         $assigneeChanged = ((int) $previousAssignee) !== ((int) $this->task->assigned_user_id);
 
-        // 🔔 If reassigned: notify BOTH sides
         if ($assigneeChanged) {
-            // notify previous assignee (if existed)
             if ($previousAssignee) {
                 Notification::create([
                     'user_id' => $previousAssignee,
@@ -76,7 +90,6 @@ class UpdateTaskForm extends Component
                 ]);
             }
 
-            // notify new assignee
             Notification::create([
                 'user_id' => $this->task->assigned_user_id,
                 'type'    => 'task.assigned',
@@ -86,7 +99,6 @@ class UpdateTaskForm extends Component
             ]);
         }
 
-        // 🔔 Always notify the current assignee that the task was updated
         Notification::create([
             'user_id' => $this->task->assigned_user_id,
             'type'    => 'task.updated',
@@ -95,10 +107,8 @@ class UpdateTaskForm extends Component
             'url'     => route('listings.show', $this->task->listing_id),
         ]);
 
-        // refresh bell count
         $this->dispatch('notificationsChanged');
 
-        // UI refresh + toast
         $expectedTs = $this->task->updated_at->getTimestamp();
         $flash = ['message' => 'Task updated.', 'type' => 'success'];
 
