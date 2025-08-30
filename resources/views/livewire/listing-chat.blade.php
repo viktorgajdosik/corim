@@ -172,55 +172,59 @@
           selected: @entangle('recipientIds').live
         }"
       >
-        {{-- Audience picker --}}
-        <div class="dropdown dropup audience-anchor">
-          <button
-            type="button"
-            id="audienceBtn"
-            class="audience-trigger"
-            data-bs-toggle="dropdown"
-            data-bs-auto-close="false"
-            aria-expanded="false"
-            aria-label="Message audience">
-            <i class="fa fa-ellipsis-v"></i>
-          </button>
+  <div class="dropdown dropup audience-anchor">
+  <button
+    type="button"
+    id="audienceBtn"
+    class="audience-trigger"
+    data-bs-toggle="dropdown"
+    data-bs-auto-close="false"   {{-- keep open on inside/outside clicks --}}
+    aria-expanded="false"
+    aria-label="Message audience">
+    <i class="fa fa-ellipsis-v"></i>
+  </button>
 
-          <div
-            id="audienceMenu"
-            class="dropdown-menu dropdown-menu-end audience-menu p-2"
-            aria-labelledby="audienceBtn"
-            x-on:click.stop
-          >
-            <div class="form-check form-switch mb-2">
-              <input class="form-check-input"
-                     id="sendAll"
-                     type="checkbox"
-                     x-model="sendAll"
-                     @change="if(sendAll){ selected=[] }">
-              <label class="form-check-label" for="sendAll">Send to all</label>
-            </div>
-            <div class="d-flex flex-column gap-1" style="max-height: 180px; overflow-y: auto;">
-              @foreach($audience as $u)
-                @if($u['id'] !== auth()->id())
-                  <div class="form-check" wire:key="aud-{{ $u['id'] }}">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           id="rcp-{{ $u['id'] }}"
-                           value="{{ $u['id'] }}"
-                           :disabled="sendAll"
-                           x-model="selected"
-                           @change="sendAll=false">
-                    <label class="form-check-label" for="rcp-{{ $u['id'] }}">{{ $u['name'] }}</label>
-                  </div>
-                @endif
-              @endforeach
-            </div>
+  {{-- ⬇️ Tell Livewire to leave this DOM alone so it stays open while toggling checkboxes --}}
+  <div
+    id="audienceMenu"
+    class="dropdown-menu dropdown-menu-end audience-menu p-2"
+    aria-labelledby="audienceBtn"
+    x-on:click.stop
+    wire:ignore
+  >
+    <div class="form-check form-switch mb-2">
+      <input class="form-check-input"
+             id="sendAll"
+             type="checkbox"
+             x-model="sendAll"
+             @change="if(sendAll){ selected=[] }">
+      <label class="form-check-label" for="sendAll">Send to all</label>
+    </div>
 
-            @error('recipientIds')
-              <div class="text-danger small mt-2">{{ $message }}</div>
-            @enderror
+    <div class="d-flex flex-column gap-1" style="max-height: 180px; overflow-y: auto;">
+      @foreach($audience as $u)
+        @if($u['id'] !== auth()->id())
+          <div class="form-check" wire:key="aud-{{ $u['id'] }}">
+            <input class="form-check-input"
+                   type="checkbox"
+                   id="rcp-{{ $u['id'] }}"
+                   value="{{ $u['id'] }}"
+                   :disabled="sendAll"
+                   x-model="selected"
+                   @change="sendAll=false">
+            <label class="form-check-label" for="rcp-{{ $u['id'] }}">{{ $u['name'] }}</label>
           </div>
-        </div>
+        @endif
+      @endforeach
+    </div>
+  </div>
+</div>
+
+{{-- Keep validation message OUTSIDE the wire:ignore block so it can still update --}}
+@error('recipientIds')
+  <div class="text-danger small mt-2">{{ $message }}</div>
+@enderror
+
 
         {{-- Textbox --}}
         <input
