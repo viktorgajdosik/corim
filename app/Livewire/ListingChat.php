@@ -115,6 +115,16 @@ class ListingChat extends Component
         $this->perPage += 50;
     }
 
+    /** Return the absolute latest message id for this listing (global conversation last). */
+    protected function latestMessageId(): ?int
+    {
+        return ChatMessage::query()
+            ->where('listing_id', $this->listing->id)
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->value('id');
+    }
+
     /** SEND (or SAVE if editing) */
     public function send(): void
     {
@@ -185,10 +195,13 @@ class ListingChat extends Component
 
         abort_unless($m->user_id === auth()->id(), 403);
 
+        // enforce: only the latest message is editable
+        $latestId = $this->latestMessageId();
+        abort_unless($latestId && $m->id === $latestId, 403);
+
         $this->editingId = $m->id;
         $this->body = $m->body;
 
-        // focus input on client
         $this->dispatch('chat:focusInput');
     }
 
@@ -213,6 +226,10 @@ class ListingChat extends Component
 
         abort_unless($m->user_id === auth()->id(), 403);
 
+        // enforce: only the latest message is editable
+        $latestId = $this->latestMessageId();
+        abort_unless($latestId && $m->id === $latestId, 403);
+
         $m->body = trim($this->body);
         $m->save();
 
@@ -233,6 +250,10 @@ class ListingChat extends Component
 
         abort_unless($m->user_id === auth()->id(), 403);
 
+        // enforce: only the latest message can be deleted
+        $latestId = $this->latestMessageId();
+        abort_unless($latestId && $m->id === $latestId, 403);
+
         try { $m->recipients()->detach(); } catch (\Throwable $e) {}
         $m->delete();
 
@@ -247,8 +268,12 @@ class ListingChat extends Component
 
     public function render()
     {
+        $messages = $this->messages;
+        $lastVisibleId = $messages->isNotEmpty() ? $messages->last()->id : null;
+
         return view('livewire.listing-chat', [
-            'messages' => $this->messages,
+            'messages'      => $messages,
+            'lastVisibleId' => $lastVisibleId,
         ]);
     }
 }

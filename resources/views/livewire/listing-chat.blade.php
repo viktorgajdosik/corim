@@ -14,6 +14,9 @@
     .meta{font-size:.75rem;color:rgba(255,255,255,.6)}
     .to-tag{font-size:.7rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:.5rem;padding:.1rem .4rem;margin-left:.4rem}
 
+    /* More spacing between messages */
+    .msg-row { margin-bottom: 1rem; }
+
     /* Per-message kebab: icon only (no bg, no circle) */
     .kebab-xs{background:transparent;border:none;color:rgba(255,255,255,.75);padding:2px;line-height:0}
     .kebab-xs:hover{color:#fff}
@@ -32,7 +35,7 @@
       background:rgb(44,44,44);color:#fff;border-color:rgba(255,255,255,.2);box-shadow:none;
     }
 
-    /* Edit frame (Messenger-like) — now white text */
+    /* Edit frame (Messenger-like) — white text */
     .edit-wrap{border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#0f0f10;padding:8px}
     .edit-topbar{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 6px 6px}
     .edit-topbar .label{color:#fff;font-weight:600;font-size:.9rem}
@@ -58,17 +61,20 @@
       display:inline-flex;align-items:center;justify-content:center;padding:0;
     }
 
-    /* Upward dropdown styling (dark) */
-    .audience-menu{
+    /* Dark menus for both audience and message kebab */
+    .audience-menu,
+    .msg-menu {
       --bs-dropdown-bg:#0f0f10;
       --bs-dropdown-color:#fff;
       --bs-dropdown-link-color:#fff;
       --bs-dropdown-link-hover-color:#fff;
       --bs-dropdown-link-hover-bg:rgba(255,255,255,.08);
       --bs-dropdown-border-color:rgba(255,255,255,.18);
-      background-color:var(--bs-dropdown-bg);color:var(--bs-dropdown-color);
+      background-color:var(--bs-dropdown-bg);
+      color:var(--bs-dropdown-color);
       border:1px solid var(--bs-dropdown-border-color);
-      z-index:2147483647;min-width:280px
+      z-index:2147483647;
+      min-width:280px;
     }
     .audience-menu .form-check{user-select:none}
   </style>
@@ -82,11 +88,25 @@
       </small>
     </div>
 
-    {{-- Log --}}
-    <div class="chat-log" x-ref="log">
+    {{-- Log (auto-scrolls on init + whenever content changes) --}}
+    <div class="chat-log"
+         x-ref="log"
+         x-init="
+           $nextTick(() => {
+             const el = $refs.log;
+             const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
+             // initial
+             scroll();
+             // keep bottom on any DOM change inside log
+             const mo = new MutationObserver(scroll);
+             mo.observe(el, { childList: true, subtree: true });
+           })
+         ">
       @forelse ($messages as $m)
         @php
           $me = $m->user_id === auth()->id();
+          $isLastVisible = ($lastVisibleId !== null && $m->id === $lastVisibleId);
+          $canKebab = $me && $isLastVisible; // only show for my latest message
           $to = [];
           if (!$m->is_broadcast) {
             $to = $m->recipients->pluck('name')->take(4)->all();
@@ -94,7 +114,7 @@
           }
         @endphp
 
-        <div class="mb-2 {{ $me ? 'text-end' : 'text-start' }}" wire:key="msg-{{ $m->id }}">
+        <div class="msg-row {{ $me ? 'text-end' : 'text-start' }}" wire:key="msg-{{ $m->id }}">
           <div class="meta mb-1">
             <span>{{ $me ? 'You' : $m->sender->name }}</span>
             <span class="ms-2">{{ $m->created_at->format('d/m H:i') }}</span>
@@ -107,24 +127,26 @@
             <div class="d-inline-flex align-items-center gap-1">
               <div class="bubble me">{{ $m->body }}</div>
 
-              <div class="dropdown">
-                <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
-                  <i class="fa fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                  <li>
-                    <button class="dropdown-item" wire:click="startEdit({{ $m->id }})">
-                      <i class="fa fa-pencil me-2"></i> Edit
-                    </button>
-                  </li>
-                  <li>
-                    <button class="dropdown-item text-danger"
-                            x-on:click.prevent="if (confirm('Delete this message?')) { $wire.deleteMessage({{ $m->id }}) }">
-                      <i class="fa fa-trash me-2"></i> Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              @if ($canKebab)
+                <div class="dropdown">
+                  <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu">
+                    <li>
+                      <button class="dropdown-item" wire:click="startEdit({{ $m->id }})">
+                        <i class="fa fa-pencil me-2"></i> Edit
+                      </button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item text-danger"
+                              x-on:click.prevent="if (confirm('Delete this message?')) { $wire.deleteMessage({{ $m->id }}) }">
+                        <i class="fa fa-trash me-2"></i> Delete
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              @endif
             </div>
           @else
             <div class="bubble them">{{ $m->body }}</div>
@@ -180,8 +202,6 @@
                      @change="if(sendAll){ selected=[] }">
               <label class="form-check-label" for="sendAll">Send to all</label>
             </div>
-
-            <div class="small text-muted mb-2">Or choose specific recipients:</div>
             <div class="d-flex flex-column gap-1" style="max-height: 180px; overflow-y: auto;">
               @foreach($audience as $u)
                 @if($u['id'] !== auth()->id())
@@ -215,7 +235,7 @@
           @keydown.enter.prevent="$wire.{{ $editingId ? 'saveEdit()' : 'send()' }}"
         >
 
-        {{-- Send / Save button: icon OR spinner (never both) --}}
+        {{-- Send / Save button: icon OR spinner --}}
         <button
           type="button"
           class="btn btn-primary send-inset"
@@ -237,24 +257,4 @@
       </div>
     </div>
   </div>
-
-  {{-- Keep audience dropdown open across morphs (scoped to this component) --}}
-  <script>
-    document.addEventListener('livewire:initialized', () => {
-      let wasOpen = false;
-      Livewire.hook('morph.pre', () => {
-        const menu = document.getElementById('audienceMenu');
-        wasOpen = !!(menu && menu.classList.contains('show'));
-      });
-      Livewire.hook('morph.updated', () => {
-        if (wasOpen) {
-          const btn = document.getElementById('audienceBtn');
-          if (!btn) return;
-          const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: 'outside' });
-          dd.show();
-          wasOpen = false;
-        }
-      });
-    });
-  </script>
 </div>

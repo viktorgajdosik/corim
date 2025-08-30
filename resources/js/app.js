@@ -593,24 +593,6 @@ Alpine.data('orgAnalyticsComponent', (payload) => ({
 });
 
 
-// ===== Chat helpers =====
-window.addEventListener('chat:scrollBottom', (e) => {
-  // scope to this Livewire component root if possible
-  const root = e?.target?.closest?.('[wire\\:id]') || document;
-  const el = root.querySelector('[x-ref="log"]');
-  if (el) el.scrollTop = el.scrollHeight;
-});
-
-window.addEventListener('chat:focusInput', (e) => {
-  const root = e?.target?.closest?.('[wire\\:id]') || document;
-  const input = root.querySelector('[x-ref="input"]');
-  if (input) input.focus();
-});
-
-
-
-
-
 window.taskCard = function taskCard(taskId){ return {
   detailsOpen:false, editOpen:false, modOpen:false,
   init(){
@@ -640,3 +622,50 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     setup(); window.addEventListener('resize',setup);
   }
 };};
+
+// ===== Chat helpers =====
+
+// Scroll chat log to bottom (triggered from PHP: $this->dispatch('chat:scrollBottom'))
+window.addEventListener('chat:scrollBottom', () => {
+  document.querySelectorAll('[x-ref="log"]').forEach(el => {
+    try { el.scrollTop = el.scrollHeight; } catch {}
+  });
+});
+
+// Focus the chat input (triggered from PHP: $this->dispatch('chat:focusInput'))
+window.addEventListener('chat:focusInput', () => {
+  const input = document.querySelector('[x-ref="input"]');
+  if (input) { try { input.focus(); } catch {} }
+});
+
+// Keep the audience dropdown open across Livewire DOM morphs
+document.addEventListener('livewire:initialized', () => {
+  const openState = new Map(); // key: component.id -> bool (was open)
+
+  // Before morph, remember if THIS component's audience menu is open
+  Livewire.hook('morph.pre', (el, component) => {
+    try {
+      const root = document.querySelector(`[wire\\:id="${component.id}"]`);
+      if (!root) return;
+      const menu = root.querySelector('#audienceMenu');
+      openState.set(component.id, !!(menu && menu.classList.contains('show')));
+    } catch {}
+  });
+
+  // After morph, if it was open, re-open it for THIS component
+  Livewire.hook('morph.updated', (el, component) => {
+    try {
+      const wasOpen = openState.get(component.id);
+      if (!wasOpen) return;
+      const root = document.querySelector(`[wire\\:id="${component.id}"]`);
+      if (!root) return;
+      const btn = root.querySelector('#audienceBtn');
+      if (!btn) return;
+      const dd = window.bootstrap?.Dropdown?.getOrCreateInstance(btn, { autoClose: 'outside' });
+      dd?.show();
+    } catch {}
+    finally {
+      openState.delete(component.id);
+    }
+  });
+});
