@@ -593,6 +593,8 @@ Alpine.data('orgAnalyticsComponent', (payload) => ({
 });
 
 
+
+// Helpers you already use (unchanged)
 window.taskCard = function taskCard(taskId){ return {
   detailsOpen:false, editOpen:false, modOpen:false,
   init(){
@@ -624,48 +626,64 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
 };};
 
 // ===== Chat helpers =====
+(function () {
+  // Robust scroll helper (after two paints so content is in the DOM)
+  function scrollLogToBottom(root = document) {
+    const el = root.querySelector('[x-ref="log"]');
+    if (!el) return;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; })
+    );
+  }
 
-// Scroll chat log to bottom (triggered from PHP: $this->dispatch('chat:scrollBottom'))
-window.addEventListener('chat:scrollBottom', () => {
-  document.querySelectorAll('[x-ref="log"]').forEach(el => {
-    try { el.scrollTop = el.scrollHeight; } catch {}
-  });
-});
+  function rootByComponentId(id) {
+    return document.querySelector(`[wire\\:id="${id}"]`) || document;
+  }
 
-// Focus the chat input (triggered from PHP: $this->dispatch('chat:focusInput'))
-window.addEventListener('chat:focusInput', () => {
-  const input = document.querySelector('[x-ref="input"]');
-  if (input) { try { input.focus(); } catch {} }
-});
-
-// Keep the audience dropdown open across Livewire DOM morphs
-document.addEventListener('livewire:initialized', () => {
-  const openState = new Map(); // key: component.id -> bool (was open)
-
-  // Before morph, remember if THIS component's audience menu is open
-  Livewire.hook('morph.pre', (el, component) => {
-    try {
-      const root = document.querySelector(`[wire\\:id="${component.id}"]`);
-      if (!root) return;
-      const menu = root.querySelector('#audienceMenu');
-      openState.set(component.id, !!(menu && menu.classList.contains('show')));
-    } catch {}
+  // Browser event fired from PHP: $this->dispatch('chat:scrollBottom')
+  // (Scope: page-wide; fine if you have one chat on the page.)
+  window.addEventListener('chat:scrollBottom', () => {
+    scrollLogToBottom(document);
   });
 
-  // After morph, if it was open, re-open it for THIS component
-  Livewire.hook('morph.updated', (el, component) => {
-    try {
-      const wasOpen = openState.get(component.id);
-      if (!wasOpen) return;
-      const root = document.querySelector(`[wire\\:id="${component.id}"]`);
-      if (!root) return;
-      const btn = root.querySelector('#audienceBtn');
-      if (!btn) return;
-      const dd = window.bootstrap?.Dropdown?.getOrCreateInstance(btn, { autoClose: 'outside' });
-      dd?.show();
-    } catch {}
-    finally {
-      openState.delete(component.id);
-    }
+  // Optional: focus input if you ever dispatch('chat:focusInput')
+  window.addEventListener('chat:focusInput', () => {
+    const input = document.querySelector('[x-ref="input"]');
+    if (input) input.focus();
   });
-});
+
+  document.addEventListener('livewire:initialized', () => {
+    // Keep the audience dropdown open across morphs
+    let wasOpen = false;
+    Livewire.hook('morph.pre', () => {
+      const menu = document.getElementById('audienceMenu');
+      wasOpen = !!(menu && menu.classList.contains('show'));
+    });
+    Livewire.hook('morph.updated', () => {
+      if (wasOpen) {
+        const btn = document.getElementById('audienceBtn');
+        if (!btn) return;
+        const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: 'outside' });
+        dd.show();
+        wasOpen = false;
+      }
+    });
+
+    // Initial nudge to bottom after first paint (covers page load)
+    requestAnimationFrame(() => scrollLogToBottom(document));
+
+    // Auto-scroll AFTER Livewire applies DOM changes for our actions
+    Livewire.hook('message.processed', (msg, comp) => {
+      const root = rootByComponentId(comp.id);
+      if (!root.querySelector('[x-ref="log"]')) return;
+
+      const queue   = msg?.updateQueue || [];
+      const methods = queue.map(u => u?.payload?.method).filter(Boolean);
+
+      // Initial load (wire:init="ready") and after sending/saving an edit
+      if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
+        scrollLogToBottom(root);
+      }
+    });
+  });
+})();
