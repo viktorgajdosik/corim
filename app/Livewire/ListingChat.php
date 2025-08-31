@@ -18,7 +18,7 @@ class ListingChat extends Component
 
     // initial paint / gating (optional)
     public bool $isReady = false;
-    public function ready(): void { $this->isReady = true; }
+    public function ready(): void { $this->isReady = true;     $this->dispatch('chat:scrollBottom');}
 
     // input state
     public string $body = '';
