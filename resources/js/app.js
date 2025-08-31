@@ -635,69 +635,48 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     return !!document.getElementById('audienceMenu')?.classList.contains('show');
   }
 
-  // Sticky intent: keep the audience menu open through morphs unless you explicitly close it
+  // Single source of truth: should the audience menu be open?
   let audienceOpenWanted = false;
-  // Gate that decides whether Bootstrap is allowed to hide the audience dropdown
-  let allowAudienceClose = false;
 
-  // Keep the intent in sync with real show/hide
-  document.addEventListener('shown.bs.dropdown', (e) => {
-    if (e.target?.id === 'audienceBtn') audienceOpenWanted = true;
-  });
-  document.addEventListener('hidden.bs.dropdown', (e) => {
-    if (e.target?.id === 'audienceBtn') audienceOpenWanted = false;
-  });
-
-  // Decide when closing is allowed:
-  // - Clicking the 3-dots: toggles; if it was open, we allow close
-  // - Clicking/focusing the chat input: always allow close (and close it)
-  // - Clicking inside the menu: never allow close
+  // Toggle intent when the 3-dots is clicked
   document.addEventListener('click', (e) => {
-    const onBtn   = e.target.closest('#audienceBtn');
-    const onMenu  = e.target.closest('#audienceMenu');
-    const onInput = e.target.closest('[x-ref="input"]');
-
-    if (onBtn) {
-      allowAudienceClose = isAudienceOpen(); // if open -> allow closing; if closed -> opening
-      return;
-    }
-
-    if (onInput) {
-      allowAudienceClose = true;
-      const btn = document.getElementById('audienceBtn');
-      if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
-      return;
-    }
-
-    if (onMenu) {
-      allowAudienceClose = false; // keep open on any interaction inside
-      return;
-    }
-
-    // Clicks elsewhere do not close the menu
-    allowAudienceClose = false;
-  }, true); // capture phase so we run before Bootstrap
-
-  // Also hide on focus (keyboard navigation to input, etc.)
-  document.addEventListener('focusin', (e) => {
-    if (e.target.closest('[x-ref="input"]')) {
-      allowAudienceClose = true;
-      const btn = document.getElementById('audienceBtn');
-      if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
-    }
+    const onBtn = e.target.closest('#audienceBtn');
+    if (!onBtn) return;
+    audienceOpenWanted = !isAudienceOpen(); // if open -> we want to close; if closed -> we want to open
   });
 
-  // Cancel Bootstrap’s hide unless we explicitly allowed it
+  // Keep it open whenever you interact INSIDE the menu (checkboxes/switch)
+  document.addEventListener('change', (e) => {
+    if (!e.target.closest('#audienceMenu')) return;
+    audienceOpenWanted = true; // stick open
+    // if a Livewire morph happens, immediately re-show; do both now and after morph
+    const btn = document.getElementById('audienceBtn');
+    if (btn) setTimeout(() => bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show(), 0);
+  });
+
+  // Close when focusing/clicking the chat input (your only explicit close besides the 3-dots)
+  document.addEventListener('focusin', (e) => {
+    if (!e.target.closest('[x-ref="input"]')) return;
+    audienceOpenWanted = false;
+    const btn = document.getElementById('audienceBtn');
+    if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[x-ref="input"]')) return;
+    audienceOpenWanted = false;
+    const btn = document.getElementById('audienceBtn');
+    if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+  });
+
+  // Prevent accidental closes from Bootstrap (we only allow our two explicit closes)
   document.addEventListener('hide.bs.dropdown', (e) => {
     if (e.target?.id !== 'audienceBtn') return;
-    if (!allowAudienceClose) {
+    // If we didn't request a close via the button toggle or input focus, keep it open
+    if (audienceOpenWanted) {
       e.preventDefault();
       e.stopPropagation();
-      audienceOpenWanted = true; // keep sticky-open
       const dd = bootstrap.Dropdown.getOrCreateInstance(e.target, { autoClose: false });
       dd.show();
-    } else {
-      audienceOpenWanted = false;
     }
   });
 
@@ -716,27 +695,17 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
   window.addEventListener('load', () => setTimeout(() => scrollLogToBottom(document), 250));
 
   document.addEventListener('livewire:initialized', () => {
-    // Re-open menus across Livewire morphs
-    let audienceWasOpen = false;
-    let openMsgMenuLabelId = null;
-
-    Livewire.hook('morph.pre', () => {
-      audienceWasOpen = isAudienceOpen();
-      const openMsgMenu = document.querySelector('.msg-menu.show');
-      openMsgMenuLabelId = openMsgMenu?.getAttribute('aria-labelledby') || null;
-    });
-
     Livewire.hook('morph.updated', () => {
-      if (audienceWasOpen || audienceOpenWanted) {
+      // Re-open audience menu after Livewire morphs if we still want it
+      if (audienceOpenWanted) {
         const btn = document.getElementById('audienceBtn');
-        if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
-      }
-      audienceWasOpen = false;
-
-      if (openMsgMenuLabelId) {
-        const btn = document.getElementById(openMsgMenuLabelId);
-        if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
-        openMsgMenuLabelId = null;
+        if (btn) {
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() =>
+              bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show()
+            )
+          );
+        }
       }
     });
 
