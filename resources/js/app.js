@@ -618,7 +618,7 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
 
 // ===== Chat helpers =====
 (function () {
-  // Robust scroll helper (after two paints so content is in the DOM)
+  // Scroll helper (after two paints so content is in the DOM)
   function scrollLogToBottom(root = document) {
     const el = root.querySelector('[x-ref="log"]');
     if (!el) return;
@@ -635,14 +635,70 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     return !!document.getElementById('audienceMenu')?.classList.contains('show');
   }
 
-  // Track the user's intent for the audience dropdown (so it re-opens after morphs)
+  // Sticky intent: keep the audience menu open through morphs unless you explicitly close it
   let audienceOpenWanted = false;
+  // Gate that decides whether Bootstrap is allowed to hide the audience dropdown
+  let allowAudienceClose = false;
 
-  // Toggle intent when the 3-dot audience button is clicked
+  // Keep the intent in sync with real show/hide
+  document.addEventListener('shown.bs.dropdown', (e) => {
+    if (e.target?.id === 'audienceBtn') audienceOpenWanted = true;
+  });
+  document.addEventListener('hidden.bs.dropdown', (e) => {
+    if (e.target?.id === 'audienceBtn') audienceOpenWanted = false;
+  });
+
+  // Decide when closing is allowed:
+  // - Clicking the 3-dots: toggles; if it was open, we allow close
+  // - Clicking/focusing the chat input: always allow close (and close it)
+  // - Clicking inside the menu: never allow close
   document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#audienceBtn');
-    if (!btn) return;
-    audienceOpenWanted = !isAudienceOpen(); // if currently open, next click means close; else open
+    const onBtn   = e.target.closest('#audienceBtn');
+    const onMenu  = e.target.closest('#audienceMenu');
+    const onInput = e.target.closest('[x-ref="input"]');
+
+    if (onBtn) {
+      allowAudienceClose = isAudienceOpen(); // if open -> allow closing; if closed -> opening
+      return;
+    }
+
+    if (onInput) {
+      allowAudienceClose = true;
+      const btn = document.getElementById('audienceBtn');
+      if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+      return;
+    }
+
+    if (onMenu) {
+      allowAudienceClose = false; // keep open on any interaction inside
+      return;
+    }
+
+    // Clicks elsewhere do not close the menu
+    allowAudienceClose = false;
+  }, true); // capture phase so we run before Bootstrap
+
+  // Also hide on focus (keyboard navigation to input, etc.)
+  document.addEventListener('focusin', (e) => {
+    if (e.target.closest('[x-ref="input"]')) {
+      allowAudienceClose = true;
+      const btn = document.getElementById('audienceBtn');
+      if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+    }
+  });
+
+  // Cancel Bootstrap’s hide unless we explicitly allowed it
+  document.addEventListener('hide.bs.dropdown', (e) => {
+    if (e.target?.id !== 'audienceBtn') return;
+    if (!allowAudienceClose) {
+      e.preventDefault();
+      e.stopPropagation();
+      audienceOpenWanted = true; // keep sticky-open
+      const dd = bootstrap.Dropdown.getOrCreateInstance(e.target, { autoClose: false });
+      dd.show();
+    } else {
+      audienceOpenWanted = false;
+    }
   });
 
   // Page-level scroll request fired from PHP: $this->dispatch('chat:scrollBottom')
@@ -656,10 +712,8 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     if (input) input.focus();
   });
 
-  // Extra safety: after full page load, nudge bottom once more
-  window.addEventListener('load', () => {
-    setTimeout(() => scrollLogToBottom(document), 250);
-  });
+  // Extra nudge after full load
+  window.addEventListener('load', () => setTimeout(() => scrollLogToBottom(document), 250));
 
   document.addEventListener('livewire:initialized', () => {
     // Re-open menus across Livewire morphs
@@ -667,39 +721,29 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
     let openMsgMenuLabelId = null;
 
     Livewire.hook('morph.pre', () => {
-      // remember current states
       audienceWasOpen = isAudienceOpen();
-
       const openMsgMenu = document.querySelector('.msg-menu.show');
       openMsgMenuLabelId = openMsgMenu?.getAttribute('aria-labelledby') || null;
     });
 
     Livewire.hook('morph.updated', () => {
-      // Reopen audience if it was open OR if user intends it to stay open
       if (audienceWasOpen || audienceOpenWanted) {
         const btn = document.getElementById('audienceBtn');
-        if (btn) {
-          const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false });
-          dd.show();
-        }
+        if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
       }
       audienceWasOpen = false;
 
-      // Reopen message kebab if it was open
       if (openMsgMenuLabelId) {
         const btn = document.getElementById(openMsgMenuLabelId);
-        if (btn) {
-          const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false });
-          dd.show();
-        }
+        if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
         openMsgMenuLabelId = null;
       }
     });
 
-    // Initial nudge to bottom after first paint (covers page load)
+    // Initial nudge to bottom after first paint
     requestAnimationFrame(() => scrollLogToBottom(document));
 
-    // Auto-scroll AFTER Livewire applies DOM changes for our actions
+    // Auto-scroll after Livewire applies DOM changes for our actions
     Livewire.hook('message.processed', (msg, comp) => {
       const root = rootByComponentId(comp.id);
       if (!root.querySelector('[x-ref="log"]')) return;
@@ -707,7 +751,6 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
       const queue   = msg?.updateQueue || [];
       const methods = queue.map(u => u?.payload?.method).filter(Boolean);
 
-      // Initial reveal (ready) and after sending/saving an edit
       if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
         scrollLogToBottom(root);
       }
