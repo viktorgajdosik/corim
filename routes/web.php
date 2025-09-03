@@ -7,7 +7,11 @@ use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-
+use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\UsersIndex;
+use App\Livewire\Admin\ListingsIndex;
+use App\Livewire\Admin\ApplicationsIndex;
+use App\Livewire\Admin\Settings;
 // **Register Livewire Component for Search**
 Livewire::component('search-dropdown', \App\Livewire\SearchDropdown::class);
 
@@ -96,3 +100,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/notifications', fn () => view('notifications.index'))
     ->middleware(['auth','verified'])
     ->name('notifications.index');
+
+    // Admin
+    Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/users', UsersIndex::class)->name('users');
+    Route::get('/listings', ListingsIndex::class)->name('listings');
+    Route::get('/applications', ApplicationsIndex::class)->name('applications');
+    Route::get('/settings', Settings::class)->name('settings');
+});

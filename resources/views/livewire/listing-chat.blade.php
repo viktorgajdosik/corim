@@ -1,5 +1,5 @@
 <div class="mt-4 mb-4"
-     x-data
+     x-data="{ pollPaused: @entangle('pollPaused').live }"
      @if(!$editingId) wire:poll.7s="refreshChat" @endif>
 
   {{-- Run the lightweight init on first paint; hide real UI until isReady --}}
@@ -141,7 +141,16 @@
 
                   @if ($canKebab)
                     <div class="dropdown">
-                      <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
+                      <button
+                        class="kebab-xs"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="Message actions"
+                        {{-- pause polling while kebab is open --}}
+                        x-on:shown.bs.dropdown="pollPaused = true"
+                        x-on:hidden.bs.dropdown="pollPaused = false"
+                      >
                         <i class="fa fa-ellipsis-v"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu">
@@ -198,7 +207,11 @@
                 data-bs-toggle="dropdown"
                 data-bs-auto-close="false"
                 aria-expanded="false"
-                aria-label="Message audience">
+                aria-label="Message audience"
+                {{-- NEW: pause/resume poll while this dropdown is open --}}
+                x-on:shown.bs.dropdown="pollPaused = true"
+                x-on:hidden.bs.dropdown="pollPaused = false"
+              >
                 <i class="fa fa-ellipsis-v"></i>
               </button>
 
