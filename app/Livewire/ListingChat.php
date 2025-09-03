@@ -18,14 +18,7 @@ class ListingChat extends Component
 
     // initial paint / gating (optional)
     public bool $isReady = false;
-    public function ready(): void
-    {
-        $this->isReady = true;
-        $this->dispatch('chat:scrollBottom');
-    }
-
-    // NEW: pause polling while any dropdown menu is open
-    public bool $pollPaused = false;
+    public function ready(): void { $this->isReady = true;     $this->dispatch('chat:scrollBottom');}
 
     // input state
     public string $body = '';
@@ -114,9 +107,6 @@ class ListingChat extends Component
     #[On('refreshChat')]
     public function refreshChat(): void
     {
-        // 🔒 Do nothing while dropdowns are open (or during edit)
-        if ($this->pollPaused || $this->editingId) return;
-
         $this->refreshAudience();
     }
 

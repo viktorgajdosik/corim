@@ -2,13 +2,20 @@
 import * as bootstrap from 'bootstrap';
 window.bootstrap = window.bootstrap || bootstrap;
 
-$(document).ready(function () {
-  $('[data-bs-toggle="popover"]').popover({
-    html: true,
-    trigger: 'hover',
-    container: 'body'
+/* --- Popovers (vanilla, no jQuery) --- */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach((el) => {
+    new bootstrap.Popover(el, {
+      html: true,
+      trigger: 'hover',
+      container: 'body'
+    });
   });
 });
+
+/* ========================================================================== */
+/* ============================  ALPINE / STORES  ============================ */
+/* ========================================================================== */
 
 window.__LW_DEBUG_INSTALLED__ = window.__LW_DEBUG_INSTALLED__ || false;
 
@@ -106,6 +113,181 @@ document.addEventListener('alpine:init', () => {
       // participantGhostsByListing left intact
     },
   });
+
+  // =============== LISTING CHAT (manual poll + sticky menus) ===============
+  Alpine.data('listingChat', () => ({
+    // ---- poll control ----
+    pollMs: 7000,
+    pollId: null,
+    paused: false,
+
+    // ---- audience sticky-close guard ----
+    audienceOpenWanted: false,
+    allowAudienceClose: false,
+
+    init() {
+      // Start manual poll loop
+      this.startPoll();
+
+      // Bind handlers so we can remove them later
+      this._onDocClick = this.onDocClick.bind(this);
+      this._onHide     = this.onHide.bind(this);
+      this._onShownAny = this.onShownAny.bind(this);
+      this._onHiddenAny= this.onHiddenAny.bind(this);
+
+      // Capture clicks BEFORE Bootstrap decides to hide
+      document.addEventListener('click', this._onDocClick, true);
+      // Gate Bootstrap's hide for the audience dropdown
+      document.addEventListener('hide.bs.dropdown', this._onHide);
+      // Pause poll when any dropdown (audience/kebab) inside this component opens
+      document.addEventListener('shown.bs.dropdown', this._onShownAny);
+      // Resume when all dropdowns inside this component are closed
+      document.addEventListener('hidden.bs.dropdown', this._onHiddenAny);
+
+      // Pause when tab hidden; resume when visible if nothing open
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) this.pause();
+        else if (!this.anyDropdownOpen() && !this.isEditing()) this.resume();
+      });
+
+      // Re-open audience menu after Livewire morphs if we still want it open,
+      // and keep poll paused while editing.
+      if (window.Livewire?.hook) {
+        Livewire.hook('morph.updated', () => {
+          if (this.audienceOpenWanted) this.showAudienceSoon();
+          if (this.isEditing() || this.anyDropdownOpen() || document.hidden) this.pause();
+          else this.resume();
+        });
+        Livewire.hook('message.processed', (msg, comp) => {
+          // keep scroll behavior consistent
+          const queue   = msg?.updateQueue || [];
+          const methods = queue.map(u => u?.payload?.method).filter(Boolean);
+          if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
+            this.scrollBottom();
+          }
+        });
+      }
+
+      // Window events (from PHP)
+      window.addEventListener('chat:scrollBottom', () => this.scrollBottom());
+      window.addEventListener('chat:focusInput', () => {
+        const input = this.$root.querySelector('[x-ref="input"]');
+        input?.focus();
+      });
+
+      // First nudge to bottom
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => this.scrollBottom())
+      );
+    },
+
+    // Alpine can call this when tearing down
+    destroy() {
+      this.stopPoll();
+      document.removeEventListener('click', this._onDocClick, true);
+      document.removeEventListener('hide.bs.dropdown', this._onHide);
+      document.removeEventListener('shown.bs.dropdown', this._onShownAny);
+      document.removeEventListener('hidden.bs.dropdown', this._onHiddenAny);
+    },
+
+    // ---- manual polling ----
+    startPoll() {
+      this.stopPoll();
+      this.pollId = setInterval(() => {
+        if (!this.paused) this.$wire?.refreshChat();
+      }, this.pollMs);
+    },
+    stopPoll() { if (this.pollId) { clearInterval(this.pollId); this.pollId = null; } },
+    pause()     { this.paused = true;  },
+    resume()    { this.paused = false; },
+
+    // ---- dropdown / edit awareness ----
+    belongsToMe(el) { return this.$root.contains(el); },
+    anyDropdownOpen() { return !!this.$root.querySelector('.dropdown-menu.show'); },
+    isEditing() { return !!this.$root.querySelector('.edit-wrap'); },
+
+    onShownAny(e) {
+      if (!this.belongsToMe(e.target)) return;
+      this.pause();
+    },
+    onHiddenAny(e) {
+      if (!this.belongsToMe(e.target)) return;
+      // resume only if nothing else is still open in THIS component and not editing
+      if (!this.anyDropdownOpen() && !this.isEditing() && !document.hidden) this.resume();
+    },
+
+    // ---- audience sticky-close gating (explicit close only) ----
+    onDocClick(e) {
+      if (!this.belongsToMe(e.target)) return;
+
+      const onBtn   = e.target.closest('#audienceBtn');
+      const onMenu  = e.target.closest('#audienceMenu');
+      const onInput = e.target.closest('[x-ref="input"]');
+
+      if (onBtn) {
+        // toggle intent: if open now, allow close; if closed now, we want open
+        this.allowAudienceClose = this.isAudienceOpen();
+        this.audienceOpenWanted = !this.allowAudienceClose;
+        return;
+      }
+      if (onInput) {
+        // explicit close when focusing/clicking input
+        this.allowAudienceClose = true;
+        this.audienceOpenWanted = false;
+        this.hideAudience();
+        return;
+      }
+      if (onMenu) {
+        // clicks inside menu should NOT close it
+        this.allowAudienceClose = false;
+        this.audienceOpenWanted = true;
+        return;
+      }
+      // clicks elsewhere do not close
+      this.allowAudienceClose = false;
+    },
+
+    onHide(e) {
+      if (!this.belongsToMe(e.target)) return;
+      if (e.target?.id !== 'audienceBtn') return;
+
+      if (!this.allowAudienceClose) {
+        // veto Bootstrap's hide and re-open
+        e.preventDefault();
+        e.stopPropagation();
+        this.audienceOpenWanted = true;
+        this.showAudienceSoon();
+      } else {
+        this.audienceOpenWanted = false;
+      }
+    },
+
+    // ---- audience helpers ----
+    isAudienceOpen() {
+      return !!this.$root.querySelector('#audienceMenu.show');
+    },
+    showAudienceSoon() {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const btn = this.$root.querySelector('#audienceBtn');
+          if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
+        })
+      );
+    },
+    hideAudience() {
+      const btn = this.$root.querySelector('#audienceBtn');
+      if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+    },
+
+    // ---- scroll ----
+    scrollBottom() {
+      const el = this.$root.querySelector('[x-ref="log"]');
+      if (!el) return;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; })
+      );
+    },
+  }));
 
   // ========== ORG ANALYTICS ==========
   Alpine.data('orgAnalyticsComponent', (payload) => ({
@@ -413,17 +595,7 @@ document.addEventListener('alpine:init', () => {
   }));
   // ========== /ORG ANALYTICS ==========
 
-
-
-  // ===== Livewire debug hooks =====
-  if (!window.__LW_DEBUG_INSTALLED__ && window.Livewire?.hook) {
-    window.__LW_DEBUG_INSTALLED__ = true;
-    Livewire.hook('message.sent',     (m,c)=>console.debug('[lw] sent',c.id,m?.updateQueue?.[0]?.payload?.method));
-    Livewire.hook('message.failed',   (m,c)=>console.debug('[lw] failed',c.id));
-    Livewire.hook('message.received', (m,c)=>console.debug('[lw] recv',c.id));
-    Livewire.hook('message.processed',(m,c)=>console.debug('[lw] done',c.id));
-  }
-
+  // ===== Helpers for waits (used below) =====
   function nextPaint(){return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));}
 
   function waitForSelector(selector,{appear=true,timeout=5000}={}) {
@@ -561,6 +733,7 @@ document.addEventListener('alpine:init', () => {
     }
   });
 
+  // ===== Toast helper =====
   function showToast(flash) {
     const { message, type='success', delay=3000 } = flash || {};
     if (!message) return;
@@ -583,7 +756,9 @@ document.addEventListener('alpine:init', () => {
   }
 });
 
-
+/* ========================================================================== */
+/* ============================== COMPONENT HELPERS ========================= */
+/* ========================================================================== */
 
 // Helpers you already use (unchanged)
 window.taskCard = function taskCard(taskId){ return {
@@ -616,113 +791,14 @@ window.studentTaskCard = function studentTaskCard(taskId){ return {
   }
 };};
 
-// ===== Chat helpers =====
-(function () {
-  // Scroll helper (after two paints so content is in the DOM)
-  function scrollLogToBottom(root = document) {
-    const el = root.querySelector('[x-ref="log"]');
-    if (!el) return;
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; })
-    );
-  }
+/* ========================================================================== */
+/* ============================ LIVEWIRE DEBUG HOOKS ======================== */
+/* ========================================================================== */
 
-  function rootByComponentId(id) {
-    return document.querySelector(`[wire\\:id="${id}"]`) || document;
-  }
-
-  function isAudienceOpen() {
-    return !!document.getElementById('audienceMenu')?.classList.contains('show');
-  }
-
-  // Single source of truth: should the audience menu be open?
-  let audienceOpenWanted = false;
-
-  // Toggle intent when the 3-dots is clicked
-  document.addEventListener('click', (e) => {
-    const onBtn = e.target.closest('#audienceBtn');
-    if (!onBtn) return;
-    audienceOpenWanted = !isAudienceOpen(); // if open -> we want to close; if closed -> we want to open
-  });
-
-  // Keep it open whenever you interact INSIDE the menu (checkboxes/switch)
-  document.addEventListener('change', (e) => {
-    if (!e.target.closest('#audienceMenu')) return;
-    audienceOpenWanted = true; // stick open
-    // if a Livewire morph happens, immediately re-show; do both now and after morph
-    const btn = document.getElementById('audienceBtn');
-    if (btn) setTimeout(() => bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show(), 0);
-  });
-
-  // Close when focusing/clicking the chat input (your only explicit close besides the 3-dots)
-  document.addEventListener('focusin', (e) => {
-    if (!e.target.closest('[x-ref="input"]')) return;
-    audienceOpenWanted = false;
-    const btn = document.getElementById('audienceBtn');
-    if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
-  });
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('[x-ref="input"]')) return;
-    audienceOpenWanted = false;
-    const btn = document.getElementById('audienceBtn');
-    if (btn) bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
-  });
-
-  // Prevent accidental closes from Bootstrap (we only allow our two explicit closes)
-  document.addEventListener('hide.bs.dropdown', (e) => {
-    if (e.target?.id !== 'audienceBtn') return;
-    // If we didn't request a close via the button toggle or input focus, keep it open
-    if (audienceOpenWanted) {
-      e.preventDefault();
-      e.stopPropagation();
-      const dd = bootstrap.Dropdown.getOrCreateInstance(e.target, { autoClose: false });
-      dd.show();
-    }
-  });
-
-  // Page-level scroll request fired from PHP: $this->dispatch('chat:scrollBottom')
-  window.addEventListener('chat:scrollBottom', () => {
-    scrollLogToBottom(document);
-  });
-
-  // Optional: focus input if you dispatch('chat:focusInput')
-  window.addEventListener('chat:focusInput', () => {
-    const input = document.querySelector('[x-ref="input"]');
-    if (input) input.focus();
-  });
-
-  // Extra nudge after full load
-  window.addEventListener('load', () => setTimeout(() => scrollLogToBottom(document), 250));
-
-  document.addEventListener('livewire:initialized', () => {
-    Livewire.hook('morph.updated', () => {
-      // Re-open audience menu after Livewire morphs if we still want it
-      if (audienceOpenWanted) {
-        const btn = document.getElementById('audienceBtn');
-        if (btn) {
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() =>
-              bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show()
-            )
-          );
-        }
-      }
-    });
-
-    // Initial nudge to bottom after first paint
-    requestAnimationFrame(() => scrollLogToBottom(document));
-
-    // Auto-scroll after Livewire applies DOM changes for our actions
-    Livewire.hook('message.processed', (msg, comp) => {
-      const root = rootByComponentId(comp.id);
-      if (!root.querySelector('[x-ref="log"]')) return;
-
-      const queue   = msg?.updateQueue || [];
-      const methods = queue.map(u => u?.payload?.method).filter(Boolean);
-
-      if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
-        scrollLogToBottom(root);
-      }
-    });
-  });
-})();
+if (!window.__LW_DEBUG_INSTALLED__ && window.Livewire?.hook) {
+  window.__LW_DEBUG_INSTALLED__ = true;
+  Livewire.hook('message.sent',     (m,c)=>console.debug('[lw] sent',c.id,m?.updateQueue?.[0]?.payload?.method));
+  Livewire.hook('message.failed',   (m,c)=>console.debug('[lw] failed',c.id));
+  Livewire.hook('message.received', (m,c)=>console.debug('[lw] recv',c.id));
+  Livewire.hook('message.processed',(m,c)=>console.debug('[lw] done',c.id));
+}
