@@ -61,9 +61,8 @@
             <i class="fa fa-trash"></i> Delete
           </button>
 
-          {{-- Sexy Open/Closed switch (aligned right) --}}
+          {{-- Open/Closed switch & status (spinner replaces text while loading) --}}
           <div class="ms-auto d-flex align-items-center gap-2"
-               {{-- wire:key forces Alpine re-init if state changes (belt & suspenders) --}}
                wire:key="switch-{{ $listing->id }}-{{ (int)$isOpen }}"
                x-data="{ isOpen: @entangle('isOpen').live, toggling: false }"
                x-init="
@@ -80,11 +79,20 @@
                    isOpen = !!$event.detail.is_open
                  }
                ">
+            {{-- Fixed-width status slot so layout doesn't shift --}}
+            <div class="d-inline-flex align-items-center justify-content-center"
+                 style="min-width: 66px;"> {{-- wide enough for ‘Closed’ --}}
+              <span class="small text-muted-60"
+                    x-show="!toggling"
+                    x-text="isOpen ? 'Open' : 'Closed'"></span>
+              <div class="spinner-grow spinner-grow-sm text-light"
+                   x-show="toggling"
+                   x-cloak
+                   role="status"
+                   aria-label="Saving"></div>
+            </div>
 
-            {{-- State text bound to entangled value --}}
-            <span class="small text-muted-60" x-text="isOpen ? 'Open' : 'Closed'"></span>
-
-            {{-- Custom switch (no manual flip; Livewire returns authoritative state) --}}
+            {{-- Custom switch (Livewire returns the authoritative state) --}}
             <div class="oa-switch"
                  :class="{ 'is-open': isOpen, 'is-busy': toggling }"
                  role="switch"
@@ -114,12 +122,6 @@
                     x-ref="openHelp">
               <i class="fa fa-question-circle"></i>
             </button>
-
-            <div class="spinner-grow spinner-grow-sm text-light"
-                 x-show="toggling"
-                 x-cloak
-                 role="status"
-                 aria-hidden="true"></div>
           </div>
         </div>
       @endif
@@ -163,4 +165,3 @@
     </div>
   </div>
 </x-card-form>
-

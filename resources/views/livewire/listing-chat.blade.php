@@ -6,7 +6,6 @@
     {{-- REAL CONTENT (appears only after ready() completes) --}}
     <div @unless($isReady) class="d-none" @endunless x-cloak>
 
-
       <div class="chat-card p-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <span class="text-muted-60">Chat</span>
@@ -23,7 +22,7 @@
                $nextTick(() => {
                  const el = $refs.log;
                  const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
-                 scroll();
+                 scroll(); // initial
                  const mo = new MutationObserver(scroll);
                  mo.observe(el, { childList: true, subtree: true });
                })
@@ -55,10 +54,15 @@
 
                   @if ($canKebab)
                     <div class="dropdown">
-                      <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
+                      <button class="kebab-xs"
+                              type="button"
+                              data-bs-toggle="dropdown"
+                              data-bs-auto-close="false" {{-- keep open unless toggled --}}
+                              aria-expanded="false"
+                              aria-label="Message actions">
                         <i class="fa fa-ellipsis-v"></i>
                       </button>
-                      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu">
+                      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu" x-on:click.stop>
                         <li>
                           <button class="dropdown-item" wire:click="startEdit({{ $m->id }})">
                             <i class="fa fa-pencil me-2"></i> Edit
@@ -103,14 +107,14 @@
               selected: @entangle('recipientIds').live
             }"
           >
-            {{-- Audience picker (stays open until toggled again) --}}
+            {{-- Audience picker (explicit-close only) --}}
             <div class="dropdown dropup audience-anchor">
               <button
                 type="button"
                 id="audienceBtn"
                 class="audience-trigger"
                 data-bs-toggle="dropdown"
-                data-bs-auto-close="false"
+                data-bs-auto-close="false" {{-- keep open unless toggled --}}
                 aria-expanded="false"
                 aria-label="Message audience">
                 <i class="fa fa-ellipsis-v"></i>
