@@ -217,7 +217,7 @@ class ListingChat extends Component
     public function cancelEdit(): void
     {
         $this->editingId = null;
-        $this->body = '';
+               $this->body = '';
         // optional reset to defaults
         $this->sendToAll = true;
         $this->recipientIds = [];

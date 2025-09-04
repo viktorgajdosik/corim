@@ -6,7 +6,8 @@
     {{-- REAL CONTENT (appears only after ready() completes) --}}
     <div @unless($isReady) class="d-none" @endunless x-cloak>
 
-      <div class="chat-card p-3">
+      {{-- make this a tiny Alpine scope so x-init/x-ref work --}}
+      <div class="chat-card p-3" x-data="{}">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <span class="text-muted-60">Chat</span>
           <small class="text-muted-60">
@@ -22,7 +23,12 @@
                $nextTick(() => {
                  const el = $refs.log;
                  const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
-                 scroll(); // initial
+                 // initial nudges (helps with the ready() gate)
+                 scroll();
+                 setTimeout(scroll, 0);
+                 setTimeout(scroll, 200);
+
+                 // keep sticking to bottom on DOM mutations
                  const mo = new MutationObserver(scroll);
                  mo.observe(el, { childList: true, subtree: true });
                })
@@ -57,7 +63,7 @@
                       <button class="kebab-xs"
                               type="button"
                               data-bs-toggle="dropdown"
-                              data-bs-auto-close="false" {{-- keep open unless toggled --}}
+                              data-bs-auto-close="false"
                               aria-expanded="false"
                               aria-label="Message actions">
                         <i class="fa fa-ellipsis-v"></i>
@@ -107,14 +113,14 @@
               selected: @entangle('recipientIds').live
             }"
           >
-            {{-- Audience picker (explicit-close only) --}}
+            {{-- Audience picker (explicit-close only; never closes on inside clicks/changes) --}}
             <div class="dropdown dropup audience-anchor">
               <button
                 type="button"
                 id="audienceBtn"
                 class="audience-trigger"
                 data-bs-toggle="dropdown"
-                data-bs-auto-close="false" {{-- keep open unless toggled --}}
+                data-bs-auto-close="false"
                 aria-expanded="false"
                 aria-label="Message audience">
                 <i class="fa fa-ellipsis-v"></i>
@@ -125,6 +131,7 @@
                 class="dropdown-menu dropdown-menu-end audience-menu p-2"
                 aria-labelledby="audienceBtn"
                 x-on:click.stop
+                wire:ignore
               >
                 <div class="form-check form-switch mb-2">
                   <input class="form-check-input"
@@ -151,6 +158,7 @@
                   @endforeach
                 </div>
 
+                {{-- (Optional) You can move the error outside the ignored block if you want it to live-update --}}
                 @error('recipientIds')
                   <div class="text-danger small mt-2">{{ $message }}</div>
                 @enderror
@@ -165,6 +173,14 @@
               x-ref="input"
               wire:model.defer="body"
               @keydown.enter.prevent="$wire.{{ $editingId ? 'saveEdit()' : 'send()' }}"
+              x-on:focus="
+                // close audience dropdown ONLY when focusing input
+                (() => {
+                  const card = $el.closest('.chat-card');
+                  const btn = card?.querySelector('#audienceBtn');
+                  if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+                })()
+              "
             >
 
             {{-- Send / Save button --}}
@@ -189,7 +205,7 @@
           </div>
         </div>
       </div>
-      {{-- /REAL CONTENT --}}
+      {{-- /chat-card --}}
     </div>
     {{-- /ready gate --}}
   </div>
