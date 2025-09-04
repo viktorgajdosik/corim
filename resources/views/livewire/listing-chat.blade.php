@@ -1,9 +1,11 @@
-<div class="mt-4 mb-4" data-chat-root>
+<div class="mt-4 mb-4">
+
   {{-- Run the lightweight init on first paint; hide real UI until isReady --}}
   <div wire:init="ready" class="position-relative">
 
     {{-- REAL CONTENT (appears only after ready() completes) --}}
     <div @unless($isReady) class="d-none" @endunless x-cloak>
+
 
       <div class="chat-card p-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
@@ -15,7 +17,17 @@
         </div>
 
         {{-- Log --}}
-        <div class="chat-log" data-chat-log>
+        <div class="chat-log"
+             x-ref="log"
+             x-init="
+               $nextTick(() => {
+                 const el = $refs.log;
+                 const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
+                 scroll();
+                 const mo = new MutationObserver(scroll);
+                 mo.observe(el, { childList: true, subtree: true });
+               })
+             ">
           @forelse ($messages as $m)
             @php
               $me = $m->user_id === auth()->id();
@@ -43,13 +55,7 @@
 
                   @if ($canKebab)
                     <div class="dropdown">
-                      <button
-                        class="kebab-xs"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="false"
-                        aria-expanded="false"
-                        aria-label="Message actions">
+                      <button class="kebab-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Message actions">
                         <i class="fa fa-ellipsis-v"></i>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end msg-menu">
@@ -97,7 +103,7 @@
               selected: @entangle('recipientIds').live
             }"
           >
-            {{-- Audience picker (sticky-open; closes only on input focus or toggle) --}}
+            {{-- Audience picker (stays open until toggled again) --}}
             <div class="dropdown dropup audience-anchor">
               <button
                 type="button"
@@ -152,7 +158,7 @@
               type="text"
               placeholder="Write a message…"
               class="form-control chat-input"
-              data-chat-input
+              x-ref="input"
               wire:model.defer="body"
               @keydown.enter.prevent="$wire.{{ $editingId ? 'saveEdit()' : 'send()' }}"
             >
