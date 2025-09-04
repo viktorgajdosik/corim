@@ -6,8 +6,21 @@
     {{-- REAL CONTENT (appears only after ready() completes) --}}
     <div @unless($isReady) class="d-none" @endunless x-cloak>
 
-      {{-- make this a tiny Alpine scope so x-init/x-ref work --}}
-      <div class="chat-card p-3" x-data="{}">
+      {{-- Alpine scope just to manage scroll + event listener --}}
+      <div class="chat-card p-3"
+           x-data="{}"
+           x-init="
+             const scroll = () => {
+               const el = $refs.log;
+               if (!el) return;
+               requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
+             };
+             // initial nudges (handles being shown after ready())
+             scroll(); setTimeout(scroll, 0); setTimeout(scroll, 200);
+
+             // respond to Livewire's browser event from PHP (ready(), send(), saveEdit(), delete)
+             window.addEventListener('chat:scrollBottom', () => { scroll(); setTimeout(scroll, 50); setTimeout(scroll, 200); });
+           ">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <span class="text-muted-60">Chat</span>
           <small class="text-muted-60">
@@ -23,12 +36,7 @@
                $nextTick(() => {
                  const el = $refs.log;
                  const scroll = () => requestAnimationFrame(() => { el.scrollTop = el.scrollHeight });
-                 // initial nudges (helps with the ready() gate)
-                 scroll();
-                 setTimeout(scroll, 0);
-                 setTimeout(scroll, 200);
-
-                 // keep sticking to bottom on DOM mutations
+                 scroll(); // initial
                  const mo = new MutationObserver(scroll);
                  mo.observe(el, { childList: true, subtree: true });
                })
@@ -113,7 +121,7 @@
               selected: @entangle('recipientIds').live
             }"
           >
-            {{-- Audience picker (explicit-close only; never closes on inside clicks/changes) --}}
+            {{-- Audience picker (explicit-close only) --}}
             <div class="dropdown dropup audience-anchor">
               <button
                 type="button"
@@ -158,7 +166,6 @@
                   @endforeach
                 </div>
 
-                {{-- (Optional) You can move the error outside the ignored block if you want it to live-update --}}
                 @error('recipientIds')
                   <div class="text-danger small mt-2">{{ $message }}</div>
                 @enderror
@@ -176,8 +183,7 @@
               x-on:focus="
                 // close audience dropdown ONLY when focusing input
                 (() => {
-                  const card = $el.closest('.chat-card');
-                  const btn = card?.querySelector('#audienceBtn');
+                  const btn = $root.querySelector('#audienceBtn');
                   if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
                 })()
               "
