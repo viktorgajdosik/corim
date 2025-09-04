@@ -1,97 +1,11 @@
-<div class="mt-4 mb-4"
-     x-data="listingChat()"
-     x-init="init()">
+<div class="mt-4 mb-4">
 
   {{-- Run the lightweight init on first paint; hide real UI until isReady --}}
   <div wire:init="ready" class="position-relative">
 
     {{-- REAL CONTENT (appears only after ready() completes) --}}
     <div @unless($isReady) class="d-none" @endunless x-cloak>
-      <style>
-        /* Card + log */
-        .chat-card{border-radius:.75rem;background:#151515;border:1px solid rgba(255,255,255,.1)}
-        .chat-log{max-height:360px;overflow-y:auto;padding:.75rem;scroll-behavior:smooth}
 
-        /* Message rows & alignment (robust for long wraps) */
-        .msg-row{ margin-bottom:1rem; }
-        .msg-line{ display:flex; gap:.5rem; align-items:flex-end; }
-        .msg-row.me   .msg-line{ justify-content:flex-end; }
-        .msg-row.them .msg-line{ justify-content:flex-start; }
-
-        /* Bubbles (white text) */
-        .bubble{
-          display:inline-block;
-          padding:.5rem .75rem;border-radius:.75rem;
-          max-width:min(72ch,85%);
-          word-wrap:break-word; overflow-wrap:anywhere; white-space:pre-wrap;
-          color:#fff;
-        }
-        .bubble.me{background:rgba(157,157,157,.18);border:1px solid rgba(255,255,255,.1)}
-        .bubble.them{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
-        .meta{font-size:.75rem;color:rgba(255,255,255,.6)}
-        .to-tag{font-size:.7rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:.5rem;padding:.1rem .4rem;margin-left:.4rem}
-
-        /* Per-message kebab: icon only (no bg, no circle) */
-        .kebab-xs{background:transparent;border:none;color:rgba(255,255,255,.75);padding:2px;line-height:0}
-        .kebab-xs:hover{color:#fff}
-        .kebab-xs .fa-ellipsis-v{font-size:14px}
-
-        /* Input row (pill) */
-        .chat-input-wrap{position:relative;height:52px}
-        .chat-input{
-          height:100%;border-radius:999px;
-          background:rgb(44,44,44);color:#fff;border:1px solid rgba(255,255,255,.12);
-          padding-left:56px;   /* left circle */
-          padding-right:56px;  /* right send circle */
-        }
-        .chat-input::placeholder{color:rgba(255,255,255,.55)}
-        .chat-input:focus,.chat-input:focus-visible{
-          background:rgb(44,44,44);color:#fff;border-color:rgba(255,255,255,.2);box-shadow:none;
-        }
-
-        /* Edit frame (Messenger-like) — white text */
-        .edit-wrap{border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#0f0f10;padding:8px}
-        .edit-topbar{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 6px 6px}
-        .edit-topbar .label{color:#fff;font-weight:600;font-size:.9rem}
-        .edit-topbar .close-btn{background:transparent;border:none;color:#fff;line-height:0;padding:4px}
-        .edit-topbar .close-btn:hover{opacity:.85}
-
-        /* Left inset audience button */
-        .audience-anchor{
-          position:absolute;left:8px;top:50%;transform:translateY(-50%);
-          display:flex;align-items:center;justify-content:center;height:36px;width:36px;
-        }
-        .audience-trigger{
-          width:36px;height:36px;border-radius:999px;
-          background:rgb(66,66,66);color:#fff;
-          display:flex;align-items:center;justify-content:center;border:none;padding:0;line-height:0;
-        }
-        .audience-trigger .fa-ellipsis-v{font-size:15px}
-
-        /* Right inset SEND/SAVE (circle) */
-        .send-inset{
-          position:absolute;right:8px;top:50%;transform:translateY(-50%);
-          width:36px;height:36px;border-radius:999px;
-          display:inline-flex;align-items:center;justify-content:center;padding:0;
-        }
-
-        /* Dark menus for both audience and message kebab */
-        .audience-menu,
-        .msg-menu {
-          --bs-dropdown-bg:#0f0f10;
-          --bs-dropdown-color:#fff;
-          --bs-dropdown-link-color:#fff;
-          --bs-dropdown-link-hover-color:#fff;
-          --bs-dropdown-link-hover-bg:rgba(255,255,255,.08);
-          --bs-dropdown-border-color:rgba(255,255,255,.18);
-          background-color:var(--bs-dropdown-bg);
-          color:var(--bs-dropdown-color);
-          border:1px solid var(--bs-dropdown-border-color);
-          z-index:2147483647;
-          min-width:280px;
-        }
-        .audience-menu .form-check{user-select:none}
-      </style>
 
       <div class="chat-card p-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
