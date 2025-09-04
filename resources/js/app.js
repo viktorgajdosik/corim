@@ -14,36 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ========================================================================== */
-/* ============================  SIMPLE CHAT HELPERS  ======================= */
-/* ========================================================================== */
-
-/** Minimal, generic scroll-to-bottom (initial + on Livewire events) */
-function scrollChatLogToBottom() {
-  const log = document.querySelector('[x-ref="log"]');
-  if (log) { log.scrollTop = log.scrollHeight; }
-}
-document.addEventListener('DOMContentLoaded', scrollChatLogToBottom);
-window.addEventListener('chat:scrollBottom', scrollChatLogToBottom);
-
-/** Focus input when Livewire asks */
-window.addEventListener('chat:focusInput', () => {
-  const input = document.querySelector('.chat-card .chat-input');
-  if (input) input.focus();
-});
-
-/** When chat input is focused, explicitly close any dropdowns within the same chat card */
-document.addEventListener('focusin', (e) => {
-  const input = e.target.closest('.chat-input');
-  if (!input) return;
-  const card = input.closest('.chat-card');
-  if (!card) return;
-  card.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((btn) => {
-    const dd = bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false });
-    dd.hide();
-  });
-});
-
-/* ========================================================================== */
 /* ============================  ALPINE / STORES  ============================ */
 /* ========================================================================== */
 
@@ -143,6 +113,181 @@ document.addEventListener('alpine:init', () => {
       // participantGhostsByListing left intact
     },
   });
+
+  // =============== LISTING CHAT (manual poll + sticky menus) ===============
+  Alpine.data('listingChat', () => ({
+    // ---- poll control ----
+    pollMs: 7000,
+    pollId: null,
+    paused: false,
+
+    // ---- audience sticky-close guard ----
+    audienceOpenWanted: false,
+    allowAudienceClose: false,
+
+    init() {
+      // Start manual poll loop
+      this.startPoll();
+
+      // Bind handlers so we can remove them later
+      this._onDocClick = this.onDocClick.bind(this);
+      this._onHide     = this.onHide.bind(this);
+      this._onShownAny = this.onShownAny.bind(this);
+      this._onHiddenAny= this.onHiddenAny.bind(this);
+
+      // Capture clicks BEFORE Bootstrap decides to hide
+      document.addEventListener('click', this._onDocClick, true);
+      // Gate Bootstrap's hide for the audience dropdown
+      document.addEventListener('hide.bs.dropdown', this._onHide);
+      // Pause poll when any dropdown (audience/kebab) inside this component opens
+      document.addEventListener('shown.bs.dropdown', this._onShownAny);
+      // Resume when all dropdowns inside this component are closed
+      document.addEventListener('hidden.bs.dropdown', this._onHiddenAny);
+
+      // Pause when tab hidden; resume when visible if nothing open
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) this.pause();
+        else if (!this.anyDropdownOpen() && !this.isEditing()) this.resume();
+      });
+
+      // Re-open audience menu after Livewire morphs if we still want it open,
+      // and keep poll paused while editing.
+      if (window.Livewire?.hook) {
+        Livewire.hook('morph.updated', () => {
+          if (this.audienceOpenWanted) this.showAudienceSoon();
+          if (this.isEditing() || this.anyDropdownOpen() || document.hidden) this.pause();
+          else this.resume();
+        });
+        Livewire.hook('message.processed', (msg, comp) => {
+          // keep scroll behavior consistent
+          const queue   = msg?.updateQueue || [];
+          const methods = queue.map(u => u?.payload?.method).filter(Boolean);
+          if (methods.includes('ready') || methods.includes('send') || methods.includes('saveEdit')) {
+            this.scrollBottom();
+          }
+        });
+      }
+
+      // Window events (from PHP)
+      window.addEventListener('chat:scrollBottom', () => this.scrollBottom());
+      window.addEventListener('chat:focusInput', () => {
+        const input = this.$root.querySelector('[x-ref="input"]');
+        input?.focus();
+      });
+
+      // First nudge to bottom
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => this.scrollBottom())
+      );
+    },
+
+    // Alpine can call this when tearing down
+    destroy() {
+      this.stopPoll();
+      document.removeEventListener('click', this._onDocClick, true);
+      document.removeEventListener('hide.bs.dropdown', this._onHide);
+      document.removeEventListener('shown.bs.dropdown', this._onShownAny);
+      document.removeEventListener('hidden.bs.dropdown', this._onHiddenAny);
+    },
+
+    // ---- manual polling ----
+    startPoll() {
+      this.stopPoll();
+      this.pollId = setInterval(() => {
+        if (!this.paused) this.$wire?.refreshChat();
+      }, this.pollMs);
+    },
+    stopPoll() { if (this.pollId) { clearInterval(this.pollId); this.pollId = null; } },
+    pause()     { this.paused = true;  },
+    resume()    { this.paused = false; },
+
+    // ---- dropdown / edit awareness ----
+    belongsToMe(el) { return this.$root.contains(el); },
+    anyDropdownOpen() { return !!this.$root.querySelector('.dropdown-menu.show'); },
+    isEditing() { return !!this.$root.querySelector('.edit-wrap'); },
+
+    onShownAny(e) {
+      if (!this.belongsToMe(e.target)) return;
+      this.pause();
+    },
+    onHiddenAny(e) {
+      if (!this.belongsToMe(e.target)) return;
+      // resume only if nothing else is still open in THIS component and not editing
+      if (!this.anyDropdownOpen() && !this.isEditing() && !document.hidden) this.resume();
+    },
+
+    // ---- audience sticky-close gating (explicit close only) ----
+    onDocClick(e) {
+      if (!this.belongsToMe(e.target)) return;
+
+      const onBtn   = e.target.closest('#audienceBtn');
+      const onMenu  = e.target.closest('#audienceMenu');
+      const onInput = e.target.closest('[x-ref="input"]');
+
+      if (onBtn) {
+        // toggle intent: if open now, allow close; if closed now, we want open
+        this.allowAudienceClose = this.isAudienceOpen();
+        this.audienceOpenWanted = !this.allowAudienceClose;
+        return;
+      }
+      if (onInput) {
+        // explicit close when focusing/clicking input
+        this.allowAudienceClose = true;
+        this.audienceOpenWanted = false;
+        this.hideAudience();
+        return;
+      }
+      if (onMenu) {
+        // clicks inside menu should NOT close it
+        this.allowAudienceClose = false;
+        this.audienceOpenWanted = true;
+        return;
+      }
+      // clicks elsewhere do not close
+      this.allowAudienceClose = false;
+    },
+
+    onHide(e) {
+      if (!this.belongsToMe(e.target)) return;
+      if (e.target?.id !== 'audienceBtn') return;
+
+      if (!this.allowAudienceClose) {
+        // veto Bootstrap's hide and re-open
+        e.preventDefault();
+        e.stopPropagation();
+        this.audienceOpenWanted = true;
+        this.showAudienceSoon();
+      } else {
+        this.audienceOpenWanted = false;
+      }
+    },
+
+    // ---- audience helpers ----
+    isAudienceOpen() {
+      return !!this.$root.querySelector('#audienceMenu.show');
+    },
+    showAudienceSoon() {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const btn = this.$root.querySelector('#audienceBtn');
+          if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).show();
+        })
+      );
+    },
+    hideAudience() {
+      const btn = this.$root.querySelector('#audienceBtn');
+      if (btn) window.bootstrap.Dropdown.getOrCreateInstance(btn, { autoClose: false }).hide();
+    },
+
+    // ---- scroll ----
+    scrollBottom() {
+      const el = this.$root.querySelector('[x-ref="log"]');
+      if (!el) return;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; })
+      );
+    },
+  }));
 
   // ========== ORG ANALYTICS ==========
   Alpine.data('orgAnalyticsComponent', (payload) => ({
@@ -342,10 +487,273 @@ document.addEventListener('alpine:init', () => {
     renderUsersAll() {
       const block = this.data.usersPerDeptMonthly || {};
       const use   = this.pickDatasets(block, 'usersAll');
-      this.renderLine(this.$refs.cUsersAll, 'usersAll', use ? (block.labels || []) : [], use);
+      this.renderLine(this.$refs.cUsersAll, 'usersAll', block.labels || [], use);
+    },
+
+    // ---------- LIGHT THEME CLONE & CAPTURE ----------
+    deepClone(obj) {
+      try { return JSON.parse(JSON.stringify(obj)); } catch { return obj; }
+    },
+
+    buildLightOptionsForClone(orig, w, h) {
+      return {
+        responsive: false,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: true, labels: { color: '#000', boxWidth: 12 } },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: { ticks: { color: '#000', font: { size: 11 }, maxRotation: 0, autoSkip: true }, grid: { color: '#ddd', display: true } },
+          y: { ticks: { color: '#000', font: { size: 11 } }, grid: { color: '#eee' }, beginAtZero: true }
+        }
+      };
+    },
+
+    captureChartToDataURL(chart, srcCanvas) {
+      if (!chart || !srcCanvas) {
+        if (!srcCanvas) return null;
+        const w = srcCanvas.width || 1200, h = srcCanvas.height || 600;
+        const white = document.createElement('canvas');
+        white.width = w; white.height = h;
+        const wctx = white.getContext('2d');
+        wctx.fillStyle = '#fff';
+        wctx.fillRect(0,0,w,h);
+        wctx.drawImage(srcCanvas, 0, 0, w, h);
+        return white.toDataURL('image/jpeg', 0.9);
+      }
+
+      const w = srcCanvas.width || 1200, h = srcCanvas.height || 600;
+      const off = document.createElement('canvas');
+      off.width = w; off.height = h;
+
+      const clonedData = this.deepClone(chart.config.data);
+      const lightOptions = this.buildLightOptionsForClone(chart.options, w, h);
+
+      let tempChart = null;
+      try {
+        tempChart = new Chart(off.getContext('2d'), {
+          type: chart.config.type || 'line',
+          data: clonedData,
+          options: lightOptions
+        });
+      } catch (e) {
+        console.error('[oa] temp chart build failed', e);
+        const white = document.createElement('canvas');
+        white.width = w; white.height = h;
+        const wctx = white.getContext('2d');
+        wctx.fillStyle = '#fff';
+        wctx.fillRect(0,0,w,h);
+        wctx.drawImage(srcCanvas, 0, 0, w, h);
+        return white.toDataURL('image/jpeg', 0.9);
+      }
+
+      const out = document.createElement('canvas');
+      out.width = w; out.height = h;
+      const octx = out.getContext('2d');
+      octx.fillStyle = '#fff';
+      octx.fillRect(0,0,w,h);
+      octx.drawImage(off, 0, 0, w, h);
+
+      const url = out.toDataURL('image/jpeg', 0.9);
+
+      try { tempChart.destroy(); } catch {}
+      return url;
+    },
+
+    // ----- export all canvases -----
+    async exportPdf() {
+      await this.ensureChartJs();
+
+      if (!this.charts.listings || !this.charts.tasks || !this.charts.participantsAccepted || !this.charts.usersAll || !this.charts.openListings) {
+        this.renderAll();
+        await this.nextPaint();
+      }
+
+      const toImg = (key, refName) => {
+        try {
+          const canvas = this.$refs[refName];
+          const chart  = this.charts[key];
+          return this.captureChartToDataURL(chart, canvas);
+        } catch (e) {
+          console.error('[oa] capture error', key, e);
+          return null;
+        }
+      };
+
+      const images = {
+        openListings:         toImg('openListings', 'cOpenListings'),
+        listings:             toImg('listings', 'cListings'),
+        tasks:                toImg('tasks', 'cTasks'),
+        participantsAccepted: toImg('participantsAccepted', 'cParticipantsAccepted'),
+        usersAll:             toImg('usersAll', 'cUsersAll'),
+      };
+
+      await this.$wire.exportPdf(images);
     },
   }));
   // ========== /ORG ANALYTICS ==========
+
+  // ===== Helpers for waits (used below) =====
+  function nextPaint(){return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));}
+
+  function waitForSelector(selector,{appear=true,timeout=5000}={}) {
+    return new Promise((resolve,reject)=>{
+      const matches=()=>!!document.querySelector(selector);
+      if ((appear && matches()) || (!appear && !matches())) return nextPaint().then(resolve);
+      const obs=new MutationObserver(()=>{
+        if ((appear && matches()) || (!appear && !matches())) { try{obs.disconnect();}catch{} nextPaint().then(resolve); }
+      });
+      obs.observe(document.body,{childList:true,subtree:true});
+      setTimeout(()=>{try{obs.disconnect();}catch{} reject(new Error(`Timeout waiting for ${appear?'appear':'disappear'}: ${selector}`));},timeout);
+    });
+  }
+
+  // ===== Tasks =====
+  window.addEventListener('taskDomShouldReflect', async (e) => {
+    const { taskId, updatedAt, flash } = e.detail || {};
+    if (taskId == null || updatedAt == null) return;
+    try {
+      const sel = `[data-task-id="${taskId}"][data-updated-at="${updatedAt}"]`;
+      await waitForSelector(sel,{appear:true});
+      const ui = Alpine.store('ui');
+      ui.stopUpdate?.(taskId);
+      ui.stopMod?.(taskId);
+      ui.stopCreate?.();
+      if (flash?.message) showToast(flash);
+    } catch(err) {
+      console.debug('[ui] task wait timeout', err?.message);
+      Alpine.store('ui').stopAll?.();
+    }
+  });
+
+  // ===== Applications / Participants (author side) =====
+  window.addEventListener('appDomShouldReflect', async (e) => {
+    const { appId, action, updatedAt, flash, listingId } = e.detail || {};
+    if (appId == null || !action) return;
+
+    try {
+      if (action === 'accept') {
+        const sel = updatedAt != null
+          ? `[data-app-id="${appId}"][data-updated-at="${updatedAt}"]`
+          : `[data-app-id="${appId}"]`;
+        await waitForSelector(sel,{appear:true});
+        Alpine.store('ui').stopAppAccept?.(appId);
+        if (listingId != null) Alpine.store('ui').removeParticipantGhost(listingId);
+
+      } else if (action === 'deny') {
+        const sel = `[data-app-id="${appId}"]`;
+        await waitForSelector(sel,{appear:false});
+        Alpine.store('ui').stopAppDeny?.(appId);
+
+      } else if (action === 'remove') {
+        const sel = `[data-app-id="${appId}"]`;
+        await waitForSelector(sel,{appear:false});
+        Alpine.store('ui').stopAppRemove?.(appId);
+      }
+
+      if (flash?.message) showToast(flash);
+    } catch(err) {
+      console.debug('[ui] app wait timeout', err?.message);
+      const ui = Alpine.store('ui');
+      ui.stopAppAccept?.(appId);
+      ui.stopAppDeny?.(appId);
+      ui.stopAppRemove?.(appId);
+    }
+  });
+
+  // ===== Student application =====
+  window.addEventListener('applicationDomShouldReflect', async (e) => {
+    const { listingId, state, flash } = e.detail || {};
+    if (listingId == null || !state) return;
+
+    try {
+      if (state === 'awaiting') {
+        const sel = `[data-app-state="awaiting"][data-listing-id="${listingId}"]`;
+        await waitForSelector(sel, { appear: true, timeout: 7000 });
+        Alpine.store('ui').stopAppApply?.(listingId);
+      }
+      if (flash?.message) showToast(flash);
+    } catch (err) {
+      console.debug('[ui] application wait timeout', err?.message);
+      Alpine.store('ui').stopAppApply?.(listingId);
+    }
+  });
+
+  // ===== Listing edit =====
+  window.addEventListener('listingDomShouldReflect', async (e) => {
+    const { listingId, updatedAt, flash } = e.detail || {};
+    if (listingId == null || updatedAt == null) return;
+
+    try {
+      const sel = `[data-listing-id="${listingId}"][data-updated-at="${updatedAt}"]`;
+      await waitForSelector(sel, { appear: true, timeout: 7000 });
+      Alpine.store('ui').stopListingUpdate?.(listingId);
+      if (flash?.message) showToast(flash);
+    } catch (err) {
+      console.debug('[ui] listing wait timeout', err?.message);
+      Alpine.store('ui').stopListingUpdate?.(listingId);
+    }
+  });
+
+  // ===== Profile edit / password edit =====
+  window.addEventListener('profileDomShouldReflect', async (e) => {
+    const { userId, updatedAt, flash } = e.detail || {};
+    if (userId == null || updatedAt == null) return;
+
+    try {
+      const sel = `[data-user-id="${userId}"][data-updated-at="${updatedAt}"]`;
+      await waitForSelector(sel, { appear: true, timeout: 7000 });
+      const ui = Alpine.store('ui');
+      ui.stopProfileUpdate?.(userId);
+      ui.stopPasswordUpdate?.(userId);
+      if (flash?.message) showToast(flash);
+    } catch (err) {
+      console.debug('[ui] profile wait timeout', err?.message);
+      const ui = Alpine.store('ui');
+      ui.stopProfileUpdate?.(userId);
+      ui.stopPasswordUpdate?.(userId);
+    }
+  });
+
+  // ===== Task removal =====
+  window.addEventListener('taskRemovedDomShouldReflect', async (e) => {
+    const { taskId, flash } = e.detail || {};
+    if (taskId == null) return;
+
+    try {
+      const sel = `.task-card-wrap[data-task-id="${taskId}"]`;
+      await waitForSelector(sel, { appear: false, timeout: 7000 });
+    } catch (err) {
+      console.debug('[ui] task remove wait timeout', err?.message);
+    } finally {
+      Alpine.store('ui').stopDelete?.(taskId);
+      if (flash?.message) showToast(flash);
+    }
+  });
+
+  // ===== Toast helper =====
+  function showToast(flash) {
+    const { message, type='success', delay=3000 } = flash || {};
+    if (!message) return;
+    const container = document.querySelector('.toast-container');
+    if (!container) return;
+
+    const bg = type==='error'?'danger':type==='warning'?'warning':type==='info'?'info':'success';
+    const el = document.createElement('div');
+    el.className = `toast align-items-center text-bg-${bg} border-0`;
+    el.setAttribute('role','alert'); el.setAttribute('aria-live','assertive'); el.setAttribute('aria-atomic','true');
+    el.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>`;
+    container.appendChild(el);
+    const toast = new bootstrap.Toast(el,{delay,autohide:true});
+    toast.show();
+    el.addEventListener('hidden.bs.toast',()=>el.remove());
+  }
 });
 
 /* ========================================================================== */
