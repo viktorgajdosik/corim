@@ -8,11 +8,11 @@
       <div class="row g-2 align-items-end">
         <div class="col-md-6">
           <label class="form-label">Search</label>
-          <input type="text" class="form-control" placeholder="Title or author…" wire:model.debounce.400ms="search">
+          <input type="text" class="form-control" placeholder="Title or author…" wire:model.live.debounce.300ms="search">
         </div>
         <div class="col-md-3">
           <label class="form-label">State</label>
-          <select class="form-select" wire:model="isOpen">
+          <select class="form-select" wire:model.live="isOpen">
             <option value="">All</option>
             <option value="1">Open</option>
             <option value="0">Closed</option>

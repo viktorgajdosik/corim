@@ -8,11 +8,11 @@
       <div class="row g-2 align-items-end">
         <div class="col-md-6">
           <label class="form-label">Search</label>
-          <input type="text" class="form-control" placeholder="Applicant or listing…" wire:model.debounce.400ms="search">
+          <input type="text" class="form-control" placeholder="Applicant or listing…" wire:model.live.debounce.300ms="search">
         </div>
         <div class="col-md-3">
           <label class="form-label">Status</label>
-          <select class="form-select" wire:model="status">
+          <select class="form-select" wire:model.live="status">
             <option value="">All</option>
             <option value="accepted">Accepted</option>
             <option value="awaiting">Awaiting / Not accepted</option>

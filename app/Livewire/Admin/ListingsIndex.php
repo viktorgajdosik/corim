@@ -10,6 +10,8 @@ class ListingsIndex extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public string $search = '';
     /** @var null|bool|string */
     public $isOpen = null;

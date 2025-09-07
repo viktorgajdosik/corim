@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\User;
-use App\Models\Listing;
 use App\Models\Application;
+use App\Models\Listing;
+use App\Models\User;
 use Livewire\Component;
 
 class Dashboard extends Component

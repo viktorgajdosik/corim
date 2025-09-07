@@ -12,6 +12,8 @@ use App\Livewire\Admin\UsersIndex;
 use App\Livewire\Admin\ListingsIndex;
 use App\Livewire\Admin\ApplicationsIndex;
 use App\Livewire\Admin\Settings;
+use App\Livewire\Admin\Broadcast;
+use App\Livewire\Admin\CarouselSettings;
 // **Register Livewire Component for Search**
 Livewire::component('search-dropdown', \App\Livewire\SearchDropdown::class);
 
@@ -108,4 +110,8 @@ Route::get('/notifications', fn () => view('notifications.index'))
     Route::get('/listings', ListingsIndex::class)->name('listings');
     Route::get('/applications', ApplicationsIndex::class)->name('applications');
     Route::get('/settings', Settings::class)->name('settings');
+    Route::get('/broadcast', Broadcast::class)->name('broadcast');
+    Route::get('/banners', CarouselSettings::class)->name('banners');
+    Route::get('/carousel', \App\Livewire\Admin\CarouselSettings::class)->name('carousel')->middleware('auth','can:admin');
+
 });

@@ -4,22 +4,63 @@
     <div class="fixed-bottom">
         <div class="container m-0 p-0 mw-100">
             <ul class="nav justify-content-between navbar-bottom-ul w-100">
-                <li class="nav-item"><a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/"><i class="fa fa-home"></i></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->is('listings/manage*', 'listings/show-manage*') ? 'active' : '' }}" href="/listings/manage"><i class="fa fa-list"></i></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->is('users/profile*') ? 'active' : '' }}" href="/users/profile"><i class="fa fa-user"></i></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->is('listings/create') ? 'active' : '' }}" href="/listings/create"><i class="fa fa-plus-circle"></i></a></li>
-             @livewire('notifications-bell')
-                @auth
-                    <li class="nav-item">
-                        <form method="POST" class="m-0" action="/logout">
-                            @csrf
-                            <button type="submit" class="nav-link" style="border: none; background: none;"><i class="fa fa-sign-out"></i></button>
-                        </form>
-                    </li>
-                @else
-                    <li class="nav-item"><a class="nav-link {{ request()->is('login*','register*') ? 'active' : '' }}" href="/login"><i class="fa fa-sign-in"></i></a></li>
-                @endauth
-            </ul>
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">
+            <i class="fa fa-home"></i>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('listings/manage*', 'listings/show-manage*') ? 'active' : '' }}" href="/listings/manage">
+            <i class="fa fa-list"></i>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('users/profile*') ? 'active' : '' }}" href="/users/profile">
+            <i class="fa fa-user"></i>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {{ request()->is('listings/create') ? 'active' : '' }}" href="/listings/create">
+            <i class="fa fa-plus-circle"></i>
+        </a>
+    </li>
+
+    {{-- Notifications (component should render its own <li>) --}}
+    @livewire('notifications-bell')
+
+    {{-- Admin link: only for authenticated admins --}}
+    @auth
+        @if(auth()->user()->is_admin ?? false)
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}"
+                   href="{{ route('admin.dashboard') }}" title="Admin">
+                    <i class="fa fa-shield"></i>
+                </a>
+            </li>
+        @endif
+    @endauth
+
+    @auth
+        <li class="nav-item">
+            <form method="POST" class="m-0" action="/logout">
+                @csrf
+                <button type="submit" class="nav-link" style="border: none; background: none;">
+                    <i class="fa fa-sign-out"></i>
+                </button>
+            </form>
+        </li>
+    @else
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is('login*','register*') ? 'active' : '' }}" href="/login">
+                <i class="fa fa-sign-in"></i>
+            </a>
+        </li>
+    @endauth
+</ul>
+
         </div>
     </div>
 

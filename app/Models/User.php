@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Application;
 use App\Models\Listing;
+use App\Models\Task;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,57 +23,49 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password','remember_token'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'deactivated_at'    => 'datetime',
+        'banned_at'         => 'datetime',
     ];
 
-    // **Default Value for Department**
+    // Accessors for convenience in Blade
+    public function getIsBannedAttribute(): bool      { return !is_null($this->banned_at); }
+    public function getIsDeactivatedAttribute(): bool { return !is_null($this->deactivated_at); }
+
+    // Optional helpers
+    public function isBanned(): bool      { return (bool) $this->banned_at; }
+    public function isDeactivated(): bool { return (bool) $this->deactivated_at; }
+    public function isActive(): bool      { return ! $this->isBanned() && ! $this->isDeactivated(); }
+
     protected $attributes = [
-        'department' => 'Student', // ✅ Default department value
+        'department' => 'Student',
     ];
 
-    // **Relationships**
-    public function listings() {
-        return $this->hasMany(Listing::class, 'user_id');
+    // Relationships
+    public function listings()              { return $this->hasMany(Listing::class, 'user_id'); }
+    public function applications()          { return $this->hasMany(Application::class, 'user_id'); }
+    public function acceptedApplications()  { return $this->hasMany(Application::class)->where('accepted', true); }
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_participants')
+            ->withPivot(['result_text', 'result_file', 'status'])
+            ->withTimestamps();
     }
 
-    public function applications() {
-        return $this->hasMany(Application::class, 'user_id');
-    }
-
-    public function acceptedApplications() {
-        return $this->hasMany(Application::class)->where('accepted', true);
-    }
-
-    // **Update User Profile Safely**
+    // Safe update
     public function safeUpdate(array $attributes) {
-        $filteredAttributes = array_intersect_key($attributes, array_flip($this->fillable));
-
-        foreach ($filteredAttributes as $key => $value) {
-            $this->$key = $value;
-        }
-
+        $filtered = array_intersect_key($attributes, array_flip($this->fillable));
+        foreach ($filtered as $k => $v) $this->$k = $v;
         return $this->save();
     }
 
-    // **Safe Delete Method**
+    // NB: consider NOT deleting related data in production
     public function safeDelete() {
-        // ✅ Ensure all related data is deleted before deleting user
         $this->applications()->delete();
         $this->listings()->delete();
-
         return $this->delete();
     }
-
-    public function tasks()
-{
-    return $this->belongsToMany(Task::class, 'task_participants')
-                ->withPivot(['result_text', 'result_file', 'status'])
-                ->withTimestamps();
-}
 }

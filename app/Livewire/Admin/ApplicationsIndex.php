@@ -10,8 +10,10 @@ class ApplicationsIndex extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public string $search = '';
-    public ?string $status = null; // '', 'accepted', 'awaiting', null
+    public ?string $status = null;
 
     protected $queryString = [
         'search' => ['except' => ''],

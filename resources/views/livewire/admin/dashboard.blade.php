@@ -1,14 +1,10 @@
 <div id="admin-dashboard">
   @push('styles')
-  <style>
-    .stat-card .h2 { font-weight: 700; }
-  </style>
+  <style>.stat-card .h2{font-weight:700}</style>
   @endpush
 
-  <h1 class="mb-3">Admin dashboard</h1>
-
-  <div class="row g-3">
-    <div class="col-md-3">
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
       <div class="card h-100 stat-card">
         <div class="card-body">
           <div class="text-muted mb-1">Users</div>
@@ -16,8 +12,7 @@
         </div>
       </div>
     </div>
-
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
       <div class="card h-100 stat-card">
         <div class="card-body">
           <div class="text-muted mb-1">Listings</div>
@@ -26,8 +21,7 @@
         </div>
       </div>
     </div>
-
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
       <div class="card h-100 stat-card">
         <div class="card-body">
           <div class="text-muted mb-1">Applications</div>
@@ -38,7 +32,6 @@
     </div>
   </div>
 
-  @push('scripts')
-  <script>/* dashboard-only JS if needed */</script>
-  @endpush
+  {{-- Admin analytics with organization selector --}}
+  @livewire('admin.org-analytics')
 </div>
