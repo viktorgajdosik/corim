@@ -170,6 +170,11 @@
           <a class="nav-link {{ request()->routeIs('admin.banners')?'active':'' }}" href="{{ route('admin.banners') }}">
             <i class="fa fa-image"></i> <span>Home carousel</span>
           </a>
+          <a class="nav-link {{ request()->routeIs('admin.institutions')?'active':'' }}"
+   href="{{ route('admin.institutions') }}">
+  <i class="fa fa-building-o"></i> <span>Institutions</span>
+</a>
+
           <a class="nav-link {{ request()->routeIs('admin.settings')?'active':'' }}" href="{{ route('admin.settings') }}">
             <i class="fa fa-cog"></i> <span>Settings</span>
           </a>

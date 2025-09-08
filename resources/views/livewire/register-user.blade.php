@@ -11,14 +11,15 @@
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Organization -->
+        <!-- Organization (dynamic) -->
         <div class="form-floating mb-3">
             <select id="organization"
                     class="form-select form-control-md bg-dark text-white @error('organization') is-invalid @enderror"
                     wire:model.live="organization" required>
                 <option value="">Select organization</option>
-                <option value="Fakultní nemocnice Ostrava">Fakultní nemocnice Ostrava</option>
-                <option value="Lékařská fakulta Ostravské univerzity">Lékařská fakulta Ostravské univerzity</option>
+                @foreach($institutions as $orgName)
+                    <option value="{{ $orgName }}">{{ $orgName }}</option>
+                @endforeach
             </select>
             <label for="organization">Organization</label>
             @error('organization') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -32,10 +33,15 @@
             <label for="email">Organisation email address</label>
             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
+        @php
+          $domain = $organization ? ($orgMap[$organization] ?? null) : null;
+        @endphp
         <small class="text-secondary d-block mb-3">
-            Use your institutional email:
-            <span class="text-white-50">@fno.cz</span> (FNO) or
-            <span class="text-white-50">@osu.cz</span> (LF OU).
+            @if($domain)
+              Use your institutional email: <span class="text-white-50">{{ '@'.$domain }}</span>
+            @else
+              Select an organization to see the required domain.
+            @endif
         </small>
 
         <!-- Department -->
@@ -61,7 +67,7 @@
             @error('department') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Password -->
+        <!-- Passwords -->
         <div class="mb-3">
             <div class="form-floating">
                 <input type="password" class="form-control bg-dark text-white @error('password') is-invalid @enderror"
@@ -71,7 +77,6 @@
             @error('password') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
         </div>
 
-        <!-- Confirm Password -->
         <div class="mb-3">
             <div class="form-floating">
                 <input type="password" class="form-control bg-dark text-white @error('password_confirmation') is-invalid @enderror"

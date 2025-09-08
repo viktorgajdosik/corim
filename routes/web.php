@@ -14,6 +14,8 @@ use App\Livewire\Admin\ApplicationsIndex;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\Broadcast;
 use App\Livewire\Admin\CarouselSettings;
+use App\Livewire\Institutions\RegisterInstitution;
+use App\Livewire\Admin\InstitutionsIndex;
 // **Register Livewire Component for Search**
 Livewire::component('search-dropdown', \App\Livewire\SearchDropdown::class);
 
@@ -103,6 +105,9 @@ Route::get('/notifications', fn () => view('notifications.index'))
     ->middleware(['auth','verified'])
     ->name('notifications.index');
 
+// Register Institution
+Route::get('/institutions/register', RegisterInstitution::class)->name('institutions.register');
+
     // Admin
     Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
@@ -113,5 +118,6 @@ Route::get('/notifications', fn () => view('notifications.index'))
     Route::get('/broadcast', Broadcast::class)->name('broadcast');
     Route::get('/banners', CarouselSettings::class)->name('banners');
     Route::get('/carousel', \App\Livewire\Admin\CarouselSettings::class)->name('carousel')->middleware('auth','can:admin');
+    Route::get('institutions', InstitutionsIndex::class)->name('institutions');
 
 });

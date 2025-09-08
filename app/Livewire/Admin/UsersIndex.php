@@ -4,6 +4,8 @@ namespace App\Livewire\Admin;
 
 use App\Models\User;
 use App\Models\Listing;
+use App\Models\Application;
+use App\Models\Task;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +25,15 @@ class UsersIndex extends Component
 
     /** Ban reason bound per user (id => reason text) */
     public array $banReason = [];
+
+    /** ===== Right offcanvas (all-at-once details) ===== */
+    public ?int $showUserId = null;
+    public array $userDetails = [
+        'user'         => null,
+        'listings'     => [],
+        'applications' => [],
+        'tasks'        => [],
+    ];
 
     protected $queryString = [
         'search'    => ['except' => ''],
@@ -57,6 +68,8 @@ class UsersIndex extends Component
             ->withQueryString();
     }
 
+    /* ========== Admin / moderation ========== */
+
     public function toggleAdmin(int $id): void
     {
         if ($id === auth()->id()) return;
@@ -64,7 +77,7 @@ class UsersIndex extends Component
         $u->is_admin = ! $u->is_admin;
         $u->save();
 
-        // Notify user about role change
+        // Email the user about role change (unchanged behaviour)
         $u->notify(new AccountStatusChanged(
             event: $u->is_admin ? 'granted_admin' : 'revoked_admin',
             changedBy: auth()->user()->name ?? 'Admin'
@@ -173,42 +186,64 @@ class UsersIndex extends Component
         if (!$silent) session()->flash('message', 'All sessions revoked for that user.');
     }
 
-    /** ===== Emails ===== */
-
-    /** Send a password reset link via default broker. */
-    public function sendResetLink(int $id): void
+    /** ===== Offcanvas: build all details at once (no loading) ===== */
+    public function showUser(int $id): void
     {
-        $user = User::findOrFail($id);
+        $u = User::findOrFail($id);
 
-        try {
-            $status = Password::broker()->sendResetLink(['email' => $user->email]);
+        $listings = Listing::where('user_id', $id)
+            ->latest()->limit(20)
+            ->get(['id','title','is_open','created_at'])
+            ->map(fn($l)=>[
+                'id'        => $l->id,
+                'title'     => $l->title,
+                'is_open'   => $l->is_open,
+                'created_at'=> $l->created_at?->format('Y-m-d'),
+            ])->toArray();
 
-            if ($status === Password::RESET_LINK_SENT) {
-                session()->flash('message', "Password reset email sent to {$user->email}.");
-            } else {
-                session()->flash('message', __($status));
-            }
-        } catch (\Throwable $e) {
-            session()->flash('message', 'Could not send reset link. Check password reset table & mail config.');
-        }
-    }
+        $applications = Application::where('user_id',$id)
+            ->with('listing:id,title')
+            ->latest()->limit(20)
+            ->get()
+            ->map(fn($a)=>[
+                'id'            => $a->id,
+                'listing_id'    => $a->listing_id,
+                'listing_title' => $a->listing?->title ?? '—',
+                'accepted'      => $a->accepted,
+                'created_at'    => $a->created_at?->format('Y-m-d'),
+            ])->toArray();
 
-    /** Resend email verification if not verified. */
-    public function resendVerification(int $id): void
-    {
-        $user = User::findOrFail($id);
+        $tasks = Task::where('assigned_user_id',$id)
+            ->with('listing:id,title')
+            ->latest()->limit(20)
+            ->get(['id','name','status','listing_id','created_at'])
+            ->map(fn($t)=>[
+                'id'            => $t->id,
+                'name'          => $t->name,
+                'status'        => $t->status,
+                'listing_id'    => $t->listing_id,
+                'listing_title' => $t->listing?->title ?? '—',
+                'created_at'    => $t->created_at?->format('Y-m-d'),
+            ])->toArray();
 
-        if ($user->email_verified_at) {
-            session()->flash('message', 'User is already verified.');
-            return;
-        }
+        $this->userDetails = [
+            'user' => [
+                'id'             => $u->id,
+                'name'           => $u->name,
+                'email'          => $u->email,
+                'organization'   => $u->organization,
+                'department'     => $u->department,
+                'created_at'     => $u->created_at?->format('Y-m-d'),
+                'banned_at'      => $u->banned_at?->format('Y-m-d H:i'),
+                'deactivated_at' => $u->deactivated_at?->format('Y-m-d H:i'),
+            ],
+            'listings'     => $listings,
+            'applications' => $applications,
+            'tasks'        => $tasks,
+        ];
 
-        try {
-            $user->sendEmailVerificationNotification();
-            session()->flash('message', "Verification email resent to {$user->email}.");
-        } catch (\Throwable $e) {
-            session()->flash('message', 'Could not resend verification email. Check mail config.');
-        }
+        $this->showUserId = $id;
+        $this->dispatch('show-user-canvas'); // JS opens the Bootstrap offcanvas
     }
 
     public function render()

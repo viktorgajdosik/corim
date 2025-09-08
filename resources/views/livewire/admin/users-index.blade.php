@@ -27,13 +27,22 @@
       <table class="table table-dark table-hover align-middle mb-0">
         <thead>
           <tr>
-            <th>Name</th><th>Email</th><th>Joined</th><th>Admin</th><th>Status</th><th></th>
+            <th>Name</th><th>Email</th><th>Joined</th><th>Admin</th><th>Status</th><th class="text-end">Actions</th>
           </tr>
         </thead>
         <tbody>
           @forelse($rows as $u)
             <tr>
-              <td>{{ $u->name }}</td>
+              <td>
+                {{-- Click name to open the right drawer (no separate button) --}}
+                <a href="#"
+                   class="link-light text-decoration-none"
+                   data-bs-toggle="offcanvas"
+                   data-bs-target="#userDetailCanvas"
+                   wire:click.prevent="showUser({{ $u->id }})">
+                  {{ $u->name }}
+                </a>
+              </td>
               <td class="text-muted">{{ $u->email }}</td>
               <td class="text-muted">{{ $u->created_at->format('d/m/Y') }}</td>
               <td>
@@ -81,7 +90,7 @@
 
                         <li><hr class="dropdown-divider"></li>
 
-                        {{-- Ban with optional reason --}}
+                        {{-- Ban with optional reason (inline, like you have) --}}
                         @if(!$u->banned_at)
                           <li class="px-3 py-2">
                             <label class="form-label small mb-1">Ban reason (optional)</label>
@@ -135,4 +144,94 @@
       {{ $rows->links() }}
     </div>
   </div>
+
+  {{-- ================== User details offcanvas (all sections at once) ================== --}}
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="userDetailCanvas" aria-labelledby="userDetailCanvasLabel" wire:ignore.self>
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="userDetailCanvasLabel">
+        @if($showUserId && $userDetails['user'])
+          {{ $userDetails['user']['name'] }} <span class="text-muted small">(#{{ $userDetails['user']['id'] }})</span>
+        @else
+          User details
+        @endif
+      </h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      @if($showUserId && $userDetails['user'])
+        <div class="mb-3 small text-muted">
+          <div>Email: <span class="text-white">{{ $userDetails['user']['email'] }}</span></div>
+          <div>Org/Dept: <span class="text-white">{{ $userDetails['user']['organization'] ?? '—' }}</span> /
+            <span class="text-white">{{ $userDetails['user']['department'] ?? '—' }}</span></div>
+          <div>Joined: <span class="text-white">{{ $userDetails['user']['created_at'] }}</span></div>
+          @if($userDetails['user']['banned_at'])
+            <div class="text-danger">Banned: {{ $userDetails['user']['banned_at'] }}</div>
+          @endif
+          @if($userDetails['user']['deactivated_at'])
+            <div class="text-warning">Deactivated: {{ $userDetails['user']['deactivated_at'] }}</div>
+          @endif
+        </div>
+
+        <h6 class="mb-2">Listings (latest 20)</h6>
+        @forelse($userDetails['listings'] as $l)
+          <div class="d-flex justify-content-between small py-1 border-bottom border-secondary-subtle">
+            <div>
+              <a href="{{ route('listings.show', $l['id']) }}" class="link-light text-decoration-none">{{ $l['title'] }}</a>
+              <span class="ms-2 badge {{ $l['is_open'] ? 'bg-success' : 'bg-secondary' }}">{{ $l['is_open']?'Open':'Closed' }}</span>
+            </div>
+            <div class="text-muted">{{ $l['created_at'] }}</div>
+          </div>
+        @empty
+          <div class="text-muted small mb-3">No listings.</div>
+        @endforelse
+
+        <h6 class="mt-3 mb-2">Applications (latest 20)</h6>
+        @forelse($userDetails['applications'] as $a)
+          <div class="d-flex justify-content-between small py-1 border-bottom border-secondary-subtle">
+            <div>
+              @if($a['listing_id'])
+                <a href="{{ route('listings.show', $a['listing_id']) }}" class="link-light text-decoration-none">{{ $a['listing_title'] }}</a>
+              @else
+                —
+              @endif
+              <span class="ms-2 badge {{ $a['accepted'] ? 'bg-success' : 'bg-secondary' }}">{{ $a['accepted']?'Accepted':'Awaiting' }}</span>
+            </div>
+            <div class="text-muted">{{ $a['created_at'] }}</div>
+          </div>
+        @empty
+          <div class="text-muted small mb-3">No applications.</div>
+        @endforelse
+
+        <h6 class="mt-3 mb-2">Tasks (assigned; latest 20)</h6>
+        @forelse($userDetails['tasks'] as $t)
+          <div class="d-flex justify-content-between small py-1 border-bottom border-secondary-subtle">
+            <div>
+              <span class="text-white">{{ $t['name'] }}</span>
+              <span class="ms-2 badge bg-info text-dark">{{ $t['status'] }}</span>
+              @if($t['listing_id'])
+                <span class="ms-2 text-muted">in</span>
+                <a href="{{ route('listings.show', $t['listing_id']) }}" class="link-light text-decoration-none">{{ $t['listing_title'] }}</a>
+              @endif
+            </div>
+            <div class="text-muted">{{ $t['created_at'] }}</div>
+          </div>
+        @empty
+          <div class="text-muted small">No tasks.</div>
+        @endforelse
+      @else
+        <div class="text-muted small">Select a user to view details.</div>
+      @endif
+    </div>
+  </div>
+
+  {{-- Tiny JS hook to open the canvas when Livewire says so (also works if you click the name link) --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const detailEl = document.getElementById('userDetailCanvas');
+      window.addEventListener('show-user-canvas', () => {
+        const c = new bootstrap.Offcanvas(detailEl);
+        c.show();
+      });
+    });
+  </script>
 </div>

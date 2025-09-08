@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\Institution;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
@@ -14,14 +15,23 @@ class RegisterUser extends Component
 {
     public $name, $email, $organization, $department, $password, $password_confirmation;
 
+    /** @var array<string,string> name => domain */
+    public array $orgMap = [];
+
+    public function mount(): void
+    {
+        // Load institutions (approved table)
+        $this->orgMap = Institution::orderBy('name')
+            ->get(['name','domain'])
+            ->pluck('domain','name')
+            ->toArray();
+    }
+
     protected function rules(): array
     {
         return [
             'name'         => ['required','string','max:255'],
-            'organization' => ['required', Rule::in([
-                'Fakultní nemocnice Ostrava',
-                'Lékařská fakulta Ostravské univerzity',
-            ])],
+            'organization' => ['required', Rule::in(array_keys($this->orgMap))],
             'email'        => ['required','email','max:255','unique:users,email'],
             'department'   => ['required','string'],
             'password'     => ['required','min:8','confirmed'],
@@ -32,13 +42,8 @@ class RegisterUser extends Component
     {
         $validated = $this->validate();
 
-        // Map organizations to required email domains
-        $orgDomains = [
-            'Fakultní nemocnice Ostrava'              => 'fno.cz',
-            'Lékařská fakulta Ostravské univerzity'   => 'osu.cz',
-        ];
-
-        $required = $orgDomains[$this->organization] ?? null;
+        // Domain enforcement based on selected organization
+        $required = $this->orgMap[$this->organization] ?? null;
         $emailLower = Str::lower($this->email);
 
         if ($required && !Str::endsWith($emailLower, '@'.$required)) {
@@ -49,7 +54,7 @@ class RegisterUser extends Component
         $user = User::create([
             'name'         => $this->name,
             'email'        => $this->email,
-            'organization' => $this->organization,
+            'organization' => $this->organization,  // still storing name string, as before
             'department'   => $this->department,
             'password'     => Hash::make($this->password),
         ]);
@@ -64,6 +69,8 @@ class RegisterUser extends Component
 
     public function render()
     {
-        return view('livewire.register-user');
+        return view('livewire.register-user', [
+            'institutions' => array_keys($this->orgMap),
+        ]);
     }
 }
